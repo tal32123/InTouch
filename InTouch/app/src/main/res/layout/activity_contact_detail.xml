@@ -16,6 +16,7 @@
         android:hint="@string/name"
         android:inputType="text"
         android:id="@+id/contact_name"/>
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,4 +41,35 @@
         android:hint="@string/what_time_should_we_notify_you"
         android:inputType="time"
         android:id="@+id/contact_hour"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="bottom">
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:text="@string/delete"
+            android:background="@android:color/holo_orange_dark"
+            android:textColor="@android:color/white"
+            android:id="@+id/delete_contact_info"/>
+
+        <View android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:text="@string/save"
+
+            android:background="@android:color/holo_green_light"
+            android:textColor="@android:color/white"
+            android:id="@+id/save_contact_info"/>
+
+
+    </LinearLayout>
 </LinearLayout>
