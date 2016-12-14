@@ -10,10 +10,10 @@
         android:src="@mipmap/contact_photo"
         android:id="@+id/contact_image"/>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical">
-        <!--todo make sure that long names don't break the layout-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">InTouch</string>
     <string name="action_settings">Settings</string>
+    <string name="contact_frequency_in_days">Call frequency in days</string>
+    <string name="text_frequency_in_days">Text frequency in days</string>
+    <string name="name">Name</string>
+    <string name="phone_number">Phone number</string>
+    <string name="what_time_should_we_notify_you">What time should we notify you?</string>
 </resources>
