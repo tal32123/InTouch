@@ -21,13 +21,13 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Manages a local database for weather data.
+ * Manages a local database for contacts data.
  */
 public class ContactsDbHelper extends SQLiteOpenHelper {
 
     private final String LOG_TAG = ContactsDbHelper.class.getSimpleName();
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     static final String DATABASE_NAME = "contacts.db";
 
@@ -39,7 +39,7 @@ public class ContactsDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         // Create a table to hold locations.  A location consists of the string supplied in the
         // location setting, the city name, and the latitude and longitude
-        final String SQL_CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + ContactsContract.ContactsEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_CONTACTS_TABLE = "CREATE TABLE IF NOT EXISTS " + ContactsContract.ContactsEntry.TABLE_NAME + " ( " +
                 ContactsContract.ContactsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 ContactsContract.ContactsEntry.COLUMN_NAME + " TEXT UNIQUE NOT NULL, " +
                 ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER + " TEXT NOT NULL, " +

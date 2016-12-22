@@ -93,7 +93,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] myDataset = new String[]{"raw", "rawr", "rawrer", "drawer", "big drawer"};
+        String[] myDataset = new String[]{"Message 1", "Message 2", "Message 3", "Message 4", "Message 5", "Message 6", "Message 7", "Message 8", "Message 9"};
 
 
         messageArrayListString = createStringFromArrayList(myDataset);
