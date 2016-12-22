@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tk.talcharnes.intouch">
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +21,9 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.SEND" />
+                <!--<data android:type="text/plain" />-->
+
             </intent-filter>
         </activity>
         <activity android:name=".ContactDetailActivity"
@@ -24,6 +32,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tk.talcharnes.intouch.MainActivity" />
         </activity>
+
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".data.ContactsProvider"
+            android:syncable="true"
+            android:exported="false"
+            />
     </application>
 
 </manifest>

@@ -11,5 +11,8 @@
     tools:context="tk.talcharnes.intouch.MainActivityFragment"
     tools:showIn="@layout/activity_main">
 
-  <include layout="@layout/contact_list_file"/>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/contact_list_recycler_view"/>
 </RelativeLayout>
