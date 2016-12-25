@@ -10,6 +10,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,11 +22,12 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
-public class ContactDetailActivity extends AppCompatActivity {
+public class UpdateContactInfoActivity extends AppCompatActivity {
     private final String LOG_TAG = ContactDetailActivity.class.getSimpleName();
     private String name;
     private String phone_number;
@@ -49,6 +51,9 @@ public class ContactDetailActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> myDataset;
+    String messageListString;
+    String contact_id;
+
 
 
     @Override
@@ -56,11 +61,28 @@ public class ContactDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
 
+        Intent intent = getIntent();
+        messageListString = intent.getStringExtra("messageList");
+        phone_number = intent.getStringExtra("number");
+        name = intent.getStringExtra("name");
+        contact_id = intent.getStringExtra("contact_id");
+        text_frequency = intent.getIntExtra("textFequency", 0);
+        call_frequency = intent.getIntExtra("callFrequency", 0);
+        String photoUri = intent.getStringExtra("photo_uri");
+        if (photoUri!= null){
+            photo_uri = photoUri;
+        }
+
+
 
         nameView = (EditText)findViewById(R.id.contact_name);
+        nameView.setText(name);
         phoneNumberView = (EditText)findViewById(R.id.contact_phone_number);
+        phoneNumberView.setText(phone_number);
         callFrequencyView = (EditText)findViewById(R.id.contact_call_frequency);
+        callFrequencyView.setText(""+call_frequency, TextView.BufferType.EDITABLE);
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
+        textFrequencyView.setText(""+text_frequency, TextView.BufferType.EDITABLE);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
@@ -88,7 +110,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         am_pm_spinner = (Spinner) findViewById(R.id.am_pm_spinner);
 
         String[] sortingCriteria = {"A.M.", "P.M."};
-         am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
+        am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
         am_pm_spinner.setAdapter(am_pm_spinnerAdapter);
 
         message_list_recycler_view = (RecyclerView) findViewById(R.id.message_list_recycler_view);
@@ -96,9 +118,12 @@ public class ContactDetailActivity extends AppCompatActivity {
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] preSetMessages = new String[]{"Hi", "Hey", "What's up?", "How are you?"};
-        myDataset = new ArrayList<String>();
-        myDataset.addAll(Arrays.asList(preSetMessages));
+        try {
+            myDataset = Utility.getArrayListFromJSONString(messageListString);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            myDataset = new ArrayList<String>();
+        }
 
         addMessageEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -117,6 +142,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         mAdapter = new MessageListAdapter(myDataset);
         message_list_recycler_view.setAdapter(mAdapter);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
+        itemTouchHelper.attachToRecyclerView(message_list_recycler_view);
 
 
 
@@ -124,6 +151,34 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
 
+    //code from http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
+    private ItemTouchHelper.Callback createHelperCallback() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        moveItem(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                        deleteItem(viewHolder.getAdapterPosition());
+                    }
+                };
+        return simpleItemTouchCallback;
+    }
+    private void moveItem(int oldPos, int newPos){
+
+    }
+
+    private void deleteItem(final int position){
+        myDataset.remove(position);
+        mAdapter.notifyItemRemoved(position);
+    }
 
 
     public void saveData(View view) {
@@ -162,7 +217,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "Save data " + name + phone_number + "call freq " + call_frequency + text_frequency + "not time " + notification_time + " " + minutes);
 
 
-         // Defines an object to contain the new values to insert
+            // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME, name);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, phone_number);
@@ -180,8 +235,15 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
 
-            Uri mNewUri = getApplicationContext().getContentResolver().insert(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, mNewValues);
-            Log.d(LOG_TAG, mNewUri.toString());
+
+
+            int updateArray = getApplicationContext().getContentResolver().update(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
+                    mNewValues,
+                    "_ID = ?",
+                    new String[]{contact_id});
+            Log.d(LOG_TAG, "Updated row " + updateArray );
+
+
         }
         else{
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
@@ -190,7 +252,10 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
     public void deleteData(View view){
-        Toast.makeText(this,"delete contact data", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"delete contact " + contact_id + " data", Toast.LENGTH_SHORT).show();
+        getContentResolver().delete(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
+                "_ID = ?",
+                new String[]{contact_id});
     }
     public void chooseContact(View view) {
         Toast.makeText(this, "Choosing contact", Toast.LENGTH_SHORT).show();
@@ -235,7 +300,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
                 Log.d(LOG_TAG, "\n number " + number + "\ncontact name " + contact_name + "\n photo uri " + photo_uri);
                 // Do something with the phone number
-                
+
             }
         }
     }
@@ -245,7 +310,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     public void readFromDB(View view){
         Cursor cursor = getContentResolver().query(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null, null);
         if(cursor.moveToFirst()){
-          String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
+            String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
             Log.d(LOG_TAG, cursorString);
         }
     }

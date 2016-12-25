@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.ViewHolder> {
-    private String[] mDataset;
+    private ArrayList<String> mDataset;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -21,7 +23,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public MessageListAdapter(String[] myDataset) {
+    public MessageListAdapter(ArrayList<String> myDataset) {
         mDataset = myDataset;
     }
 
@@ -42,13 +44,13 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        holder.mTextView.setText(mDataset[position]);
+        holder.mTextView.setText(mDataset.get(position));
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 }

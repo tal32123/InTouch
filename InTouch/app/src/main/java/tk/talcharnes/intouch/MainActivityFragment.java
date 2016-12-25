@@ -10,6 +10,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +50,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         contacts_list_recycler_view.setLayoutManager(mLayoutManager);
         contacts_list_recycler_view.setAdapter(mAdapter);
 
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
+        itemTouchHelper.attachToRecyclerView(contacts_list_recycler_view);
+
 
         return rootView;
     }
@@ -64,8 +68,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME,
                 tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER,
                 tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST,
-                tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER,
-                tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER
+                ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY,
+                ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY
         };
 
         CursorLoader cursorLoader = new CursorLoader(getContext(), uri, projection,
@@ -82,6 +86,37 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
+    }
+
+
+
+    //code from http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
+    private ItemTouchHelper.Callback createHelperCallback() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        moveItem(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                        deleteItem(viewHolder.getAdapterPosition());
+                    }
+                };
+        return simpleItemTouchCallback;
+    }
+    private void moveItem(int oldPos, int newPos){
+
+    }
+
+    private void deleteItem(final int position){
+//        myDataset.remove(position);
+//        mAdapter.notifyItemRemoved(position);
     }
 }
 
