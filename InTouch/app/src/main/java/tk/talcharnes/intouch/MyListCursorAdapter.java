@@ -40,12 +40,14 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         ImageButton callButton;
         ImageButton textButton;
         CardView contactCardView;
+        TextView frequencyView;
         public ViewHolder(View view) {
             super(view);
             contactName = (TextView) view.findViewById(R.id.contact_name);
             callButton = (ImageButton) view.findViewById(R.id.call_button);
             textButton = (ImageButton) view.findViewById(R.id.send_text_button);
             contactCardView = (CardView) view.findViewById(R.id.contact_card_view);
+            frequencyView = (TextView) view.findViewById(R.id.frequency);
         }
     }
 
@@ -67,6 +69,8 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         int messageListIndex = cursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST);
         int textFrequencyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY);
         int callFrequencyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY);
+        int callCounterIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER);
+        int textCounterIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER);
 
         final String name = cursor.getString(nameIndex);
         final String photoThumbnailUri = cursor.getString(photoThumbnailUriIndex);
@@ -75,6 +79,8 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         final int textFrequency = cursor.getInt(textFrequencyIndex);
         final int callFrequency = cursor.getInt(callFrequencyIndex);
         final int contact_id = cursor.getInt(contact_idIndex);
+        final int callCounter = cursor.getInt(callCounterIndex);
+        final int textCounter = cursor.getInt(textCounterIndex);
 
         viewHolder.contactName.setText(name);
 
@@ -163,6 +169,15 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                 }
         );
 
+        if (callCounter > textCounter){
+            viewHolder.frequencyView.setText(textCounter + " days since last text");
+        }
+        else if (callCounter == textCounter){
+            viewHolder.frequencyView.setText("Call or text " + name);
+        }
+        else {
+            viewHolder.frequencyView.setText(callCounter + " days since last call");
+        }
 
     }
 }

@@ -40,7 +40,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:text="Frequency"/>
+        android:id="@+id/frequency"
+        android:text=""/>
     </LinearLayout>
     <ImageButton
         android:layout_width="48dp"

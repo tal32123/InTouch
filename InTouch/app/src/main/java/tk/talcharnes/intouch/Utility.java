@@ -1,11 +1,17 @@
 package tk.talcharnes.intouch;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -36,6 +42,15 @@ public class Utility {
             arrayList.add(str_value);
         }
         return arrayList;
+    }
+
+    //attempt to get contact photo from URI
+    public static Bitmap getContactBitmapFromURI(Context context, Uri uri) throws FileNotFoundException {
+        InputStream input = context.getContentResolver().openInputStream(uri);
+        if (input == null) {
+            return null;
+        }
+        return BitmapFactory.decodeStream(input);
     }
 
 }

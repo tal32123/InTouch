@@ -71,7 +71,9 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER,
                 tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST,
                 ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY,
-                ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY
+                ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY,
+                ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER,
+                ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER
         };
 
         CursorLoader cursorLoader = new CursorLoader(getContext(), uri, projection,
