@@ -26,6 +26,8 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
+import static android.app.Activity.RESULT_OK;
+
 
 public class UpdateContactInfoActivity extends AppCompatActivity {
     private final String LOG_TAG = ContactDetailActivity.class.getSimpleName();

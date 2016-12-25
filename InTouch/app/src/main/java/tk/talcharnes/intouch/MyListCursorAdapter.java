@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,8 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         ImageButton textButton;
         CardView contactCardView;
         TextView frequencyView;
+        ImageView contactPhotoView;
+
         public ViewHolder(View view) {
             super(view);
             contactName = (TextView) view.findViewById(R.id.contact_name);
@@ -48,6 +51,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
             textButton = (ImageButton) view.findViewById(R.id.send_text_button);
             contactCardView = (CardView) view.findViewById(R.id.contact_card_view);
             frequencyView = (TextView) view.findViewById(R.id.frequency);
+            contactPhotoView = (ImageView) view.findViewById(R.id.contact_image);
         }
     }
 
@@ -179,5 +183,13 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
             viewHolder.frequencyView.setText(callCounter + " days since last call");
         }
 
+        if(photoThumbnailUri!= null && !photoThumbnailUri.equals(null) && !photoThumbnailUri.equals("")){
+//            Utility.getContactBitmapFromURI(mContext, Uri.parse(photoThumbnailUri));
+//            Picasso.with(mContext).load(photoThumbnailUri).into(viewHolder.contactPhotoView);
+
+        }
+
     }
+
+
 }

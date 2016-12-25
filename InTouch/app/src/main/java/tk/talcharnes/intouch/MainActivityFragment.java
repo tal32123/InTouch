@@ -27,6 +27,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 //    ContactsListAdapter mAdapter;
     MyListCursorAdapter mAdapter;
     final String LOG_TAG = MainActivityFragment.class.getSimpleName();
+    Cursor mCursor;
 
 
     public MainActivityFragment() {
@@ -76,6 +77,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER
         };
 
+
         CursorLoader cursorLoader = new CursorLoader(getContext(), uri, projection,
                 null, null, null);
         return cursorLoader;
@@ -83,6 +85,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader loader, Cursor cursor) {
+        mCursor = cursor;
         cursor.moveToFirst();
         mAdapter.swapCursor(cursor);
     }
@@ -123,6 +126,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 //        mAdapter.notifyItemRemoved(position);
 //        getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
 //                "")
+        int contact_idIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry._ID);
+        mCursor.moveToPosition(position);
+        int deletePosition = mCursor.getInt(contact_idIndex);
+                getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
+                "_ID = ?",
+                        new String[]{""+deletePosition});
+        mAdapter.notifyItemRemoved(position);
 
         Log.d(LOG_TAG, "deleteItem position = " + position);
     }
