@@ -11,6 +11,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     RecyclerView.LayoutManager mLayoutManager;
 //    ContactsListAdapter mAdapter;
     MyListCursorAdapter mAdapter;
+    final String LOG_TAG = MainActivityFragment.class.getSimpleName();
 
 
     public MainActivityFragment() {
@@ -117,6 +119,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private void deleteItem(final int position){
 //        myDataset.remove(position);
 //        mAdapter.notifyItemRemoved(position);
+//        getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
+//                "")
+
+        Log.d(LOG_TAG, "deleteItem position = " + position);
     }
 }
 
