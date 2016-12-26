@@ -10,6 +10,7 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -118,13 +119,41 @@ public class ContactDetailActivity extends AppCompatActivity {
         mAdapter = new MessageListAdapter(myDataset);
         message_list_recycler_view.setAdapter(mAdapter);
 
-
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
+        itemTouchHelper.attachToRecyclerView(message_list_recycler_view);
 
 
     }
 
 
+    //code from http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
+    private ItemTouchHelper.Callback createHelperCallback() {
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
+                new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
+                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
+                    @Override
+                    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+                                          RecyclerView.ViewHolder target) {
+                        moveItem(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                        return true;
+                    }
+
+                    @Override
+                    public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                        deleteItem(viewHolder.getAdapterPosition());
+                    }
+                };
+        return simpleItemTouchCallback;
+    }
+    private void moveItem(int oldPos, int newPos){
+
+    }
+
+    private void deleteItem(final int position){
+        myDataset.remove(position);
+        mAdapter.notifyItemRemoved(position);
+    }
 
     public void saveData(View view) {
         boolean emptyField = false;
