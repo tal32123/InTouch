@@ -26,8 +26,6 @@ import org.json.JSONException;
 
 import java.util.ArrayList;
 
-import static android.app.Activity.RESULT_OK;
-
 
 public class UpdateContactInfoActivity extends AppCompatActivity {
     private final String LOG_TAG = ContactDetailActivity.class.getSimpleName();
@@ -244,7 +242,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                     "_ID = ?",
                     new String[]{contact_id});
             Log.d(LOG_TAG, "Updated row " + updateArray );
-
+            Utility.updateWidgets(getApplicationContext());
 
         }
         else{

@@ -1,5 +1,7 @@
 package tk.talcharnes.intouch;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -14,6 +16,8 @@ import java.util.ArrayList;
 
 public class Utility {
     private final static String LOG_TAG = Utility.class.getSimpleName();
+    public static final String ACTION_DATA_UPDATED = "tk.talcharnes.intouch.ACTION_DATA_UPDATED";
+
 
     public static String createStringFromArrayList(ArrayList<String> arrayList){
         JSONObject json = new JSONObject();
@@ -38,6 +42,12 @@ public class Utility {
         return arrayList;
     }
 
+    public static void updateWidgets(Context mContext) {
 
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(mContext.getPackageName());
+        mContext.sendBroadcast(dataUpdatedIntent);
+    }
 
 }

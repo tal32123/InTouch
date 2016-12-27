@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
 
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -21,30 +20,54 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="android.intent.action.SEND" />
-                <!--<data android:type="text/plain" />-->
 
             </intent-filter>
         </activity>
-        <activity android:name=".ContactDetailActivity"
-            android:parentActivityName="tk.talcharnes.intouch.MainActivity" >
+        <activity
+            android:name=".ContactDetailActivity"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tk.talcharnes.intouch.MainActivity" />
         </activity>
-
-        <activity android:name=".UpdateContactInfoActivity"
+        <activity
+            android:name=".UpdateContactInfoActivity"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity"/>
+                android:value=".MainActivity" />
         </activity>
+
         <provider
-            android:authorities="@string/content_authority"
             android:name=".data.ContactsProvider"
-            android:syncable="true"
+            android:authorities="@string/content_authority"
             android:exported="false"
-            />
+            android:syncable="true" />
+
+
+
+        <receiver
+            android:name=".widget.ContactWidgetProvider"
+            android:enabled="true"
+            android:label="@string/contact_widget_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="tk.talcharnes.intouch.ACTION_DATA_UPDATED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.WidgetRemoteViewsService"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>

@@ -122,10 +122,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
     private void deleteItem(final int position){
-//        myDataset.remove(position);
-//        mAdapter.notifyItemRemoved(position);
-//        getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
-//                "")
+
         int contact_idIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry._ID);
         mCursor.moveToPosition(position);
         int deletePosition = mCursor.getInt(contact_idIndex);

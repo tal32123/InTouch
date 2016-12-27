@@ -120,11 +120,9 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                             Toast.makeText(mContext, "Message Sent",
                                     Toast.LENGTH_SHORT).show();
                         } catch (Exception ex) {
-                            //If text message isn't sent show why
-                            Toast.makeText(mContext,ex.getMessage().toString(),
-                                    Toast.LENGTH_LONG).show();
+                            //If text message isn't sent show why in log
+                        Log.d(LOG_TAG, ex.getMessage().toString());
                             ex.printStackTrace();
-
 
                             //If text message wasn't sent attempt to send text another way (through the user's text messaging app)
                             // Most likely due to text message permissions not being accepted by user
