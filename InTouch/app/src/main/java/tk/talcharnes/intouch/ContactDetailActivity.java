@@ -211,6 +211,9 @@ public class ContactDetailActivity extends AppCompatActivity {
 
             Uri mNewUri = getApplicationContext().getContentResolver().insert(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, mNewValues);
             Log.d(LOG_TAG, mNewUri.toString());
+
+            Utility.updateWidgets(getApplicationContext());
+
         }
         else{
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
