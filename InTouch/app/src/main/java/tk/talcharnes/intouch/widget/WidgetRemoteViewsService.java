@@ -4,12 +4,24 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Binder;
 import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 
 import tk.talcharnes.intouch.R;
 import tk.talcharnes.intouch.data.ContactsContract;
@@ -129,6 +141,21 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 
                 views.setTextViewText(R.id.contact_name, name);
 
+                if(photoThumbnailUri!= null && !photoThumbnailUri.equals(null) && !photoThumbnailUri.equals("")){
+                    try {
+                        InputStream photo_stream = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(getApplicationContext().getContentResolver(), Uri.parse(photoThumbnailUri.substring(0, photoThumbnailUri.length() - 6)));
+                        BufferedInputStream buf = new BufferedInputStream(photo_stream);
+                        Bitmap my_btmp = BitmapFactory.decodeStream(buf);
+                        views.setImageViewBitmap(R.id.contact_image, getCircleBitmap(my_btmp));
+
+
+                    }
+                    catch (Exception ex){
+                        //if permission to get contact photos wasn't granted then use default photo
+                    }
+
+                }
+
 //                set onclick intent for view
                 final Intent intentt = new Intent();
                 intentt.putExtra("test", "test");
@@ -191,5 +218,28 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
         }
     };
 
+    private Bitmap getCircleBitmap(Bitmap bitmap) {
 
+        // class from http://curious-blog.blogspot.co.il/2014/05/create-circle-bitmap-in-android.html
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        bitmap.recycle();
+
+        return output;
+    }
 }
