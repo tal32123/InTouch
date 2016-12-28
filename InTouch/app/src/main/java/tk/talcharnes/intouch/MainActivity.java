@@ -106,9 +106,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == READ_CONTACTS_PERMISSIONS_REQUEST) {
             if (grantResults.length == 1 &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Read Contacts permission granted", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Read Contacts permission denied", Toast.LENGTH_SHORT).show();
+
             }
         } else {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
