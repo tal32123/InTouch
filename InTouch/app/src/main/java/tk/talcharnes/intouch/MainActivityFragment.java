@@ -134,5 +134,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         Utility.updateWidgets(getContext());
         Log.d(LOG_TAG, "deleteItem position = " + position);
     }
+
+
 }
 

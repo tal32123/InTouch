@@ -1,7 +1,5 @@
 package tk.talcharnes.intouch.widget;
 
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,7 +13,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Binder;
-import android.util.Log;
+import android.os.Bundle;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -35,6 +33,7 @@ import tk.talcharnes.intouch.data.ContactsContract;
 public class WidgetRemoteViewsService extends RemoteViewsService {
     public String LOG_TAG = WidgetRemoteViewsService.class.getSimpleName();
     private static final String CallOnClick = "callOnClick";
+    private static final String TextOnClick = "textOnClick";
 
 
     //define necessary columns
@@ -133,10 +132,24 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 //                set content description here
 //                setRemoteContentDescription(views, description);
 
-                //// TODO: 12/27/2016 Add photo, call, and text functions below 
+                //// TODO: 12/27/2016 Add call, and text functions below
+
+                Bundle extras = new Bundle();
+                Intent fillInIntent = new Intent();
+                fillInIntent.setAction(CallOnClick);
+                fillInIntent.putExtras(extras);
+                fillInIntent.putExtra("number", number);
+                views.setOnClickFillInIntent(R.id.call_button, fillInIntent);
 
 
-                views.setOnClickPendingIntent(R.id.call_button, getPendingSelfIntent(getApplicationContext(), CallOnClick, number));
+                Bundle textExtras = new Bundle();
+                Intent textFillInIntent = new Intent();
+                textFillInIntent.setAction(TextOnClick);
+                textFillInIntent.putExtras(textExtras);
+                textFillInIntent.putExtra("number", number);
+                textFillInIntent.putExtra("message_list", messageList);
+                views.setOnClickFillInIntent(R.id.send_text_button, textFillInIntent);
+
 
 
                 views.setTextViewText(R.id.contact_name, name);
@@ -196,27 +209,8 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 
 
     }
-    protected PendingIntent getPendingSelfIntent(Context context, String action, String number) {
-        Intent intent = new Intent(context, getClass());
-        intent.setAction(action);
-        intent.putExtra("number", number);
-        return PendingIntent.getBroadcast(context, 0, intent, 0);
-    }
 
-    public void onReceive(Context context, Intent intent) {
 
-        if (CallOnClick.equals(intent.getAction())){
-            Log.d("PENDINGINTENT", "call called");
-            String number = intent.getStringExtra("number");
-            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-                callIntent.setData(Uri.parse("tel:" + number));
-                if (callIntent.resolveActivity(context.getPackageManager()) != null) {
-                    callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    context.startActivity(callIntent);
-                }
-
-        }
-    };
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
 

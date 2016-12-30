@@ -1,6 +1,9 @@
 package tk.talcharnes.intouch;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
@@ -24,6 +27,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 
 public class ContactDetailActivity extends AppCompatActivity {
@@ -50,12 +55,19 @@ public class ContactDetailActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> myDataset;
+    String ACTION_SEND_TEXT;
+    String ACTION_CALL_NOTIFICATION;
+    String ACTION_NOTIFICATION;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
+
+        ACTION_CALL_NOTIFICATION = "action_call";
+        ACTION_SEND_TEXT = "action_send_text";
+        ACTION_NOTIFICATION = "action_notification";
 
 
         nameView = (EditText)findViewById(R.id.contact_name);
@@ -280,5 +292,48 @@ public class ContactDetailActivity extends AppCompatActivity {
           String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
             Log.d(LOG_TAG, cursorString);
         }
+//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+//                .setContentTitle("Title")
+//                .setContentText("Text")
+//                .setTicker("Alert new message!")
+//                .setSmallIcon(R.mipmap.ic_launcher);
+//        Intent moreInfoIntent = new Intent(this, Notifications.class);
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
+//        taskStackBuilder.addParentStack(Notifications.class);
+//        taskStackBuilder.addNextIntent(moreInfoIntent);
+//        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+//        notificationBuilder.setContentIntent(pendingIntent);
+//        NotificationManager notificationManager;
+//        boolean isNotificationActive = false;
+//        int notifID = 33;
+//        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+//        notificationManager.notify(notifID, notificationBuilder.build());
+//        isNotificationActive = true;
+        createNotifications(ACTION_SEND_TEXT);
+        createNotifications(ACTION_CALL_NOTIFICATION);
+
+
+
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1, alertIntent, 0));
     }
+    private void createNotifications(String actionType){
+
+        //alarm notification
+
+        Long alertTime = new GregorianCalendar().getTimeInMillis()+5*1000;
+        Intent alertIntent = new Intent(this, AlertReceiver.class);
+        alertIntent.putExtra("name", name);
+        alertIntent.putExtra("number", number);
+        alertIntent.putExtra("messageList", messageArrayListString);
+        alertIntent.setAction(actionType);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alertIntent, 0);
+
+        Calendar cal = Calendar.getInstance();
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
+
+    }
+
 }

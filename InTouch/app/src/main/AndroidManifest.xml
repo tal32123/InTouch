@@ -2,10 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tk.talcharnes.intouch">
 
+    <!-- Permission for making calls -->
     <uses-permission android:name="android.permission.CALL_PHONE" />
+
+    <!-- Permission for sending text messages -->
     <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+
+    <!-- The following 2 permissions are for reading contacts and using contact images -->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+
+    <!-- The following permission is for making repeating notifications -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <application
         android:allowBackup="true"
@@ -23,7 +31,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
 
                 <action android:name="android.intent.action.SEND" />
-
             </intent-filter>
         </activity>
         <activity
@@ -40,14 +47,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
+        <activity
+            android:name=".Notifications"
+            android:label="More on notification"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
 
         <provider
             android:name=".data.ContactsProvider"
             android:authorities="@string/content_authority"
             android:exported="false"
             android:syncable="true" />
-
-
 
         <receiver
             android:name=".widget.ContactWidgetProvider"
@@ -62,6 +75,7 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_info" />
         </receiver>
+        <receiver android:name=".AlertReceiver" />
 
         <service
             android:name=".widget.WidgetRemoteViewsService"
@@ -69,6 +83,10 @@
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <receiver
+            android:name=".NotificationReceiver"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>

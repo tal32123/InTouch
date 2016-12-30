@@ -7,8 +7,14 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
+
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 import tk.talcharnes.intouch.MainActivity;
 import tk.talcharnes.intouch.R;
@@ -19,7 +25,8 @@ import tk.talcharnes.intouch.Utility;
  * Credit for Udacity for help!
  */
 public class ContactWidgetProvider extends AppWidgetProvider {
-
+    private static final String CallOnClick = "callOnClick";
+    private static final String TextOnClick = "textOnClick";
 
 
     @Override
@@ -45,6 +52,11 @@ public class ContactWidgetProvider extends AppWidgetProvider {
             views.setPendingIntentTemplate(R.id.widget_list, clickPendingIntentTemplate);
             views.setEmptyView(R.id.widget_list, R.id.widget_empty);
 
+            Intent pIntent = new Intent(context, ContactWidgetProvider.class);
+            PendingIntent pendingIntentTemplate =  PendingIntent.getBroadcast(context, 0,
+                    pIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.widget_list, pendingIntentTemplate);
+
 
 
 
@@ -58,11 +70,51 @@ public class ContactWidgetProvider extends AppWidgetProvider {
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        if (Utility.ACTION_DATA_UPDATED.equals(intent.getAction())){
+        if (Utility.ACTION_DATA_UPDATED.equals(intent.getAction())) {
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             int[] appWidgetIds = appWidgetManager.getAppWidgetIds(
                     new ComponentName(context, getClass()));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_list);
+        }
+
+        if (CallOnClick.equals(intent.getAction())) {
+            String number = intent.getStringExtra("number");
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+            callIntent.setData(Uri.parse("tel:" + number));
+            if (callIntent.resolveActivity(context.getPackageManager()) != null) {
+                callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(callIntent);
+            }
+
+        }
+
+        if (TextOnClick.equals(intent.getAction())) {
+
+            String number = intent.getStringExtra("number");
+            String messageList = intent.getStringExtra("message_list");
+            //Turn string of all messages into an ArrayList in order to get one specific message at random
+            ArrayList<String> messagesArrayList = null;
+            try {
+                messagesArrayList = Utility.getArrayListFromJSONString(messageList);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Random rand = new Random();
+
+            int n = rand.nextInt(messagesArrayList.size());
+
+
+
+            String message = messagesArrayList.get(n);
+
+                //send text message
+                Intent textIntent = new Intent(Intent.ACTION_SENDTO);
+                textIntent.setData(Uri.parse("smsto:" + number));  // This ensures only SMS apps respond
+                textIntent.putExtra("sms_body", message);
+                if (intent.resolveActivity(context.getPackageManager()) != null) {
+                    textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(textIntent);
+            }
         }
     }
 
