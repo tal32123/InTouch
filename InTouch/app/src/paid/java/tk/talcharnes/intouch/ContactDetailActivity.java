@@ -291,6 +291,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         if(cursor.moveToFirst()){
           String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
             Log.d(LOG_TAG, cursorString);
+            Toast.makeText(this, "PAID VERSION WORKS HOLLA", Toast.LENGTH_SHORT).show();
         }
 //        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
 //                .setContentTitle("Title")

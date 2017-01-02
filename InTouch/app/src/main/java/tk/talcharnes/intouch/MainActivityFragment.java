@@ -86,7 +86,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader loader, Cursor cursor) {
         mCursor = cursor;
-        cursor.moveToFirst();
+//        cursor.moveToFirst();
         mAdapter.swapCursor(cursor);
     }
 

@@ -25,7 +25,7 @@ import android.provider.BaseColumns;
  */
 public class ContactsContract {
 
-    public static final String CONTENT_AUTHORITY = "tk.talcharnes.intouch.data";
+    public static final String CONTENT_AUTHORITY = "tk.talcharnes.intouch.paid.data";
 
 
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
