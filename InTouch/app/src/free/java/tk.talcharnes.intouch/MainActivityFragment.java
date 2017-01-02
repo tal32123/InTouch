@@ -59,23 +59,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
         itemTouchHelper.attachToRecyclerView(contacts_list_recycler_view);
 
-//        MobileAds.initialize(getContext(), "ca-app-pub-9373264602198577~9869493049");
-//        mAdView =(AdView) rootView.findViewById(R.id.fragment_main_adview);
-//        AdRequest adRequest = new AdRequest.Builder().build();
-//        mAdView.loadAd(adRequest);
-
-
-//          attempt 2
-
-//        AdView mAdView = (AdView) rootView.findViewById(R.id.fragment_main_adview);
-//        // Create an ad request. Check logcat output for the hashed device ID to
-//        // get test ads on a physical device. e.g.
-//        // "Use AdRequest.Builder.addTestDevice("ABCDEF012345") to get test ads on this device."
-//        AdRequest adRequest = new AdRequest.Builder()
-//                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-//                .build();
-//        mAdView.loadAd(adRequest);
-
 
         // Load an ad into the AdMob banner view.
         AdView adView = (AdView) rootView.findViewById(R.id.fragment_main_adview);
