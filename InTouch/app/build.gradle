@@ -23,6 +23,7 @@ android {
         }
         paid {
             applicationId "tk.talcharnes.intouch.paid"
+
         }
     }
 }

@@ -52,7 +52,6 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         ImageButton callButton;
         ImageButton textButton;
         CardView contactCardView;
-        TextView frequencyView;
         ImageView contactPhotoView;
 
         public ViewHolder(View view) {
@@ -61,7 +60,6 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
             callButton = (ImageButton) view.findViewById(R.id.call_button);
             textButton = (ImageButton) view.findViewById(R.id.send_text_button);
             contactCardView = (CardView) view.findViewById(R.id.contact_card_view);
-            frequencyView = (TextView) view.findViewById(R.id.frequency);
             contactPhotoView = (ImageView) view.findViewById(R.id.contact_image);
         }
     }
@@ -128,7 +126,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                             //send text message
                             SmsManager smsManager = SmsManager.getDefault();
                             smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-                            Toast.makeText(mContext, "Message Sent",
+                            Toast.makeText(mContext, R.string.message_sent_string,
                                     Toast.LENGTH_SHORT).show();
                         } catch (Exception ex) {
                             //If text message isn't sent show why in log
@@ -182,15 +180,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                 }
         );
 
-        if (callCounter > textCounter){
-            viewHolder.frequencyView.setText(textCounter + " days since last text");
-        }
-        else if (callCounter == textCounter){
-            viewHolder.frequencyView.setText("Call or text " + name);
-        }
-        else {
-            viewHolder.frequencyView.setText(callCounter + " days since last call");
-        }
+
 
         if(photoThumbnailUri!= null && !photoThumbnailUri.equals(null) && !photoThumbnailUri.equals("")){
             try {

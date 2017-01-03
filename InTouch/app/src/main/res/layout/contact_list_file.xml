@@ -35,13 +35,7 @@
         android:layout_marginLeft="16dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
         android:id="@+id/contact_name"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:id="@+id/frequency"
-        android:text=""/>
+
     </LinearLayout>
     <ImageButton
         android:layout_width="48dp"

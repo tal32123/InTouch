@@ -15,4 +15,18 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="fill_out_empty_fields">Please fill out all fields</string>
+    <string name="message_1">Hi</string>
+    <string name="message_2">Hey</string>
+    <string name="message_3">What\'s up?</string>
+    <string name="message_4">How are you?</string>
+    <string name="upgrade_for_more_messages_string">For more messages please upgrade</string>
+    <string name="ACTION_UPGRADE">UPGRADE</string>
+    <string name="message_sent_string">Message Sent</string>
+
+    <string name="paid_version">tk.talcharnes.intouch.paid</string>
+    <string name="free_version">tk.talcharnes.intouch.free</string>
+
 </resources>
+
+
