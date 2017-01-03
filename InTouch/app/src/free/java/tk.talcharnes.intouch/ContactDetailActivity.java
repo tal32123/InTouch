@@ -27,6 +27,10 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -60,6 +64,8 @@ public class ContactDetailActivity extends AppCompatActivity {
     String ACTION_SEND_TEXT;
     String ACTION_CALL_NOTIFICATION;
     String ACTION_NOTIFICATION;
+    InterstitialAd mInterstitialAd;
+
 
 
     @Override
@@ -150,6 +156,21 @@ public class ContactDetailActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(message_list_recycler_view);
 
 
+
+        //interstitial ads
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        requestNewInterstitial();
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                requestNewInterstitial();
+            }
+        });
+
+
+//// TODO: 1/3/2017 refactor interstitial code, most likely can remove some of the code/move it around especially in regards to requestnewinterstitial
+        //todo also if ad isn't shown save anyways
     }
 
 
@@ -241,7 +262,26 @@ public class ContactDetailActivity extends AppCompatActivity {
 
             Utility.updateWidgets(getApplicationContext());
 
-            NavUtils.navigateUpFromSameTask(this);
+            requestNewInterstitial();
+            if (mInterstitialAd.isLoaded()) {
+                mInterstitialAd.show();
+            }
+            else {
+                Toast.makeText(this, "Interstitial not loaded", Toast.LENGTH_SHORT).show();
+            }
+            mInterstitialAd.setAdListener(new AdListener() {
+                @Override
+                public void onAdClosed() {
+                    requestNewInterstitial();
+                    Intent upIntent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(upIntent);
+
+
+                }
+            });
+
+            // up button navigation
+//            NavUtils.navigateUpFromSameTask(this);
 
         }
         else{
@@ -249,6 +289,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
 
     }
+
 
     public void deleteData(View view){
         Toast.makeText(this,"delete contact data", Toast.LENGTH_SHORT).show();
@@ -353,6 +394,14 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
 
+    }
+    //request new interstitial ads
+    private void requestNewInterstitial() {
+        AdRequest adRequest = new AdRequest.Builder()
+                .addTestDevice("SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID")
+                .build();
+
+        mInterstitialAd.loadAd(adRequest);
     }
 
 }
