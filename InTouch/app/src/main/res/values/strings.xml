@@ -22,4 +22,5 @@
     <string name="message_4">How are you?</string>
     <string name="upgrade_for_more_messages_string">For more messages please upgrade</string>
     <string name="ACTION_UPGRADE">UPGRADE</string>
+    <string name="message_sent_string">Message Sent</string>
 </resources>
