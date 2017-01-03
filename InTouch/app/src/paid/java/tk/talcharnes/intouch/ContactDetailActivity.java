@@ -117,8 +117,21 @@ public class ContactDetailActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    if (actionId == EditorInfo.IME_ACTION_SEND) {
                     myDataset.add(addMessageEditText.getText().toString());
+
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    handled = true;
+
+                }
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    myDataset.add(addMessageEditText.getText().toString());
+
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    addMessageEditText.setText("");
                     handled = true;
                 }
                 return handled;

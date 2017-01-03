@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:hint="Add message to list of text messages to send"
             android:inputType="text"
-            android:imeOptions="actionSend"
+            android:imeOptions="actionSend|actionDone"
             android:id="@+id/add_message_edittext"/>
         <LinearLayout
             android:layout_width="match_parent"

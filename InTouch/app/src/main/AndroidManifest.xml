@@ -35,6 +35,7 @@
         </activity>
         <activity
             android:name=".ContactDetailActivity"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -42,6 +43,7 @@
         </activity>
         <activity
             android:name=".UpdateContactInfoActivity"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
