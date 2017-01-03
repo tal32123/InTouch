@@ -49,7 +49,7 @@
             android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="tk.talcharnes.intouch.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".UpdateContactInfoActivity"
