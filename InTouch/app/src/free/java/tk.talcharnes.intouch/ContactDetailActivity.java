@@ -267,7 +267,9 @@ public class ContactDetailActivity extends AppCompatActivity {
                 mInterstitialAd.show();
             }
             else {
-                Toast.makeText(this, "Interstitial not loaded", Toast.LENGTH_SHORT).show();
+                Log.d(LOG_TAG, "Interstitial not loaded");
+                // up button navigation
+            NavUtils.navigateUpFromSameTask(this);
             }
             mInterstitialAd.setAdListener(new AdListener() {
                 @Override
@@ -280,8 +282,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 }
             });
 
-            // up button navigation
-//            NavUtils.navigateUpFromSameTask(this);
+
 
         }
         else{
