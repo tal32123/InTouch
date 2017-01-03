@@ -136,15 +136,26 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    if(myDataset.size()<6) {
                     myDataset.add(addMessageEditText.getText().toString());
+
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    handled = true;
+
+                }
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    //If it is the free version of the app user has a limited amount of messages they can have
+                    if(myDataset.size()<6 || getString(R.string.version).equals(getString(R.string.paid_version))) {
+                        myDataset.add(addMessageEditText.getText().toString());
 
                         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                         addMessageEditText.setText("");
                     }
                     else {
-                        //snackbar code from http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
+
+                        //snackbar code from: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
                         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.activity_contact_detail);
                         Snackbar snackbar = Snackbar
                                 .make(linearLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)

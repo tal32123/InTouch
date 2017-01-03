@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="content_authority" translatable="false">tk.talcharnes.intouch.paid.data</string>
+    <string name="version" translatable="false">tk.talcharnes.intouch.paid</string>
+
 </resources>

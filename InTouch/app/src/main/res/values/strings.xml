@@ -23,4 +23,10 @@
     <string name="upgrade_for_more_messages_string">For more messages please upgrade</string>
     <string name="ACTION_UPGRADE">UPGRADE</string>
     <string name="message_sent_string">Message Sent</string>
+
+    <string name="paid_version">tk.talcharnes.intouch.paid</string>
+    <string name="free_version">tk.talcharnes.intouch.free</string>
+
 </resources>
+
+
