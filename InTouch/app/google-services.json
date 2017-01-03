@@ -1,27 +1,58 @@
 {
   "project_info": {
-    "project_number": "66010994",
-    "firebase_url": "https://intouch-free.firebaseio.com",
-    "project_id": "intouch-free",
-    "storage_bucket": "intouch-free.appspot.com"
+    "project_number": "22833853207",
+    "firebase_url": "https://intouch-2d9ce.firebaseio.com",
+    "project_id": "intouch-2d9ce",
+    "storage_bucket": "intouch-2d9ce.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:66010994:android:ac925ada14e5ef44",
+        "mobilesdk_app_id": "1:22833853207:android:ac925ada14e5ef44",
         "android_client_info": {
           "package_name": "tk.talcharnes.intouch.free"
         }
       },
       "oauth_client": [
         {
-          "client_id": "66010994-2nt0bq746u3loka6q957ino94n8erjcf.apps.googleusercontent.com",
+          "client_id": "22833853207-3bc5d67ke2p7k6ebv3q2ipaefodlj392.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBGCUfdIJ9PQJgcSlms5QuhX3QjGxDTSUc"
+          "current_key": "AIzaSyBpEsM0hq9_XAmWJV_XDGlTM0TMUoEJjLg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22833853207:android:6dfcaff661804889",
+        "android_client_info": {
+          "package_name": "tk.talcharnes.intouch.paid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "22833853207-3bc5d67ke2p7k6ebv3q2ipaefodlj392.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpEsM0hq9_XAmWJV_XDGlTM0TMUoEJjLg"
         }
       ],
       "services": {

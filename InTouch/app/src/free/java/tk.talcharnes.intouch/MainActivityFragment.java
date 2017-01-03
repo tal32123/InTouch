@@ -60,16 +60,22 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         itemTouchHelper.attachToRecyclerView(contacts_list_recycler_view);
 
 
+
+
         // Load an ad into the AdMob banner view.
-        AdView adView = (AdView) rootView.findViewById(R.id.fragment_main_adview);
+        mAdView = (AdView) rootView.findViewById(R.id.fragment_main_adview);
         AdRequest adRequest = new AdRequest.Builder()
                 .setRequestAgent("android_studio:ad_template").build();
-        adView.loadAd(adRequest);
 
+        mAdView.loadAd(adRequest);
+
+        //todo Next version/update add reward video after third contact addition?
+        // https://firebase.google.com/docs/admob/android/rewarded-video
 
 
         return rootView;
     }
+
 
     @Override
     public Loader onCreateLoader(int id, Bundle args) {
