@@ -7,9 +7,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -117,7 +120,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] preSetMessages = new String[]{"Hi", "Hey", "What's up?", "How are you?"};
+        String[] preSetMessages = new String[]{getString(R.string.message_1), getString(R.string.message_2), getString(R.string.message_3), getString(R.string.message_4)};
         myDataset = new ArrayList<String>();
         myDataset.addAll(Arrays.asList(preSetMessages));
 
@@ -135,11 +138,36 @@ public class ContactDetailActivity extends AppCompatActivity {
 
                 }
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    myDataset.add(addMessageEditText.getText().toString());
+                    if(myDataset.size()<6) {
+                        myDataset.add(addMessageEditText.getText().toString());
 
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    addMessageEditText.setText("");
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        addMessageEditText.setText("");
+                    }
+                    else {
+
+                        //snackbar code from: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
+                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.activity_contact_detail);
+                        Snackbar snackbar = Snackbar
+                                .make(linearLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                            }
+                        });
+
+// Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+// Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+
+                        snackbar.show();
+                    }
                     handled = true;
                 }
                 return handled;
@@ -235,9 +263,6 @@ public class ContactDetailActivity extends AppCompatActivity {
         int  minutes = minutePicker.getSelectedItemPosition();
 
         if(!emptyField) {
-            Toast.makeText(this, "Save data ", Toast.LENGTH_SHORT).show();
-            Log.d(LOG_TAG, "Save data " + name + phone_number + "call freq " + call_frequency + text_frequency + "not time " + notification_time + " " + minutes);
-
 
          // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
@@ -286,19 +311,17 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         }
         else{
-            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.fill_out_empty_fields, Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
     public void deleteData(View view){
-        Toast.makeText(this,"delete contact data", Toast.LENGTH_SHORT).show();
         NavUtils.navigateUpFromSameTask(this);
 
     }
     public void chooseContact(View view) {
-        Toast.makeText(this, "Choosing contact", Toast.LENGTH_SHORT).show();
         selectContact();
 
     }
@@ -338,8 +361,6 @@ public class ContactDetailActivity extends AppCompatActivity {
                 }
                 photo_uri = cursor.getString(photoIndex);
 
-                Log.d(LOG_TAG, "\n number " + number + "\ncontact name " + contact_name + "\n photo uri " + photo_uri);
-                // Do something with the phone number
 
             }
         }
