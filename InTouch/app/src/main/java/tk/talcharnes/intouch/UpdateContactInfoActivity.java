@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -243,6 +244,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                     new String[]{contact_id});
             Log.d(LOG_TAG, "Updated row " + updateArray );
             Utility.updateWidgets(getApplicationContext());
+            NavUtils.navigateUpFromSameTask(this);
 
         }
         else{
@@ -256,6 +258,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         getContentResolver().delete(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
                 "_ID = ?",
                 new String[]{contact_id});
+        NavUtils.navigateUpFromSameTask(this);
     }
     public void chooseContact(View view) {
         Toast.makeText(this, "Choosing contact", Toast.LENGTH_SHORT).show();

@@ -10,6 +10,7 @@ import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -240,6 +241,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
             Utility.updateWidgets(getApplicationContext());
 
+            NavUtils.navigateUpFromSameTask(this);
+
         }
         else{
             Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
@@ -249,6 +252,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     public void deleteData(View view){
         Toast.makeText(this,"delete contact data", Toast.LENGTH_SHORT).show();
+        NavUtils.navigateUpFromSameTask(this);
+
     }
     public void chooseContact(View view) {
         Toast.makeText(this, "Choosing contact", Toast.LENGTH_SHORT).show();
