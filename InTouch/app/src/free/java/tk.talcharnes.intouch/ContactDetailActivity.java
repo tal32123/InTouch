@@ -2,6 +2,7 @@ package tk.talcharnes.intouch;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -68,6 +69,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     String ACTION_CALL_NOTIFICATION;
     String ACTION_NOTIFICATION;
     InterstitialAd mInterstitialAd;
+    Long contactID;
 
 
 
@@ -283,7 +285,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
             Uri mNewUri = getApplicationContext().getContentResolver().insert(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, mNewValues);
-            Log.d(LOG_TAG, mNewUri.toString());
+
+            contactID = ContentUris.parseId(mNewUri);
 
             Utility.updateWidgets(getApplicationContext());
 
@@ -295,6 +298,11 @@ public class ContactDetailActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "Interstitial not loaded");
                 // up button navigation
             NavUtils.navigateUpFromSameTask(this);
+
+
+
+                createNotifications(ACTION_SEND_TEXT);
+                createNotifications(ACTION_CALL_NOTIFICATION);
             }
             mInterstitialAd.setAdListener(new AdListener() {
                 @Override
@@ -302,6 +310,11 @@ public class ContactDetailActivity extends AppCompatActivity {
                     requestNewInterstitial();
                     Intent upIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(upIntent);
+
+
+
+                    createNotifications(ACTION_SEND_TEXT);
+                    createNotifications(ACTION_CALL_NOTIFICATION);
 
 
                 }
@@ -391,8 +404,6 @@ public class ContactDetailActivity extends AppCompatActivity {
 //        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 //        notificationManager.notify(notifID, notificationBuilder.build());
 //        isNotificationActive = true;
-        createNotifications(ACTION_SEND_TEXT);
-        createNotifications(ACTION_CALL_NOTIFICATION);
 
 
 
@@ -407,6 +418,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         alertIntent.putExtra("name", name);
         alertIntent.putExtra("number", number);
         alertIntent.putExtra("messageList", messageArrayListString);
+        alertIntent.putExtra("contactID", contactID.toString());
         alertIntent.setAction(actionType);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 

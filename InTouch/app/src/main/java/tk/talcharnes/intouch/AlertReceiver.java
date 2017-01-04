@@ -22,6 +22,9 @@ public class AlertReceiver extends BroadcastReceiver {
     String ACTION_NOTIFICATION;
     Intent mIntent;
     Bundle extrasBundle;
+    String contactID;
+    String action;
+    int notificationID;
 
 
 
@@ -39,10 +42,29 @@ public class AlertReceiver extends BroadcastReceiver {
         name = intent.getStringExtra("name");
         messageList = intent.getStringExtra("messageList");
         number = intent.getStringExtra("number");
+        contactID = intent.getStringExtra("contactID");
+        action = intent.getAction();
 
         extrasBundle = intent.getExtras();
 
-            createNotification(context, "times up " + name, "5 seconds passed!", "alert", intent.getAction());
+
+        if(action.equals(ACTION_CALL_NOTIFICATION)){
+            // *1 in front is for calls so that ID is positive.
+            // We add this in front of the contact ID to have a unique notification
+            notificationID = 1 * Integer.parseInt(contactID);
+            createNotification(context, "Reminder to call " + name, "Call reminder!", name, action);
+
+        }
+        else if(action.equals(ACTION_SEND_TEXT)){
+            //-1 in front is for texts.
+            // We add this in front of the contact ID to have a unique notification
+            notificationID = -1 * Integer.parseInt(contactID);
+            createNotification(context, "Reminder to text " + name, "Text reminder!", name, action);
+
+        }
+
+
+
 
     }
     public void createNotification(Context context, String message, String messageText, String messageAlert, String action){
@@ -59,7 +81,7 @@ public class AlertReceiver extends BroadcastReceiver {
         mBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND);
         mBuilder.setAutoCancel(true);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(1, mBuilder.build());
+        mNotificationManager.notify(notificationID, mBuilder.build());
     }
 
 

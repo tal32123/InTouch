@@ -2,6 +2,7 @@ package tk.talcharnes.intouch;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -60,6 +61,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     String ACTION_SEND_TEXT;
     String ACTION_CALL_NOTIFICATION;
     String ACTION_NOTIFICATION;
+    Long contactID;
 
 
     @Override
@@ -237,11 +239,15 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
             Uri mNewUri = getApplicationContext().getContentResolver().insert(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, mNewValues);
-            Log.d(LOG_TAG, mNewUri.toString());
+            contactID = ContentUris.parseId(mNewUri);
 
             Utility.updateWidgets(getApplicationContext());
 
             NavUtils.navigateUpFromSameTask(this);
+
+
+            createNotifications(ACTION_SEND_TEXT);
+            createNotifications(ACTION_CALL_NOTIFICATION);
 
 
         }
@@ -313,25 +319,6 @@ public class ContactDetailActivity extends AppCompatActivity {
             Log.d(LOG_TAG, cursorString);
             Toast.makeText(this, "PAID VERSION WORKS HOLLA", Toast.LENGTH_SHORT).show();
         }
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-//                .setContentTitle("Title")
-//                .setContentText("Text")
-//                .setTicker("Alert new message!")
-//                .setSmallIcon(R.mipmap.ic_launcher);
-//        Intent moreInfoIntent = new Intent(this, Notifications.class);
-//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-//        taskStackBuilder.addParentStack(Notifications.class);
-//        taskStackBuilder.addNextIntent(moreInfoIntent);
-//        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-//        notificationBuilder.setContentIntent(pendingIntent);
-//        NotificationManager notificationManager;
-//        boolean isNotificationActive = false;
-//        int notifID = 33;
-//        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        notificationManager.notify(notifID, notificationBuilder.build());
-//        isNotificationActive = true;
-        createNotifications(ACTION_SEND_TEXT);
-        createNotifications(ACTION_CALL_NOTIFICATION);
 
 
 
@@ -346,6 +333,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         alertIntent.putExtra("name", name);
         alertIntent.putExtra("number", number);
         alertIntent.putExtra("messageList", messageArrayListString);
+        alertIntent.putExtra("contactID", contactID.toString());
         alertIntent.setAction(actionType);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 

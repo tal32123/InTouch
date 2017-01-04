@@ -22,6 +22,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     String ACTION_NOTIFICATION;
     String ACTION_CALL_NOTIFICATION;
     String ACTION_SEND_TEXT;
+    String contactID;
     final static String LOG_TAG = NotificationReceiver.class.getSimpleName();
     public NotificationReceiver() {
 
@@ -32,12 +33,13 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(LOG_TAG, "name = " + name + "number = " + number);
+        Log.d(LOG_TAG, "NotificationReceiver " + "name = " + name + "number = " + number);
         mContext = context;
         Bundle extrasBundle = intent.getExtras();
         name = extrasBundle.getString("name");
         messageList = extrasBundle.getString("messageList");
         number = extrasBundle.getString("number");
+        contactID = extrasBundle.getString("contactID");
         if (ACTION_SEND_TEXT.equals(intent.getAction())) {
             sendText();
         }
