@@ -18,8 +18,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 
+import org.json.JSONException;
+
 import java.io.BufferedInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Created by Tal on 12/29/2016.
@@ -66,14 +70,14 @@ public class AlertReceiver extends BroadcastReceiver {
             // *1 in front is for calls so that ID is positive.
             // We add this in front of the contact ID to have a unique notification
             notificationID = 1 * Integer.parseInt(contactID);
-            createNotification(context, "Reminder to call " + name, "Call reminder!", name, action);
+            createNotification(context, "Call " + name, "Call " + name, "It is time to call " + name, action);
 
         }
         else if(action.equals(ACTION_SEND_TEXT)){
             //-1 in front is for texts.
             // We add this in front of the contact ID to have a unique notification
             notificationID = -1 * Integer.parseInt(contactID);
-            createNotification(context, "Reminder to text " + name, "Text reminder!", name, action);
+            createNotification(context, "Text " + name, "Text " + name, "Click to send the following message to " + name + ": " + getMessage(), action);
 
         }
 
@@ -92,7 +96,9 @@ public class AlertReceiver extends BroadcastReceiver {
                 .setLargeIcon(getBMP(photo_uri))
                 .setContentTitle(message)
                 .setTicker(messageText)
-                .setContentText(messageAlert);
+                .setContentText(messageAlert)
+        .setStyle(new NotificationCompat.BigTextStyle().bigText(messageAlert));
+
         mBuilder.setContentIntent(notificIntent);
         mBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND);
         mBuilder.setAutoCancel(true);
@@ -134,6 +140,25 @@ public class AlertReceiver extends BroadcastReceiver {
         bitmap.recycle();
 
         return output;
+    }
+
+    private String getMessage(){
+
+        //Turn string of all messages into an ArrayList in order to get one specific message at random
+        ArrayList<String> messagesArrayList = null;
+        try {
+            messagesArrayList = Utility.getArrayListFromJSONString(messageList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Random rand = new Random();
+
+        //todo the following may cause a bug if there are no messages in list
+        int  n = rand.nextInt(messagesArrayList.size());
+
+
+
+        return messagesArrayList.get(n);
     }
 
 
