@@ -337,7 +337,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         alertIntent.setAction(actionType);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Integer.parseInt(contactID.toString()), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
 
