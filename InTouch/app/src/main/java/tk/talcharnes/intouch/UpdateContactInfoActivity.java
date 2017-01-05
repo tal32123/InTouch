@@ -329,6 +329,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         alarmManager.cancel(textPendingIntent);
         alarmManager.cancel(callPendingIntent);
 
+        Utility.updateWidgets(getApplicationContext());
 
         //Go back to home screen
         NavUtils.navigateUpFromSameTask(this);
