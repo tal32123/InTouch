@@ -34,6 +34,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 
 
 public class UpdateContactInfoActivity extends AppCompatActivity {
@@ -62,6 +63,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     ArrayList<String> myDataset;
     String messageListString;
     String contact_id;
+    String ACTION_CALL_NOTIFICATION;
+    String ACTION_SEND_TEXT;
+    String ACTION_NOTIFICATION;
 
 
 
@@ -81,6 +85,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         if (photoUri!= null){
             photo_uri = photoUri;
         }
+
+        ACTION_CALL_NOTIFICATION = "action_call";
+        ACTION_SEND_TEXT = "action_send_text";
+        ACTION_NOTIFICATION = "action_notification";
 
 
 
@@ -311,12 +319,16 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         //Cancel future notifications
 
-        Intent alertIntent = new Intent(this, AlertReceiver.class);
 
-        PendingIntent pendingIntent = PendingIntent
-                .getBroadcast(this, Integer.parseInt(contact_id), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
+
+        PendingIntent textPendingIntent = createNotificationPendingIntent(ACTION_SEND_TEXT);
+        PendingIntent callPendingIntent = createNotificationPendingIntent(ACTION_CALL_NOTIFICATION);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        alarmManager.cancel(textPendingIntent);
+        alarmManager.cancel(callPendingIntent);
+
 
         //Go back to home screen
         NavUtils.navigateUpFromSameTask(this);
@@ -374,5 +386,19 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
             Log.d(LOG_TAG, cursorString);
         }
+    }
+    private PendingIntent createNotificationPendingIntent(String action){
+
+        Long alertTime = new GregorianCalendar().getTimeInMillis()+5*1000;
+        Intent alertIntent = new Intent(this, AlertReceiver.class);
+        alertIntent.putExtra("name", name);
+        alertIntent.putExtra("number", number);
+        alertIntent.putExtra("messageList", messageArrayListString);
+        alertIntent.putExtra("contactID", contact_id);
+        alertIntent.putExtra("photo_uri", photo_uri);
+        alertIntent.setAction(action);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Integer.parseInt(contact_id), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
     }
 }

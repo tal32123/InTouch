@@ -8,20 +8,16 @@ import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
-import org.json.JSONException;
-
-import java.util.ArrayList;
-import java.util.Random;
-
 public class NotificationReceiver extends BroadcastReceiver {
     Context mContext;
     String name;
-    String messageList;
     String number;
     String ACTION_NOTIFICATION;
     String ACTION_CALL_NOTIFICATION;
     String ACTION_SEND_TEXT;
     String contactID;
+    String message;
+
     final static String LOG_TAG = NotificationReceiver.class.getSimpleName();
     public NotificationReceiver() {
 
@@ -35,9 +31,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         mContext = context;
         Bundle extrasBundle = intent.getExtras();
         name = extrasBundle.getString("name");
-        messageList = extrasBundle.getString("messageList");
         number = extrasBundle.getString("number");
         contactID = extrasBundle.getString("contactID");
+        message = extrasBundle.getString("message");
         if (ACTION_SEND_TEXT.equals(intent.getAction())) {
             sendText();
         }
@@ -54,21 +50,6 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void sendText(){
 
 
-        //Turn string of all messages into an ArrayList in order to get one specific message at random
-        ArrayList<String> messagesArrayList = null;
-        try {
-            messagesArrayList = Utility.getArrayListFromJSONString(messageList);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Random rand = new Random();
-
-        //todo the following may cause a bug if there are no messages in list
-        int  n = rand.nextInt(messagesArrayList.size());
-
-
-
-        String message = messagesArrayList.get(n);
 
         try {
 

@@ -43,6 +43,7 @@ public class AlertReceiver extends BroadcastReceiver {
     String action;
     int notificationID;
     String photo_uri;
+    String message;
 
 
 
@@ -62,8 +63,9 @@ public class AlertReceiver extends BroadcastReceiver {
         contactID = intent.getStringExtra("contactID");
         action = intent.getAction();
         photo_uri = intent.getStringExtra("photo_uri");
-
         extrasBundle = intent.getExtras();
+        message = getMessage();
+        extrasBundle.putString("message", message);
 
 
         if(action.equals(ACTION_CALL_NOTIFICATION)){
@@ -77,7 +79,7 @@ public class AlertReceiver extends BroadcastReceiver {
             //-1 in front is for texts.
             // We add this in front of the contact ID to have a unique notification
             notificationID = -1 * Integer.parseInt(contactID);
-            createNotification(context, "Text " + name, "Text " + name, "Click to send the following message to " + name + ": " + getMessage(), action);
+            createNotification(context, "Text " + name, "Text " + name, "Click to send the following message to " + name + ": " + message, action);
 
         }
 
@@ -85,7 +87,7 @@ public class AlertReceiver extends BroadcastReceiver {
 
 
     }
-    public void createNotification(Context context, String message, String messageText, String messageAlert, String action){
+    public void createNotification(Context context, String title, String messageText, String messageAlert, String action){
         Intent testIntent = new Intent(context, NotificationReceiver.class);
         testIntent.putExtras(extrasBundle);
         testIntent.setAction(action);
@@ -94,7 +96,7 @@ public class AlertReceiver extends BroadcastReceiver {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(getBMP(photo_uri))
-                .setContentTitle(message)
+                .setContentTitle(title)
                 .setTicker(messageText)
                 .setContentText(messageAlert)
         .setStyle(new NotificationCompat.BigTextStyle().bigText(messageAlert));
@@ -153,7 +155,6 @@ public class AlertReceiver extends BroadcastReceiver {
         }
         Random rand = new Random();
 
-        //todo the following may cause a bug if there are no messages in list
         int  n = rand.nextInt(messagesArrayList.size());
 
 
