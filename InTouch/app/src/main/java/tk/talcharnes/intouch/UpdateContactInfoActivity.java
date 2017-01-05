@@ -1,5 +1,8 @@
 package tk.talcharnes.intouch;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -295,9 +298,27 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     }
 
     public void deleteData(View view){
+
+        //Delete contact from database
         getContentResolver().delete(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
                 "_ID = ?",
                 new String[]{contact_id});
+
+        //Cancel current notifications
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Integer.parseInt(contact_id));
+        notificationManager.cancel(-1 * Integer.parseInt(contact_id));
+
+        //Cancel future notifications
+
+        Intent alertIntent = new Intent(this, AlertReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent
+                .getBroadcast(this, Integer.parseInt(contact_id), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+        alarmManager.cancel(pendingIntent);
+
+        //Go back to home screen
         NavUtils.navigateUpFromSameTask(this);
     }
     public void chooseContact(View view) {
