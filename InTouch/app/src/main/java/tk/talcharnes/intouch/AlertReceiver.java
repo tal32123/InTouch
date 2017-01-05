@@ -72,7 +72,7 @@ public class AlertReceiver extends BroadcastReceiver {
         testIntent.putExtras(extrasBundle);
         testIntent.setAction(action);
 
-        PendingIntent notificIntent = PendingIntent.getService(context, 0, testIntent, 0);
+        PendingIntent notificIntent = PendingIntent.getBroadcast(context, 0, testIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(message)
                 .setTicker(messageText)

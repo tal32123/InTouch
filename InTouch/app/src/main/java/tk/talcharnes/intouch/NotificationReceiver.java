@@ -50,7 +50,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
 
         // an Intent broadcast.
-        throw new UnsupportedOperationException("Not yet implemented");
+//        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     public void sendText(){
