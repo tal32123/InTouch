@@ -39,7 +39,6 @@ public class AlertReceiver extends BroadcastReceiver {
     String action;
     int notificationID;
     String photo_uri;
-    Bitmap appIconLauncherBitmap;
 
 
 
@@ -47,8 +46,6 @@ public class AlertReceiver extends BroadcastReceiver {
         ACTION_CALL_NOTIFICATION = "action_call";
         ACTION_SEND_TEXT = "action_send_text";
         ACTION_NOTIFICATION = "action_notification";
-        appIconLauncherBitmap = BitmapFactory.decodeResource(mContext.getResources(),
-                R.mipmap.ic_launcher);
 
 
     }

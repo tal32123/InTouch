@@ -303,8 +303,6 @@ public class ContactDetailActivity extends AppCompatActivity {
                 }
                 photo_uri = cursor.getString(photoIndex);
 
-                Log.d(LOG_TAG, "\n number " + number + "\ncontact name " + contact_name + "\n photo uri " + photo_uri);
-                // Do something with the phone number
                 
             }
         }
@@ -322,7 +320,6 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
 
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1, alertIntent, 0));
     }
     private void createNotifications(String actionType){
 

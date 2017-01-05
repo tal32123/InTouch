@@ -419,10 +419,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         alertIntent.putExtra("number", number);
         alertIntent.putExtra("messageList", messageArrayListString);
         alertIntent.putExtra("contactID", contactID.toString());
+        alertIntent.putExtra("photo_uri", photo_uri);
         alertIntent.setAction(actionType);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alertIntent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Integer.parseInt(contactID.toString()), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         Calendar cal = Calendar.getInstance();
 
