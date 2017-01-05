@@ -334,6 +334,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         alertIntent.putExtra("number", number);
         alertIntent.putExtra("messageList", messageArrayListString);
         alertIntent.putExtra("contactID", contactID.toString());
+        alertIntent.putExtra("photo_uri", photo_uri);
         alertIntent.setAction(actionType);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 

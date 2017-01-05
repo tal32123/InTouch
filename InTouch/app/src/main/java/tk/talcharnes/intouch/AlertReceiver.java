@@ -5,8 +5,21 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 
 /**
  * Created by Tal on 12/29/2016.
@@ -25,6 +38,8 @@ public class AlertReceiver extends BroadcastReceiver {
     String contactID;
     String action;
     int notificationID;
+    String photo_uri;
+    Bitmap appIconLauncherBitmap;
 
 
 
@@ -32,7 +47,8 @@ public class AlertReceiver extends BroadcastReceiver {
         ACTION_CALL_NOTIFICATION = "action_call";
         ACTION_SEND_TEXT = "action_send_text";
         ACTION_NOTIFICATION = "action_notification";
-
+        appIconLauncherBitmap = BitmapFactory.decodeResource(mContext.getResources(),
+                R.mipmap.ic_launcher);
 
 
     }
@@ -44,6 +60,7 @@ public class AlertReceiver extends BroadcastReceiver {
         number = intent.getStringExtra("number");
         contactID = intent.getStringExtra("contactID");
         action = intent.getAction();
+        photo_uri = intent.getStringExtra("photo_uri");
 
         extrasBundle = intent.getExtras();
 
@@ -73,7 +90,9 @@ public class AlertReceiver extends BroadcastReceiver {
         testIntent.setAction(action);
 
         PendingIntent notificIntent = PendingIntent.getBroadcast(context, 0, testIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setSmallIcon(R.mipmap.ic_launcher)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(getBMP(photo_uri))
                 .setContentTitle(message)
                 .setTicker(messageText)
                 .setContentText(messageAlert);
@@ -82,6 +101,42 @@ public class AlertReceiver extends BroadcastReceiver {
         mBuilder.setAutoCancel(true);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(notificationID, mBuilder.build());
+    }
+    private Bitmap getBMP(String photo_uri){
+    if(photo_uri!= null && !photo_uri.equals(null) && !photo_uri.equals("")) {
+        InputStream photo_stream = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(mContext.getContentResolver(), Uri.parse(photo_uri.substring(0, photo_uri.length() - 6)));
+        BufferedInputStream buf = new BufferedInputStream(photo_stream);
+        Bitmap my_btmp = BitmapFactory.decodeStream(buf);
+
+        return getCircleBitmap(my_btmp);
+    }
+        else return BitmapFactory.decodeResource(mContext.getResources(),
+            R.mipmap.contact_photo);
+    }
+
+    private Bitmap getCircleBitmap(Bitmap bitmap) {
+
+        // class from http://curious-blog.blogspot.co.il/2014/05/create-circle-bitmap-in-android.html
+        final Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),
+                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(output);
+
+        final int color = Color.RED;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(rect);
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawOval(rectF, paint);
+
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rect, paint);
+
+        bitmap.recycle();
+
+        return output;
     }
 
 
