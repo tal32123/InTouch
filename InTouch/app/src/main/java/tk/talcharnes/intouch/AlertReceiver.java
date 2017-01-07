@@ -17,6 +17,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import org.json.JSONException;
 
@@ -63,9 +64,7 @@ public class AlertReceiver extends BroadcastReceiver {
         contactID = intent.getStringExtra("contactID");
         action = intent.getAction();
         photo_uri = intent.getStringExtra("photo_uri");
-        extrasBundle = intent.getExtras();
         message = getMessage();
-        extrasBundle.putString("message", message);
 
 
         if(action.equals(ACTION_CALL_NOTIFICATION)){
@@ -89,10 +88,14 @@ public class AlertReceiver extends BroadcastReceiver {
     }
     public void createNotification(Context context, String title, String messageText, String messageAlert, String action){
         Intent testIntent = new Intent(context, NotificationReceiver.class);
-        testIntent.putExtras(extrasBundle);
+        testIntent.putExtra("name", name);
+        testIntent.putExtra("number", number);
+        testIntent.putExtra("message", message);
+        testIntent.putExtra("contactID", contactID);
+        Log.d("ALERTRECEIVER ", "name " + name + "number " + number + " message " + message);
         testIntent.setAction(action);
 
-        PendingIntent notificIntent = PendingIntent.getBroadcast(context, 0, testIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent notificIntent = PendingIntent.getBroadcast(context, notificationID, testIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(getBMP(photo_uri))
@@ -100,6 +103,7 @@ public class AlertReceiver extends BroadcastReceiver {
                 .setTicker(messageText)
                 .setContentText(messageAlert)
         .setStyle(new NotificationCompat.BigTextStyle().bigText(messageAlert));
+
 
         mBuilder.setContentIntent(notificIntent);
         mBuilder.setDefaults(NotificationCompat.DEFAULT_SOUND);

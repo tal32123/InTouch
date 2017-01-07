@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.util.Log;
 import android.widget.Toast;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -29,11 +29,12 @@ public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
-        Bundle extrasBundle = intent.getExtras();
-        name = extrasBundle.getString("name");
-        number = extrasBundle.getString("number");
-        contactID = extrasBundle.getString("contactID");
-        message = extrasBundle.getString("message");
+        name = intent.getStringExtra("name");
+        number = intent.getStringExtra("number");
+        contactID = intent.getStringExtra("contactID");
+        message = intent.getStringExtra("message");
+        Log.d("NOTIFICATIONRECEIVER ", "name " + name + "number " + number + " message " + message);
+
         if (ACTION_SEND_TEXT.equals(intent.getAction())) {
             sendText();
         }

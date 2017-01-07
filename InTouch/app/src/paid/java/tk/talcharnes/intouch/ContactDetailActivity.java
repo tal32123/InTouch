@@ -33,11 +33,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static tk.talcharnes.intouch.R.string.phone_number;
+
 
 public class ContactDetailActivity extends AppCompatActivity {
     private final String LOG_TAG = ContactDetailActivity.class.getSimpleName();
     private String name;
-    private String phone_number;
     private int call_frequency;
     private int text_frequency;
     private String notification_time;
@@ -194,7 +195,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
         if (phoneNumberView.getText().toString() != null && !phoneNumberView.getText().toString().equals("") && !phoneNumberView.getText().toString().isEmpty()) {
-            phone_number = phoneNumberView.getText().toString();
+            number = phoneNumberView.getText().toString();
         }
         else {emptyField = true;}
 

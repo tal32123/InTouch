@@ -40,11 +40,13 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import static android.R.id.message;
+import static tk.talcharnes.intouch.R.string.phone_number;
+
 
 public class ContactDetailActivity extends AppCompatActivity {
     private final String LOG_TAG = ContactDetailActivity.class.getSimpleName();
     private String name;
-    private String phone_number;
     private int call_frequency;
     private int text_frequency;
     private String notification_time;
@@ -89,6 +91,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
 
+        //set up hour picker spinner
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
         for (int i = 1; i< 13; i++){
@@ -101,6 +104,8 @@ public class ContactDetailActivity extends AppCompatActivity {
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
         hourPicker.setAdapter(hourAdapter);
 
+
+        //Set up minute picker spinner
         minutePicker = (Spinner) findViewById(R.id.minute_picker);
         String[] minuteArray = new String[60];
         minuteArray[0] = "00";
@@ -110,22 +115,23 @@ public class ContactDetailActivity extends AppCompatActivity {
         SpinnerAdapter minuteAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, minuteArray);
         minutePicker.setAdapter(minuteAdapter);
 
-
+        //Set up spinner for am/pm hours
         am_pm_spinner = (Spinner) findViewById(R.id.am_pm_spinner);
 
         String[] sortingCriteria = {"A.M.", "P.M."};
          am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
         am_pm_spinner.setAdapter(am_pm_spinnerAdapter);
 
+        //Set up recycler view for messages
         message_list_recycler_view = (RecyclerView) findViewById(R.id.message_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
-        // specify an adapter (see also next example)
         String[] preSetMessages = new String[]{getString(R.string.message_1), getString(R.string.message_2), getString(R.string.message_3), getString(R.string.message_4)};
         myDataset = new ArrayList<String>();
         myDataset.addAll(Arrays.asList(preSetMessages));
 
+        //Messages are added to recyclerview
         addMessageEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -243,7 +249,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
         if (phoneNumberView.getText().toString() != null && !phoneNumberView.getText().toString().equals("") && !phoneNumberView.getText().toString().isEmpty()) {
-            phone_number = phoneNumberView.getText().toString();
+            number = phoneNumberView.getText().toString();
         }
         else {emptyField = true;}
 
@@ -422,6 +428,8 @@ public class ContactDetailActivity extends AppCompatActivity {
         alertIntent.putExtra("photo_uri", photo_uri);
         alertIntent.setAction(actionType);
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Log.d("CONTACTDETAILACTIVITY ", "name " + name + "number " + number + " message " + message);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Integer.parseInt(contactID.toString()), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 

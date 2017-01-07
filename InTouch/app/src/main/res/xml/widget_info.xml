@@ -3,7 +3,7 @@
     android:initialKeyguardLayout="@layout/contact_widget"
     android:initialLayout="@layout/contact_widget"
     android:minHeight="110dp"
-    android:minWidth="180dp"
+    android:minWidth="250dp"
     android:previewImage="@drawable/example_appwidget_preview"
     android:resizeMode="horizontal|vertical"
     android:updatePeriodMillis="0"

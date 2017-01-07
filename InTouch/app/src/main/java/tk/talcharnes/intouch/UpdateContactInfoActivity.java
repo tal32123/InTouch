@@ -34,6 +34,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 
@@ -296,6 +297,15 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                     new String[]{contact_id});
             Log.d(LOG_TAG, "Updated row " + updateArray );
             Utility.updateWidgets(getApplicationContext());
+
+            //Create text notifications
+            PendingIntent textIntent = createNotificationPendingIntent(ACTION_SEND_TEXT);
+            createNotifications(textIntent);
+
+            //Create call notifications
+            PendingIntent callIntent = createNotificationPendingIntent(ACTION_CALL_NOTIFICATION);
+            createNotifications(callIntent);
+
             NavUtils.navigateUpFromSameTask(this);
 
         }
@@ -402,4 +412,16 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Integer.parseInt(contact_id), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
     }
+
+    private void createNotifications(PendingIntent notificationPendingIntent){
+
+        //alarm notification
+
+        Long alertTime = new GregorianCalendar().getTimeInMillis()+5*1000;
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Calendar cal = Calendar.getInstance();
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3 * 60 * 1000, notificationPendingIntent);
+
+    }
+
 }
