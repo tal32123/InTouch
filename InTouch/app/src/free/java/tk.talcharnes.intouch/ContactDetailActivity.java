@@ -395,14 +395,6 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
 
-
-    public void readFromDB(View view){
-        Cursor cursor = getContentResolver().query(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null, null);
-        if(cursor.moveToFirst()){
-          String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
-            Log.d(LOG_TAG, cursorString);
-        }
-    }
     private void createNotifications(String actionType, int frequencyInDays){
 
         PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contactID.toString(), photo_uri, actionType, getApplicationContext());

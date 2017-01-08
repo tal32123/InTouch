@@ -4,7 +4,6 @@ import android.app.AlarmManager;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,8 +19,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.GregorianCalendar;
 
 import tk.talcharnes.intouch.data.ContactsContract;
 
@@ -91,7 +88,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY,
                 ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY,
                 ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER,
-                ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER
+                ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER,
+                ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME
         };
 
 
@@ -183,18 +181,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
     private PendingIntent createNotificationPendingIntent(String action){
-
-        Long alertTime = new GregorianCalendar().getTimeInMillis()+5*1000;
-        Intent alertIntent = new Intent(getContext(), AlertReceiver.class);
-        alertIntent.putExtra("name", name);
-        alertIntent.putExtra("number", number);
-        alertIntent.putExtra("messageList", messageArrayListString);
-        alertIntent.putExtra("contactID", contact_id);
-        alertIntent.putExtra("photo_uri", photo_uri);
-        alertIntent.setAction(action);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(getContext(), Integer.parseInt(contact_id), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return pendingIntent;
+        return Utility.createNotificationPendingIntent(name, number, messageArrayListString,contact_id, photo_uri, action, getContext());
     }
 
 }

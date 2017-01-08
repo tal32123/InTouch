@@ -1,13 +1,11 @@
 package tk.talcharnes.intouch;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -30,8 +28,6 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import static tk.talcharnes.intouch.R.string.phone_number;
 
@@ -41,7 +37,6 @@ public class ContactDetailActivity extends AppCompatActivity {
     private String name;
     private int call_frequency;
     private int text_frequency;
-    private String notification_time;
     EditText nameView;
     EditText phoneNumberView;
     EditText callFrequencyView;
@@ -63,6 +58,10 @@ public class ContactDetailActivity extends AppCompatActivity {
     String ACTION_CALL_NOTIFICATION;
     String ACTION_NOTIFICATION;
     Long contactID;
+    int  minutes;
+    int hour;
+    int am_pm;
+    long notificationTime;
 
 
     @Override
@@ -214,11 +213,20 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         }
 
-        int  minutes = minutePicker.getSelectedItemPosition();
+        minutes = minutePicker.getSelectedItemPosition();
+        if (hourPicker.getSelectedItemPosition() == 11){
+            //it's Midnight which is represented by 0
+            hour = 0;
+        }
+        else {
+            //Hour spinner starts at 0 position for the 1 o'clock spot so 1 is added to the time
+            hour = hourPicker.getSelectedItemPosition() + 1;
+        }
+        am_pm = am_pm_spinner.getSelectedItemPosition();
+        notificationTime = Utility.getTimeForNotification(hour, minutes, am_pm);
 
         if(!emptyField) {
             Toast.makeText(this, "Save data ", Toast.LENGTH_SHORT).show();
-            Log.d(LOG_TAG, "Save data " + name + phone_number + "call freq " + call_frequency + text_frequency + "not time " + notification_time + " " + minutes);
 
 
          // Defines an object to contain the new values to insert
@@ -227,7 +235,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, phone_number);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, call_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, text_frequency);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, minutes);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
             if(photo_uri != null){
@@ -244,11 +252,11 @@ public class ContactDetailActivity extends AppCompatActivity {
 
             Utility.updateWidgets(getApplicationContext());
 
+
+
+            createNotifications(ACTION_SEND_TEXT, text_frequency);
+            createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
             NavUtils.navigateUpFromSameTask(this);
-
-
-            createNotifications(ACTION_SEND_TEXT);
-            createNotifications(ACTION_CALL_NOTIFICATION);
 
 
         }
@@ -310,36 +318,13 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
 
-
-    public void readFromDB(View view){
-        Cursor cursor = getContentResolver().query(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null, null);
-        if(cursor.moveToFirst()){
-          String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
-            Log.d(LOG_TAG, cursorString);
-            Toast.makeText(this, "PAID VERSION WORKS HOLLA", Toast.LENGTH_SHORT).show();
-        }
-
-
-
-    }
-    private void createNotifications(String actionType){
+    private void createNotifications(String actionType, int frequencyInDays){
 
         //alarm notification
 
-        Intent alertIntent = new Intent(this, AlertReceiver.class);
-        alertIntent.putExtra("name", name);
-        alertIntent.putExtra("number", number);
-        alertIntent.putExtra("messageList", messageArrayListString);
-        alertIntent.putExtra("contactID", contactID.toString());
-        alertIntent.putExtra("photo_uri", photo_uri);
-        alertIntent.setAction(actionType);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contactID.toString(), photo_uri, actionType, getApplicationContext());
+        Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTime, frequencyInDays);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Integer.parseInt(contactID.toString()), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Calendar cal = Calendar.getInstance();
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
 
     }
 
