@@ -326,7 +326,6 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         //alarm notification
 
-        Long alertTime = new GregorianCalendar().getTimeInMillis()+5*1000;
         Intent alertIntent = new Intent(this, AlertReceiver.class);
         alertIntent.putExtra("name", name);
         alertIntent.putExtra("number", number);

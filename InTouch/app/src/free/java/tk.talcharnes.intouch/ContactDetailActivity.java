@@ -1,6 +1,5 @@
 package tk.talcharnes.intouch;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -37,10 +36,7 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
-import static android.R.id.message;
 import static tk.talcharnes.intouch.R.string.phone_number;
 
 
@@ -72,6 +68,10 @@ public class ContactDetailActivity extends AppCompatActivity {
     String ACTION_NOTIFICATION;
     InterstitialAd mInterstitialAd;
     Long contactID;
+    int  minutes;
+    int hour;
+    int am_pm;
+    long notificationTime;
 
 
 
@@ -268,8 +268,17 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         }
 
-        int  minutes = minutePicker.getSelectedItemPosition();
-
+        minutes = minutePicker.getSelectedItemPosition();
+        if (hourPicker.getSelectedItemPosition() == 11){
+            //it's Midnight which is represented by 0
+            hour = 0;
+        }
+        else {
+            //Hour spinner starts at 0 position for the 1 o'clock spot so 1 is added to the time
+            hour = hourPicker.getSelectedItemPosition() + 1;
+        }
+        am_pm = am_pm_spinner.getSelectedItemPosition();
+        notificationTime = Utility.getTimeForNotification(hour, minutes, am_pm);
         if(!emptyField) {
 
          // Defines an object to contain the new values to insert
@@ -278,7 +287,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, phone_number);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, call_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, text_frequency);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, minutes);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
             if(photo_uri != null){
@@ -307,8 +316,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
 
-                createNotifications(ACTION_SEND_TEXT);
-                createNotifications(ACTION_CALL_NOTIFICATION);
+                createNotifications(ACTION_SEND_TEXT, text_frequency);
+                createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
             }
             mInterstitialAd.setAdListener(new AdListener() {
                 @Override
@@ -319,8 +328,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
 
-                    createNotifications(ACTION_SEND_TEXT);
-                    createNotifications(ACTION_CALL_NOTIFICATION);
+                    createNotifications(ACTION_SEND_TEXT, text_frequency);
+                    createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
 
 
                 }
@@ -393,49 +402,11 @@ public class ContactDetailActivity extends AppCompatActivity {
           String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
             Log.d(LOG_TAG, cursorString);
         }
-//        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-//                .setContentTitle("Title")
-//                .setContentText("Text")
-//                .setTicker("Alert new message!")
-//                .setSmallIcon(R.mipmap.ic_launcher);
-//        Intent moreInfoIntent = new Intent(this, Notifications.class);
-//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
-//        taskStackBuilder.addParentStack(Notifications.class);
-//        taskStackBuilder.addNextIntent(moreInfoIntent);
-//        PendingIntent pendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-//        notificationBuilder.setContentIntent(pendingIntent);
-//        NotificationManager notificationManager;
-//        boolean isNotificationActive = false;
-//        int notifID = 33;
-//        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-//        notificationManager.notify(notifID, notificationBuilder.build());
-//        isNotificationActive = true;
-
-
-
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, alertTime, PendingIntent.getBroadcast(this, 1, alertIntent, 0));
     }
-    private void createNotifications(String actionType){
+    private void createNotifications(String actionType, int frequencyInDays){
 
-        //alarm notification
-
-        Long alertTime = new GregorianCalendar().getTimeInMillis()+5*1000;
-        Intent alertIntent = new Intent(this, AlertReceiver.class);
-        alertIntent.putExtra("name", name);
-        alertIntent.putExtra("number", number);
-        alertIntent.putExtra("messageList", messageArrayListString);
-        alertIntent.putExtra("contactID", contactID.toString());
-        alertIntent.putExtra("photo_uri", photo_uri);
-        alertIntent.setAction(actionType);
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        Log.d("CONTACTDETAILACTIVITY ", "name " + name + "number " + number + " message " + message);
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, Integer.parseInt(contactID.toString()), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Calendar cal = Calendar.getInstance();
-
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), 3 * 60 * 1000, pendingIntent);
+        PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contactID.toString(), photo_uri, actionType, getApplicationContext());
+        Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTime, frequencyInDays);
 
     }
     //request new interstitial ads

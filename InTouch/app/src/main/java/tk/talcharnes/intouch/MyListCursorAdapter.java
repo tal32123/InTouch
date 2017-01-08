@@ -84,6 +84,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         int callFrequencyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY);
         int callCounterIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER);
         int textCounterIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER);
+        int notificationTimeIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME);
 
         final String name = cursor.getString(nameIndex);
         final String photoThumbnailUri = cursor.getString(photoThumbnailUriIndex);
@@ -94,6 +95,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         final int contact_id = cursor.getInt(contact_idIndex);
         final int callCounter = cursor.getInt(callCounterIndex);
         final int textCounter = cursor.getInt(textCounterIndex);
+        final long notificationTime = cursor.getInt(notificationTimeIndex);
 
         viewHolder.contactName.setText(name);
 
@@ -172,9 +174,9 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                         intent.putExtra("textFequency", textFrequency);
                         intent.putExtra("callFrequency", callFrequency);
                         intent.putExtra("photo_uri", photoThumbnailUri);
+                        intent.putExtra("notificationTime", notificationTime);
 
                         mContext.startActivity(intent);
-
 
                     }
                 }

@@ -1,5 +1,7 @@
 package tk.talcharnes.intouch;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
@@ -9,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Tal on 12/24/2016.
@@ -50,4 +53,45 @@ public class Utility {
         mContext.sendBroadcast(dataUpdatedIntent);
     }
 
+    public static long getTimeForNotification(int hour, int minutes, int am_pm){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR, hour);
+        calendar.set(Calendar.MINUTE, minutes);
+        calendar.set(Calendar.AM_PM, am_pm);
+        return  calendar.getTimeInMillis();
+    }
+
+    public static PendingIntent createNotificationPendingIntent(
+            String name,
+            String number,
+            String messageArrayListString,
+            String contactID,
+            String photo_uri,
+            String actionType,
+            Context mContext
+            ){
+
+        Intent alertIntent = new Intent(mContext, AlertReceiver.class);
+        alertIntent.putExtra("name", name);
+        alertIntent.putExtra("number", number);
+        alertIntent.putExtra("messageList", messageArrayListString);
+        alertIntent.putExtra("contactID", contactID.toString());
+        alertIntent.putExtra("photo_uri", photo_uri);
+        alertIntent.setAction(actionType);
+
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(mContext, Integer.parseInt(contactID.toString()), alertIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        return pendingIntent;
+    }
+
+    public static void createNotifications(PendingIntent notificationPendingIntent, Context mContext, Long alarmTime, int frequencyMultiplier){
+
+        AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY * Long.valueOf(frequencyMultiplier), notificationPendingIntent);
+
+    }
+
 }
+
