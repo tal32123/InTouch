@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -275,8 +274,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             else {
                 emptyField = true;
                 Toast.makeText(getApplicationContext(), "Call frequency must be greater than 0", Toast.LENGTH_LONG).show();
-                callFrequencyView.setHint("Call frequency can't be 0 days");
-                callFrequencyView.setHintTextColor(ContextCompat.getColor(this, R.color.material_red));
+                callFrequencyView.setError("Call frequency can't be 0 days");
             }
         }
         else {emptyField = true;}
@@ -287,8 +285,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             else{
                 emptyField = true;
                 Toast.makeText(getApplicationContext(), "Text frequency must be greater than 0", Toast.LENGTH_LONG).show();
-                textFrequencyView.setHint("Text frequency can't be 0 days");
-                textFrequencyView.setHintTextColor(ContextCompat.getColor(this, R.color.material_red));
+                textFrequencyView.setError("Text frequency can't be 0 days");
             }
         }
         else {emptyField = true;}
