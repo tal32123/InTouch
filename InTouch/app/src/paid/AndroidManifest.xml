@@ -85,15 +85,6 @@
             android:name=".NotificationReceiver"
             android:enabled="true"
             android:exported="true" />
-
-        <activity
-            android:name=".paid.LoginActivity"
-            android:label="@string/title_activity_login"
-            android:parentActivityName=".MainActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="tk.talcharnes.intouch.MainActivity" />
-        </activity>
     </application>
 
 </manifest>

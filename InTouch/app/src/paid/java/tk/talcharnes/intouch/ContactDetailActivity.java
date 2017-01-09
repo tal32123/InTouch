@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,8 +27,16 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import tk.talcharnes.intouch.paid.Contact;
 
 import static tk.talcharnes.intouch.R.string.phone_number;
 
@@ -62,9 +71,17 @@ public class ContactDetailActivity extends AppCompatActivity {
     int hour;
     int am_pm;
     long notificationTime;
+    String mUserID;
 
 
-    @Override
+    //Needed for firebase
+    private String mUsername;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mDatabaseReference;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+    public static final int RC_SIGN_IN = 1;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
@@ -79,6 +96,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         callFrequencyView = (EditText)findViewById(R.id.contact_call_frequency);
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
+
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
@@ -152,6 +170,36 @@ public class ContactDetailActivity extends AppCompatActivity {
         itemTouchHelper.attachToRecyclerView(message_list_recycler_view);
 
 
+        //firebase
+        mUsername = "ANONYMOUS";
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference();
+
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if(user != null){
+                    //User is signed in
+                    onSignedInInitialized(user.getUid(), user.getDisplayName());
+                }
+                else{
+                    //User is signed out
+                    onSignedOutCleanup();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
     }
 
 
@@ -175,6 +223,19 @@ public class ContactDetailActivity extends AppCompatActivity {
                 };
         return simpleItemTouchCallback;
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
     private void moveItem(int oldPos, int newPos){
 
     }
@@ -256,6 +317,16 @@ public class ContactDetailActivity extends AppCompatActivity {
 
             createNotifications(ACTION_SEND_TEXT, text_frequency);
             createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
+            Contact contact = new Contact();
+            contact.setCallFrequency(call_frequency);
+            contact.setName(name);
+            contact.setTextFrequency(text_frequency);
+            contact.setNumber(number);
+            contact.setMessageListJsonString(messageArrayListString);
+            contact.setNotificationTime(notificationTime);
+
+            mDatabaseReference = mDatabaseReference.child(mUserID);
+            mDatabaseReference.push().setValue(contact);
             NavUtils.navigateUpFromSameTask(this);
 
 
@@ -325,6 +396,14 @@ public class ContactDetailActivity extends AppCompatActivity {
         PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contactID.toString(), photo_uri, actionType, getApplicationContext());
         Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTime, frequencyInDays);
 
+
+    }
+    private void onSignedInInitialized(String userID, String username){
+        mUsername = username;
+        mUserID = userID;
+    }
+
+    private void onSignedOutCleanup(){
 
     }
 
