@@ -36,6 +36,8 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import tk.talcharnes.intouch.paid.Contact;
+
 
 public class UpdateContactInfoActivity extends AppCompatActivity {
     private final String LOG_TAG = ContactDetailActivity.class.getSimpleName();
@@ -69,6 +71,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     int minutes;
     int am_pm;
     long notificationTimeInMillis;
+    String firebaseContactKey;
+    boolean paidVersion = false;
 
 
     @Override
@@ -89,6 +93,11 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         if (photoUri!= null){
             photo_uri = photoUri;
         }
+        if(getString(R.string.paid_version).equals(getString(R.string.version))){
+            paidVersion = true;
+            firebaseContactKey = intent.getStringExtra("firebaseContactKey");
+        }
+
 
         ACTION_CALL_NOTIFICATION = "action_call";
         ACTION_SEND_TEXT = "action_send_text";
@@ -329,7 +338,18 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
 
 
+            if(paidVersion){
+                Contact contact = new Contact();
+                contact.setNotificationTime(notificationTimeInMillis);
+                contact.setMessageListJsonString(messageArrayListString);
+                contact.setNumber(number);
+                contact.setName(name);
+                contact.setCallFrequency(call_frequency);
+                contact.setTextFrequency(text_frequency);
 
+                BackupDB backupDB = new BackupDB(getApplicationContext());
+                backupDB.updateFirebaseContact(firebaseContactKey, contact);
+            }
 
             int updateArray = getApplicationContext().getContentResolver().update(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
                     mNewValues,
@@ -364,9 +384,6 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         notificationManager.cancel(-1 * Integer.parseInt(contact_id));
 
         //Cancel future notifications
-
-
-
         PendingIntent textPendingIntent =
         Utility.createNotificationPendingIntent(
                 name,
@@ -392,6 +409,11 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         alarmManager.cancel(textPendingIntent);
         alarmManager.cancel(callPendingIntent);
+
+        if(paidVersion){
+            BackupDB backupDB = new BackupDB(getApplicationContext());
+            backupDB.deleteContactFromFirebase(firebaseContactKey);
+        }
 
         Utility.updateWidgets(getApplicationContext());
 

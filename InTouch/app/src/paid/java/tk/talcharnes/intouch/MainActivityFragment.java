@@ -7,6 +7,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -23,9 +24,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Arrays;
 
 import tk.talcharnes.intouch.data.ContactsContract;
 
@@ -56,6 +61,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     public static final int RC_SIGN_IN = 1;
 
+    private String firebaseContactKey;
+
 
 
     public MainActivityFragment() {
@@ -69,8 +76,34 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        //firebase
         mUsername = "ANONYMOUS";
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mDatabaseReference = mFirebaseDatabase.getReference();
+
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if(user != null){
+                    //User is signed in
+                }
+                else{
+                    //User is signed out
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
     }
 
     @Override
@@ -126,6 +159,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY,
                 ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER,
                 ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER,
+                ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY,
                 ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME
         };
 
@@ -182,12 +216,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         int numberIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER);
         int photo_uriIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI);
         int messageListIndex = mCursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST);
-
+        int firebaseKeyIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY);
 
         name = mCursor.getString(nameIndex);
         number = mCursor.getString(numberIndex);
         photo_uri = mCursor.getString(photo_uriIndex);
         messageArrayListString = mCursor.getString(messageListIndex);
+        firebaseContactKey = mCursor.getString(firebaseKeyIndex);
 
         int deletePosition = mCursor.getInt(contact_idIndex);
         contact_id = ""+(deletePosition);
@@ -212,6 +247,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         alarmManager.cancel(textPendingIntent);
         alarmManager.cancel(callPendingIntent);
 
+        //Delete Contact from Firebase
+        BackupDB backupDB = new BackupDB(getContext());
+        backupDB.deleteContactFromFirebase(firebaseContactKey);
+
+
 
         Utility.updateWidgets(getContext());
         Log.d(LOG_TAG, "deleteItem position = " + position);
@@ -219,6 +259,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     private PendingIntent createNotificationPendingIntent(String action){
         return Utility.createNotificationPendingIntent(name, number, messageArrayListString,contact_id, photo_uri, action, getContext());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
     }
 
 }

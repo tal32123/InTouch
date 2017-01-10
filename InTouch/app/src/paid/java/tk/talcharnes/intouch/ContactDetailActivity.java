@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,7 +26,6 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -169,37 +167,22 @@ public class ContactDetailActivity extends AppCompatActivity {
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
         itemTouchHelper.attachToRecyclerView(message_list_recycler_view);
 
-
-        //firebase
-        mUsername = "ANONYMOUS";
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseAuth = FirebaseAuth.getInstance();
         mDatabaseReference = mFirebaseDatabase.getReference();
 
-
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-
-                FirebaseUser user = firebaseAuth.getCurrentUser();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 if(user != null){
-                    //User is signed in
-                    onSignedInInitialized(user.getUid(), user.getDisplayName());
+//                    //User is signed in
+                    mUsername = user.getDisplayName();
+                    mUserID = user.getUid();
                 }
                 else{
-                    //User is signed out
-                    onSignedOutCleanup();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                    .build(),
-                            RC_SIGN_IN);
+//                    //User is signed out
+                    Toast.makeText(this, "Please log in!", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
                 }
-            }
-        };
+
     }
 
 
@@ -224,17 +207,17 @@ public class ContactDetailActivity extends AppCompatActivity {
         return simpleItemTouchCallback;
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+//    }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+//    }
 
     private void moveItem(int oldPos, int newPos){
 
@@ -290,6 +273,23 @@ public class ContactDetailActivity extends AppCompatActivity {
             Toast.makeText(this, "Save data ", Toast.LENGTH_SHORT).show();
 
 
+            Contact contact = new Contact();
+            contact.setCallFrequency(call_frequency);
+            contact.setName(name);
+            contact.setTextFrequency(text_frequency);
+            contact.setNumber(number);
+            contact.setMessageListJsonString(messageArrayListString);
+            contact.setNotificationTime(notificationTime);
+
+            mDatabaseReference = mDatabaseReference.child(mUserID);
+
+            DatabaseReference db_ref = mDatabaseReference.push() ;  //creates blank record in db
+            String firebaseContactKey = db_ref.getKey();             //the UniqueID/key
+            db_ref.setValue( contact);
+            Log.d(LOG_TAG, "firebase key = " + firebaseContactKey);
+
+
+
          // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME, name);
@@ -299,6 +299,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, firebaseContactKey);
             if(photo_uri != null){
                 if(!photo_uri.equals(null) && !photo_uri.equals("")) {
                     mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI, photo_uri);
@@ -317,16 +318,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
             createNotifications(ACTION_SEND_TEXT, text_frequency);
             createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
-            Contact contact = new Contact();
-            contact.setCallFrequency(call_frequency);
-            contact.setName(name);
-            contact.setTextFrequency(text_frequency);
-            contact.setNumber(number);
-            contact.setMessageListJsonString(messageArrayListString);
-            contact.setNotificationTime(notificationTime);
 
-            mDatabaseReference = mDatabaseReference.child(mUserID);
-            mDatabaseReference.push().setValue(contact);
             NavUtils.navigateUpFromSameTask(this);
 
 
@@ -398,13 +390,13 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
     }
-    private void onSignedInInitialized(String userID, String username){
-        mUsername = username;
-        mUserID = userID;
-    }
-
-    private void onSignedOutCleanup(){
-
-    }
+//    private void onSignedInInitialized(String userID, String username){
+//        mUsername = username;
+//        mUserID = userID;
+//    }
+//
+//    private void onSignedOutCleanup(){
+//
+//    }
 
 }

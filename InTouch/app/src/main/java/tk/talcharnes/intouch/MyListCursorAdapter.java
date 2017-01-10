@@ -40,9 +40,13 @@ import tk.talcharnes.intouch.data.ContactsContract;
 public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> {
     private Context mContext;
     private final String LOG_TAG = MyListCursorAdapter.class.getSimpleName();
-
+    private boolean paidVersion = false;
+    private String firebaseContactKey;
     public MyListCursorAdapter(Context context,Cursor cursor){
         super(context,cursor);
+        if(context.getString(R.string.paid_version).equals(context.getString(R.string.version))){
+            paidVersion = true;
+        }
         mContext = context;
     }
 
@@ -86,6 +90,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         int textCounterIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER);
         int notificationTimeIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME);
 
+
         final String name = cursor.getString(nameIndex);
         final String photoThumbnailUri = cursor.getString(photoThumbnailUriIndex);
         final String phoneNumber = cursor.getString(phoneNumberIndex);
@@ -96,6 +101,12 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         final int callCounter = cursor.getInt(callCounterIndex);
         final int textCounter = cursor.getInt(textCounterIndex);
         final long notificationTime = cursor.getInt(notificationTimeIndex);
+
+        if(paidVersion) {
+            int firebaseContactKeyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY);
+            firebaseContactKey = cursor.getString(firebaseContactKeyIndex);
+        }
+
 
         viewHolder.contactName.setText(name);
 
@@ -175,6 +186,9 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                         intent.putExtra("callFrequency", callFrequency);
                         intent.putExtra("photo_uri", photoThumbnailUri);
                         intent.putExtra("notificationTime", notificationTime);
+                        if(paidVersion) {
+                            intent.putExtra("firebaseContactKey", firebaseContactKey);
+                        }
 
                         mContext.startActivity(intent);
 
