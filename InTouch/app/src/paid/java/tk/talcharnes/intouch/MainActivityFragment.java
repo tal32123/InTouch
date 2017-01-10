@@ -108,12 +108,20 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.restore_database) {
+            restoreDatabase(getContext());
+
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -271,6 +279,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    private void restoreDatabase(Context context){
+        BackupDB backupDB = new BackupDB(context);
+        backupDB.restoreDB();
     }
 
 }

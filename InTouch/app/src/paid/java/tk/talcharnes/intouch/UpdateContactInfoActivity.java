@@ -62,7 +62,6 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> myDataset;
-    String messageListString;
     String contact_id;
     String ACTION_CALL_NOTIFICATION;
     String ACTION_SEND_TEXT;
@@ -81,7 +80,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact_detail);
 
         Intent intent = getIntent();
-        messageListString = intent.getStringExtra("messageList");
+        messageArrayListString = intent.getStringExtra("messageList");
         number = intent.getStringExtra("number");
         name = intent.getStringExtra("name");
         contact_id = intent.getStringExtra("contact_id");
@@ -161,7 +160,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         try {
-            myDataset = Utility.getArrayListFromJSONString(messageListString);
+            myDataset = Utility.getArrayListFromJSONString(messageArrayListString);
         } catch (JSONException e) {
             e.printStackTrace();
             myDataset = new ArrayList<String>();
@@ -338,7 +337,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
 
 
-            if(paidVersion){
+            if(paidVersion && firebaseContactKey != null){
                 Contact contact = new Contact();
                 contact.setNotificationTime(notificationTimeInMillis);
                 contact.setMessageListJsonString(messageArrayListString);
@@ -410,7 +409,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         alarmManager.cancel(textPendingIntent);
         alarmManager.cancel(callPendingIntent);
 
-        if(paidVersion){
+        if(paidVersion && firebaseContactKey != null){
             BackupDB backupDB = new BackupDB(getApplicationContext());
             backupDB.deleteContactFromFirebase(firebaseContactKey);
         }
