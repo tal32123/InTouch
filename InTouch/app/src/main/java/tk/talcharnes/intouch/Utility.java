@@ -20,6 +20,9 @@ import java.util.Calendar;
 public class Utility {
     private final static String LOG_TAG = Utility.class.getSimpleName();
     public static final String ACTION_DATA_UPDATED = "tk.talcharnes.intouch.ACTION_DATA_UPDATED";
+    public static final String ACTION_CALL_NOTIFICATION = "action_call";
+    public static final String ACTION_SEND_TEXT = "action_send_text";
+    public static final String ACTION_NOTIFICATION = "action_notification";
 
 
     public static String createStringFromArrayList(ArrayList<String> arrayList){

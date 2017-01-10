@@ -1,9 +1,12 @@
 package tk.talcharnes.intouch;
 
+import android.app.PendingIntent;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,7 +34,6 @@ public class BackupDB {
     public BackupDB(Context context) {
         mContext = context;
 
-//        mCursor = mContext.getContentResolver().query(ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null);
 
 
     }
@@ -82,10 +84,6 @@ public class BackupDB {
 
     }
 
-    public void restoreFromDrive() {
-        //todo get file from drive
-        //todo go over values, put into content values, and bulkinsert them all into db.
-    }
 
     public void restoreDB(){
 
@@ -127,13 +125,17 @@ public class BackupDB {
                                     contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
                                     contactValues.put(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, key);
 
-                                    cVVector.add(contactValues);
-                                }
+                                    Uri contactUri =mContext.getContentResolver().insert(ContactsContract.ContactsEntry.CONTENT_URI, contactValues);
 
-                                if (cVVector.size() > 0) {
-                                    ContentValues[] cvArray = new ContentValues[cVVector.size()];
-                                    cVVector.toArray(cvArray);
-                                    mContext.getContentResolver().bulkInsert(ContactsContract.ContactsEntry.CONTENT_URI, cvArray);
+                                    Long contactID = ContentUris.parseId(contactUri);
+
+                                    PendingIntent callPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_CALL_NOTIFICATION, mContext );
+                                    PendingIntent textPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_SEND_TEXT, mContext );
+
+                                    Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency);
+                                    Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency);
+                                    Utility.updateWidgets(mContext);
+
                                 }
                             }
 
