@@ -106,36 +106,50 @@ public class BackupDB {
                                 //Get map of users in datasnapshot
                                 for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
                                     ContentValues contactValues = new ContentValues();
-                                    String key = childDataSnapshot.getKey(); //displays the key for the node
-                                    String name = childDataSnapshot.child("name").getValue().toString();   //gives the value for given keyname
-                                    String number = childDataSnapshot.child("number").getValue().toString();
+                                    String key = childDataSnapshot.getKey().toString(); //displays the key for the node
 
-                                    int callFrequency = Integer.parseInt(childDataSnapshot.child("callFrequency").getValue().toString());
-                                    int textFrequency = Integer.parseInt(childDataSnapshot.child("textFrequency").getValue().toString());
-                                    String messageListJsonString = childDataSnapshot.child("messageListJsonString").getValue().toString();
-                                    Long notificationTime = Long.parseLong(childDataSnapshot.child("notificationTime").getValue().toString());
 
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_NAME, name);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST, messageListJsonString);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, textFrequency);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, callFrequency);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
-                                    contactValues.put(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, key);
+                                    Cursor cursor = mContext.getContentResolver().query(
+                                            ContactsContract.ContactsEntry.CONTENT_URI,
+                                            new String[]{
+                                                    ContactsContract.ContactsEntry._ID,
+                                                    ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY},
+                                            ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY + " = ?",
+                                            new String[]{key},
+                                            null
+                                    );
 
-                                    Uri contactUri =mContext.getContentResolver().insert(ContactsContract.ContactsEntry.CONTENT_URI, contactValues);
+                                    if (!cursor.moveToFirst()) {
+                                        String name = childDataSnapshot.child("name").getValue().toString();   //gives the value for given keyname
+                                        String number = childDataSnapshot.child("number").getValue().toString();
 
-                                    Long contactID = ContentUris.parseId(contactUri);
+                                        int callFrequency = Integer.parseInt(childDataSnapshot.child("callFrequency").getValue().toString());
+                                        int textFrequency = Integer.parseInt(childDataSnapshot.child("textFrequency").getValue().toString());
+                                        String messageListJsonString = childDataSnapshot.child("messageListJsonString").getValue().toString();
+                                        Long notificationTime = Long.parseLong(childDataSnapshot.child("notificationTime").getValue().toString());
 
-                                    PendingIntent callPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_CALL_NOTIFICATION, mContext );
-                                    PendingIntent textPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_SEND_TEXT, mContext );
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_NAME, name);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST, messageListJsonString);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, textFrequency);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, callFrequency);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, key);
 
-                                    Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency);
-                                    Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency);
-                                    Utility.updateWidgets(mContext);
+                                        Uri contactUri = mContext.getContentResolver().insert(ContactsContract.ContactsEntry.CONTENT_URI, contactValues);
 
+                                        Long contactID = ContentUris.parseId(contactUri);
+
+                                        PendingIntent callPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_CALL_NOTIFICATION, mContext);
+                                        PendingIntent textPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_SEND_TEXT, mContext);
+
+                                        Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency);
+                                        Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency);
+                                        Utility.updateWidgets(mContext);
+
+                                    }
                                 }
                             }
 
