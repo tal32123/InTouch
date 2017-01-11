@@ -37,16 +37,11 @@ import tk.talcharnes.intouch.data.ContactsContract;
 /**
  * Credit to skyfishjy
  */
-public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> {
+public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapter.ViewHolder> {
     private Context mContext;
-    private final String LOG_TAG = MyListCursorAdapter.class.getSimpleName();
-    private boolean paidVersion = false;
-    private String firebaseContactKey;
-    public MyListCursorAdapter(Context context,Cursor cursor){
+    private final String LOG_TAG = ListCursorAdapter.class.getSimpleName();
+    public ListCursorAdapter(Context context,Cursor cursor){
         super(context,cursor);
-        if(context.getString(R.string.paid_version).equals(context.getString(R.string.version))){
-            paidVersion = true;
-        }
         mContext = context;
     }
 
@@ -102,10 +97,6 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         final int textCounter = cursor.getInt(textCounterIndex);
         final long notificationTime = cursor.getInt(notificationTimeIndex);
 
-        if(paidVersion) {
-            int firebaseContactKeyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY);
-            firebaseContactKey = cursor.getString(firebaseContactKeyIndex);
-        }
 
 
         viewHolder.contactName.setText(name);
@@ -186,9 +177,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                         intent.putExtra("callFrequency", callFrequency);
                         intent.putExtra("photo_uri", photoThumbnailUri);
                         intent.putExtra("notificationTime", notificationTime);
-                        if(paidVersion) {
-                            intent.putExtra("firebaseContactKey", firebaseContactKey);
-                        }
+
 
                         mContext.startActivity(intent);
 

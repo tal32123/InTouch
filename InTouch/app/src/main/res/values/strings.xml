@@ -26,6 +26,13 @@
 
     <string name="paid_version">tk.talcharnes.intouch.paid</string>
     <string name="free_version">tk.talcharnes.intouch.free</string>
+    <string name="add_message_to_list">Add message to list</string>
+    <string name="choose_existing_contact">Choose existing contact</string>
+    <string name="AM">A.M.</string>
+    <string name="PM">P.M.</string>
+    <string name="text_frequency_0_error">Text frequency can\'t be 0 days</string>
+    <string name="call_frequency_0_error">Call frequency can\'t be 0 days</string>
+    <string name="please_log_in">Please log in!</string>
 
 </resources>
 

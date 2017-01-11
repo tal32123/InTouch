@@ -281,8 +281,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             }
             else {
                 emptyField = true;
-                Toast.makeText(getApplicationContext(), "Call frequency must be greater than 0", Toast.LENGTH_LONG).show();
-                callFrequencyView.setError("Call frequency can't be 0 days");
+                callFrequencyView.setError(getString(R.string.call_frequency_0_error));
             }
         }
         else {emptyField = true;}
@@ -292,8 +291,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             }
             else{
                 emptyField = true;
-                Toast.makeText(getApplicationContext(), "Text frequency must be greater than 0", Toast.LENGTH_LONG).show();
-                textFrequencyView.setError("Text frequency can't be 0 days");
+                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
             }
         }
         else {emptyField = true;}

@@ -9,4 +9,5 @@
     <color name="icons">#FFFFFF</color>
     <color name="divider">#BDBDBD</color>
     <color name="material_red">#F44336</color>
+    <color name="tw__transparent">#00000000</color>
 </resources>

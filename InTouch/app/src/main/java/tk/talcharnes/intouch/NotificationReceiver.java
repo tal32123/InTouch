@@ -57,7 +57,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             //send text message
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(number, null, message, null, null);
-            Toast.makeText(mContext, "Message Sent",
+            Toast.makeText(mContext, mContext.getString(R.string.message_sent_string),
                     Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
 

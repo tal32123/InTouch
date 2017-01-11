@@ -100,10 +100,10 @@ public class ContactDetailActivity extends AppCompatActivity {
         String[] hourArray = new String[12];
         for (int i = 1; i< 13; i++){
             if(i-1 < 9){
-                hourArray[i-1] = "0" + i + " :";
+                hourArray[i-1] = "0" + i;
 
             }
-            else {hourArray[i-1] = i + ":";}
+            else {hourArray[i-1] = i + "";}
         }
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
         hourPicker.setAdapter(hourAdapter);
@@ -120,7 +120,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         am_pm_spinner = (Spinner) findViewById(R.id.am_pm_spinner);
 
-        String[] sortingCriteria = {"A.M.", "P.M."};
+        String[] sortingCriteria = {getString(R.string.AM), getString(R.string.PM)};
          am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
         am_pm_spinner.setAdapter(am_pm_spinnerAdapter);
 
@@ -129,7 +129,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] preSetMessages = new String[]{"Hi", "Hey", "What's up?", "How are you?"};
+        String[] preSetMessages = new String[]{getString(R.string.message_1), getString(R.string.message_2), getString(R.string.message_3), getString(R.string.message_4)};
         myDataset = new ArrayList<String>();
         myDataset.addAll(Arrays.asList(preSetMessages));
 
@@ -178,7 +178,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 }
                 else{
 //                    //User is signed out
-                    Toast.makeText(this, "Please log in!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.please_log_in, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(this, MainActivity.class);
                     startActivity(intent);
                 }
@@ -207,17 +207,6 @@ public class ContactDetailActivity extends AppCompatActivity {
         return simpleItemTouchCallback;
     }
 
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
-//    }
 
     private void moveItem(int oldPos, int newPos){
 
@@ -243,18 +232,28 @@ public class ContactDetailActivity extends AppCompatActivity {
         else {emptyField = true;}
 
         if (callFrequencyView.getText().toString() != null && !callFrequencyView.getText().toString().equals("") && !callFrequencyView.getText().toString().isEmpty()) {
-            call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
+            if (!callFrequencyView.getText().toString().equals("0")) {
+                call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
+            }
+            else {
+                emptyField = true;
+                callFrequencyView.setError(getString(R.string.call_frequency_0_error));
+            }
         }
         else {emptyField = true;}
         if(textFrequencyView.getText().toString() != null && !textFrequencyView.getText().toString().equals("") && !textFrequencyView.getText().toString().isEmpty()){
-            text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
+            if (!textFrequencyView.getText().toString().equals("0")) {
+                text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
+            }
+            else{
+                emptyField = true;
+                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
+            }
         }
         else {emptyField = true;}
         if(!myDataset.isEmpty()){
-
             messageArrayListString = Utility.createStringFromArrayList(myDataset);
             Log.d(LOG_TAG, "arrayList String = " + messageArrayListString);
-
         }
 
         minutes = minutePicker.getSelectedItemPosition();
@@ -270,8 +269,6 @@ public class ContactDetailActivity extends AppCompatActivity {
         notificationTime = Utility.getTimeForNotification(hour, minutes, am_pm);
 
         if(!emptyField) {
-            Toast.makeText(this, "Save data ", Toast.LENGTH_SHORT).show();
-
 
             Contact contact = new Contact();
             contact.setCallFrequency(call_frequency);
@@ -324,18 +321,16 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         }
         else{
-            Toast.makeText(this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.fill_out_empty_fields), Toast.LENGTH_SHORT).show();
         }
 
     }
 
     public void deleteData(View view){
-        Toast.makeText(this,"delete contact data", Toast.LENGTH_SHORT).show();
         NavUtils.navigateUpFromSameTask(this);
 
     }
     public void chooseContact(View view) {
-        Toast.makeText(this, "Choosing contact", Toast.LENGTH_SHORT).show();
         selectContact();
 
     }
@@ -348,6 +343,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
         }
+    }
+    public void addMessage(View view){
+        myDataset.add(addMessageEditText.getText().toString());
+        addMessageEditText.setText("");
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -390,13 +390,6 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
     }
-//    private void onSignedInInitialized(String userID, String username){
-//        mUsername = username;
-//        mUserID = userID;
-//    }
-//
-//    private void onSignedOutCleanup(){
-//
-//    }
+
 
 }

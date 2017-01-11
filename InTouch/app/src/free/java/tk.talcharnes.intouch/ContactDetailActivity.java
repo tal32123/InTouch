@@ -6,7 +6,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -156,9 +156,9 @@ public class ContactDetailActivity extends AppCompatActivity {
                     else {
 
                         //snackbar code from: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
-                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.activity_contact_detail);
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
                         Snackbar snackbar = Snackbar
-                                .make(linearLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
                         .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -254,11 +254,23 @@ public class ContactDetailActivity extends AppCompatActivity {
         else {emptyField = true;}
 
         if (callFrequencyView.getText().toString() != null && !callFrequencyView.getText().toString().equals("") && !callFrequencyView.getText().toString().isEmpty()) {
-            call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
+            if (!callFrequencyView.getText().toString().equals("0")) {
+                call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
+            }
+            else {
+                emptyField = true;
+                callFrequencyView.setError(getString(R.string.call_frequency_0_error));
+            }
         }
         else {emptyField = true;}
         if(textFrequencyView.getText().toString() != null && !textFrequencyView.getText().toString().equals("") && !textFrequencyView.getText().toString().isEmpty()){
-            text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
+            if (!textFrequencyView.getText().toString().equals("0")) {
+                text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
+            }
+            else{
+                emptyField = true;
+                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
+            }
         }
         else {emptyField = true;}
         if(!myDataset.isEmpty()){

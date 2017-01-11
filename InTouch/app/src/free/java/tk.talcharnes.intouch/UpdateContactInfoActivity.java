@@ -24,7 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -141,7 +141,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         am_pm_spinner = (Spinner) findViewById(R.id.am_pm_spinner);
 
-        String[] sortingCriteria = {"A.M.", "P.M."};
+        String[] sortingCriteria = {getString(R.string.AM), getString(R.string.PM)};
         am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
         am_pm_spinner.setAdapter(am_pm_spinnerAdapter);
         am_pm_spinner.setSelection(am_pm);
@@ -183,9 +183,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                     else {
 
                         //snackbar code from: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
-                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.activity_contact_detail);
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
                         Snackbar snackbar = Snackbar
-                                .make(linearLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
                                 .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -273,8 +273,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             }
             else {
                 emptyField = true;
-                Toast.makeText(getApplicationContext(), "Call frequency must be greater than 0", Toast.LENGTH_LONG).show();
-                callFrequencyView.setError("Call frequency can't be 0 days");
+                callFrequencyView.setError(getString(R.string.call_frequency_0_error));
             }
         }
         else {emptyField = true;}
@@ -284,8 +283,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             }
             else{
                 emptyField = true;
-                Toast.makeText(getApplicationContext(), "Text frequency must be greater than 0", Toast.LENGTH_LONG).show();
-                textFrequencyView.setError("Text frequency can't be 0 days");
+                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
             }
         }
         else {emptyField = true;}
