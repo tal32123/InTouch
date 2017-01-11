@@ -167,7 +167,6 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(mContext, "Edit field", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(mContext, UpdateContactInfoActivity.class);
                         intent.putExtra("messageList", messageList);
                         intent.putExtra("name", name);
