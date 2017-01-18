@@ -329,7 +329,6 @@ public class ContactDetailActivity extends AppCompatActivity {
             NavUtils.navigateUpFromSameTask(this);
 
 
-
                 createNotifications(ACTION_SEND_TEXT, text_frequency);
                 createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
             }
@@ -339,8 +338,6 @@ public class ContactDetailActivity extends AppCompatActivity {
                     requestNewInterstitial();
                     Intent upIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(upIntent);
-
-
 
                     createNotifications(ACTION_SEND_TEXT, text_frequency);
                     createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
@@ -408,6 +405,13 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.re_enter_up_out, R.anim.re_enter_up_in);
+
+    }
 
     private void createNotifications(String actionType, int frequencyInDays){
 

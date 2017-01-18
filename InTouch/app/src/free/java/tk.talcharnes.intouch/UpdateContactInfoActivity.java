@@ -69,7 +69,11 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     int am_pm;
     long notificationTimeInMillis;
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.re_enter_slide_out, R.anim.re_enter_slide);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +90,6 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         notificationTimeInMillis = intent.getLongExtra("notificationTime", 0);
         Log.d(LOG_TAG, "ntm before fix = " + notificationTimeInMillis);
         //For some reason the calculation is off by 2 minutes so this adds the 2 minutes back
-//        notificationTimeInMillis = notificationTimeInMillis + (2 * 60 * 1000);
-//        Log.d(LOG_TAG, "ntm after fix = " + notificationTimeInMillis);
 
 
         String photoUri = intent.getStringExtra("photo_uri");

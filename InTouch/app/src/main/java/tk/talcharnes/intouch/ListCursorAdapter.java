@@ -1,5 +1,6 @@
 package tk.talcharnes.intouch;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -170,7 +171,8 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(mContext, UpdateContactInfoActivity.class);
+                        Activity activity = (Activity) mContext;
+                        Intent intent = new Intent(activity, UpdateContactInfoActivity.class);
                         intent.putExtra("messageList", messageList);
                         intent.putExtra("name", name);
                         intent.putExtra("number", phoneNumber);
@@ -181,7 +183,9 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                         intent.putExtra("notificationTime", notificationTime);
 
 
-                        mContext.startActivity(intent);
+                        activity.startActivity(intent);
+                        activity.overridePendingTransition(R.anim.slide, R.anim.slide_out);
+
 
                     }
                 }
