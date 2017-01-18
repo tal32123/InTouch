@@ -417,5 +417,11 @@ public class ContactDetailActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.re_enter_up_out, R.anim.re_enter_up_in);
+
+    }
 
 }

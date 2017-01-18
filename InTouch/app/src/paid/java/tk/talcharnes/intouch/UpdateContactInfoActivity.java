@@ -478,4 +478,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         }
         else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.re_enter_slide_out, R.anim.re_enter_slide);
+    }
 }
