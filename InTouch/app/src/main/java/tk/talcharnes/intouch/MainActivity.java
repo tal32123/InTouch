@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        fab.setContentDescription(getString(R.string.add_new_contact_description));
 
 
     }

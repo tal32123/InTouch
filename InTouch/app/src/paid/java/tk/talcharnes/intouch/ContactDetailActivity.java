@@ -21,6 +21,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -35,8 +36,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import tk.talcharnes.intouch.paid.Contact;
-
-import static tk.talcharnes.intouch.R.string.phone_number;
 
 
 public class ContactDetailActivity extends AppCompatActivity {
@@ -94,6 +93,8 @@ public class ContactDetailActivity extends AppCompatActivity {
         callFrequencyView = (EditText)findViewById(R.id.contact_call_frequency);
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
+        ImageButton addMessageButton = (ImageButton) findViewById(R.id.add_message_button);
+        addMessageButton.setContentDescription(getString(R.string.add_message_to_list_description));
 
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
@@ -138,22 +139,40 @@ public class ContactDetailActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                     if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    myDataset.add(addMessageEditText.getText().toString());
+                        String message = addMessageEditText.getText().toString();
+                        if(message != null && !message.equals("")) {
+                            myDataset.add(message);
+                            addMessageEditText.setText("");
+                            mAdapter.notifyDataSetChanged();
+                        }
+
+
+                        else{ Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+                    }
+
+                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    handled = true;
+
+                }
+                if(actionId == EditorInfo.IME_ACTION_DONE) {
+
+                    String message = addMessageEditText.getText().toString();
+                    if (message != null && !message.equals("")) {
+                        myDataset.add(message);
+                        addMessageEditText.setText("");
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+                    }
 
                     InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
                     handled = true;
-
                 }
-                if(actionId == EditorInfo.IME_ACTION_DONE){
-                    myDataset.add(addMessageEditText.getText().toString());
 
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    addMessageEditText.setText("");
-                    handled = true;
-                }
                 return handled;
             }
         });
@@ -290,7 +309,7 @@ public class ContactDetailActivity extends AppCompatActivity {
          // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME, name);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, phone_number);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, call_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, text_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
@@ -345,9 +364,16 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
     public void addMessage(View view){
-        myDataset.add(addMessageEditText.getText().toString());
-        addMessageEditText.setText("");
-        mAdapter.notifyDataSetChanged();
+        String message = addMessageEditText.getText().toString();
+        if(message != null && !message.equals("")) {
+            myDataset.add(message);
+            addMessageEditText.setText("");
+            mAdapter.notifyDataSetChanged();
+        }
+
+
+
+        else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -375,7 +401,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 }
                 photo_uri = cursor.getString(photoIndex);
 
-                
+
             }
         }
     }

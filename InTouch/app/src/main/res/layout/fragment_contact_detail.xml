@@ -115,6 +115,7 @@
             android:padding="8dp"
             android:src="@drawable/add_icon"
             android:background="@color/tw__transparent"
+            android:id="@+id/add_message_button"
             android:onClick="addMessage"
             />
 

@@ -33,6 +33,11 @@
     <string name="text_frequency_0_error">Text frequency can\'t be 0 days</string>
     <string name="call_frequency_0_error">Call frequency can\'t be 0 days</string>
     <string name="please_log_in">Please log in!</string>
+    <string name="add_new_contact_description">Add a new contact</string>
+    <string name="send_text_description_string">"Send a text message to "</string>
+    <string name="call_description">"Call "</string>
+    <string name="add_message_to_list_description">Add message to list</string>
+    <string name="message_empty_string">Message can not be empty</string>
 
 </resources>
 

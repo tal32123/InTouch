@@ -24,6 +24,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -83,6 +84,11 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         text_frequency = intent.getIntExtra("textFequency", 0);
         call_frequency = intent.getIntExtra("callFrequency", 0);
         notificationTimeInMillis = intent.getLongExtra("notificationTime", 0);
+        Log.d(LOG_TAG, "ntm before fix = " + notificationTimeInMillis);
+        //For some reason the calculation is off by 2 minutes so this adds the 2 minutes back
+//        notificationTimeInMillis = notificationTimeInMillis + (2 * 60 * 1000);
+//        Log.d(LOG_TAG, "ntm after fix = " + notificationTimeInMillis);
+
 
         String photoUri = intent.getStringExtra("photo_uri");
         if (photoUri!= null){
@@ -97,8 +103,21 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         Calendar timeCal = Calendar.getInstance();
         timeCal.setTimeInMillis(notificationTimeInMillis);
         hour = timeCal.get(Calendar.HOUR);
+        if(hour == 0){
+            hour = 11;
+        }
+        else {
+            hour = hour - 1;
+        }
+        Log.d(LOG_TAG, "hr  = " + hour);
+
         minutes = timeCal.get(Calendar.MINUTE);
+        Log.d(LOG_TAG, "mins  = " + minutes);
+
         am_pm = timeCal.get(Calendar.AM_PM);
+        Log.d(LOG_TAG, "AM_PM  = " + am_pm);
+
+
         Log.d(LOG_TAG, "AM PM = " + am_pm);
 
         nameView = (EditText)findViewById(R.id.contact_name);
@@ -110,9 +129,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
         textFrequencyView.setText(""+text_frequency, TextView.BufferType.EDITABLE);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
-
-
-
+        ImageButton addMessageButton = (ImageButton) findViewById(R.id.add_message_button);
+        addMessageButton.setContentDescription(getString(R.string.add_message_to_list_description));
 
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
@@ -295,7 +313,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         }
 
         am_pm = am_pm_spinner.getSelectedItemPosition();
+        Log.d(LOG_TAG, "AM_PM after = " + am_pm);
          minutes = minutePicker.getSelectedItemPosition();
+        Log.d(LOG_TAG, "mins after = " + minutes);
+
         if (hourPicker.getSelectedItemPosition() == 11){
             //it's Midnight which is represented by 0
             hour = 0;
@@ -304,8 +325,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             //Hour spinner starts at 0 position for the 1 o'clock spot so 1 is added to the time
             hour = hourPicker.getSelectedItemPosition() + 1;
         }
-        notificationTimeInMillis = Utility.getTimeForNotification(hour, minutes, am_pm);
+        Log.d(LOG_TAG, "hr after = " + hour);
 
+        notificationTimeInMillis = Utility.getTimeForNotification(hour, minutes, am_pm);
+        Log.d(LOG_TAG, "ntm on save = " + notificationTimeInMillis);
 
         if(!emptyField) {
 
@@ -437,6 +460,16 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
             }
         }
+    }
+
+    public void addMessage(View view){
+        String message = addMessageEditText.getText().toString();
+        if(message != null && !message.equals("")) {
+            myDataset.add(message);
+            addMessageEditText.setText("");
+            mAdapter.notifyDataSetChanged();
+        }
+        else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
     }
 
     private void createNotifications(String actionType, int frequencyInDays){

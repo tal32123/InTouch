@@ -7,12 +7,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,7 +22,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -87,6 +84,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         text_frequency = intent.getIntExtra("textFequency", 0);
         call_frequency = intent.getIntExtra("callFrequency", 0);
         notificationTimeInMillis = intent.getLongExtra("notificationTime", 0);
+        //For some reason the calculation is off by 2 minutes so this adds the 2 minutes back
+        notificationTimeInMillis = notificationTimeInMillis + (2 * 60 * 1000);
 
         String photoUri = intent.getStringExtra("photo_uri");
         if (photoUri!= null){
@@ -118,6 +117,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
         textFrequencyView.setText(""+text_frequency, TextView.BufferType.EDITABLE);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
+        ImageButton addMessageButton = (ImageButton) findViewById(R.id.add_message_button);
+        addMessageButton.setContentDescription(getString(R.string.add_message_to_list_description));
+
 
 
 
@@ -171,10 +173,22 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    myDataset.add(addMessageEditText.getText().toString());
+                    if(myDataset.size()<6 || getString(R.string.version).equals(getString(R.string.paid_version))) {
+                        String message = addMessageEditText.getText().toString();
+                        if(message != null && !message.equals("")) {
+                            myDataset.add(message);
+                            addMessageEditText.setText("");
+                            mAdapter.notifyDataSetChanged();
+                        }
 
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                        else{ Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
+                        }
+
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                    }
 
                     handled = true;
 
@@ -182,35 +196,23 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     //If it is the free version of the app user has a limited amount of messages they can have
                     if(myDataset.size()<6 || getString(R.string.version).equals(getString(R.string.paid_version))) {
-                        myDataset.add(addMessageEditText.getText().toString());
+
+                        String message = addMessageEditText.getText().toString();
+                        if(message != null && !message.equals("")) {
+                            myDataset.add(message);
+                            addMessageEditText.setText("");
+                            mAdapter.notifyDataSetChanged();
+                        }
+
+
+                        else{ Toast.makeText(getApplicationContext(), R.string.message_empty_string, Toast.LENGTH_SHORT).show();
+                        }
 
                         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        addMessageEditText.setText("");
+
                     }
-                    else {
 
-                        //snackbar code from: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
-                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.activity_contact_detail);
-                        Snackbar snackbar = Snackbar
-                                .make(linearLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
-                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                    }
-                                });
-
-// Changing message text color
-                        snackbar.setActionTextColor(Color.RED);
-
-// Changing action button text color
-                        View sbView = snackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(Color.YELLOW);
-
-
-                        snackbar.show();
-                    }
                     handled = true;
                 }
                 return handled;
@@ -462,19 +464,18 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         }
     }
 
-
-
-    public void readFromDB(View view){
-        Cursor cursor = getContentResolver().query(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null, null);
-        if(cursor.moveToFirst()){
-            String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
-            Log.d(LOG_TAG, cursorString);
-        }
-    }
     private void createNotifications(String actionType, int frequencyInDays){
 
         PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contact_id, photo_uri, actionType, getApplicationContext());
         Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTimeInMillis, frequencyInDays);
     }
-
+    public void addMessage(View view){
+        String message = addMessageEditText.getText().toString();
+        if(message != null && !message.equals("")) {
+            myDataset.add(message);
+            addMessageEditText.setText("");
+            mAdapter.notifyDataSetChanged();
+        }
+        else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+    }
 }

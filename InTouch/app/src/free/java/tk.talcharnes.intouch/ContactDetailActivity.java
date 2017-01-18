@@ -23,7 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -90,6 +90,8 @@ public class ContactDetailActivity extends AppCompatActivity {
         callFrequencyView = (EditText)findViewById(R.id.contact_call_frequency);
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
+        ImageButton addMessageButton = (ImageButton) findViewById(R.id.add_message_button);
+        addMessageButton.setContentDescription(getString(R.string.add_message_to_list_description));
 
         //set up hour picker spinner
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
@@ -421,5 +423,13 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         mInterstitialAd.loadAd(adRequest);
     }
-
+    public void addMessage(View view){
+        String message = addMessageEditText.getText().toString();
+        if(message != null && !message.equals("")) {
+            myDataset.add(message);
+            addMessageEditText.setText("");
+            mAdapter.notifyDataSetChanged();
+        }
+        else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+    }
 }

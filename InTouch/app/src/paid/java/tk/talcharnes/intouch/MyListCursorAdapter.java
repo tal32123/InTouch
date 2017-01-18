@@ -18,7 +18,6 @@ public class MyListCursorAdapter extends ListCursorAdapter {
     public MyListCursorAdapter(Context context, Cursor cursor) {
         super(context, cursor);
         mContext = context;
-
     }
 
 
@@ -30,13 +29,7 @@ public class MyListCursorAdapter extends ListCursorAdapter {
             firebaseContactKey = cursor.getString(firebaseContactKeyIndex);
         Intent intent = new Intent(mContext, UpdateContactInfoActivity.class);
         intent.putExtra("firebaseContactKey", firebaseContactKey);
-
-
-
                     }
-
-
-
     }
 
 

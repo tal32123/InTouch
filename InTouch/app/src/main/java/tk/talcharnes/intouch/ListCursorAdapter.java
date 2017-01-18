@@ -101,6 +101,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
 
         viewHolder.contactName.setText(name);
 
+
         // Sends a random text
         viewHolder.textButton.setOnClickListener(
                 new View.OnClickListener(){
@@ -149,6 +150,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                     }
                 }
         );
+        viewHolder.textButton.setContentDescription(mContext.getString(R.string.send_text_description_string) + name);
 
         viewHolder.callButton.setOnClickListener(
                 new View.OnClickListener(){
@@ -163,6 +165,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                 }
         );
 
+        viewHolder.callButton.setContentDescription(mContext.getString(R.string.call_description) + name);
         viewHolder.contactCardView.setOnClickListener(
                 new View.OnClickListener(){
                     @Override
@@ -200,7 +203,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
 
         }
 
-    }
+    }           
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
 
