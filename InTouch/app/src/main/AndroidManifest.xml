@@ -15,6 +15,9 @@
     <!-- The following permission is for making repeating notifications -->
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
+    <!-- The following is for restarting the repeating notificaitons when the phone is restarted -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -35,16 +38,16 @@
         </activity>
         <activity
             android:name=".ContactDetailActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
         <activity
             android:name=".UpdateContactInfoActivity"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".MainActivity"
+            android:windowSoftInputMode="stateHidden">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -80,7 +83,21 @@
         <receiver
             android:name=".NotificationReceiver"
             android:enabled="true"
-            android:exported="true"></receiver>
+            android:exported="true" />
+        <receiver android:name=".BootCompletedIntentReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!--<service android:name=".RestartService" />-->
+        <!--<service-->
+            <!--android:name=".RestartNotificationService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="true" />-->
+        <service
+            android:name=".FService"
+            android:exported="false"></service>
     </application>
 
 </manifest>
