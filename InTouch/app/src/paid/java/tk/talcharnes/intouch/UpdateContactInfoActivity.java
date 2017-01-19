@@ -84,8 +84,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         text_frequency = intent.getIntExtra("textFequency", 0);
         call_frequency = intent.getIntExtra("callFrequency", 0);
         notificationTimeInMillis = intent.getLongExtra("notificationTime", 0);
-        //For some reason the calculation is off by 2 minutes so this adds the 2 minutes back
-        notificationTimeInMillis = notificationTimeInMillis + (2 * 60 * 1000);
+
 
         String photoUri = intent.getStringExtra("photo_uri");
         if (photoUri!= null){
@@ -106,7 +105,6 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         hour = timeCal.get(Calendar.HOUR);
         minutes = timeCal.get(Calendar.MINUTE);
         am_pm = timeCal.get(Calendar.AM_PM);
-        Log.d(LOG_TAG, "AM PM = " + am_pm);
 
         nameView = (EditText)findViewById(R.id.contact_name);
         nameView.setText(name);
@@ -127,12 +125,13 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
-        for (int i = 1; i< 13; i++){
-            if(i-1 < 9){
-                hourArray[i-1] = "0" + i + " :";
+        hourArray[0] = "12:";
+        for (int i = 1; i< 12; i++){
+            if(i < 10){
+                hourArray[i] = "0" + i + " :";
 
             }
-            else {hourArray[i-1] = i + ":";}
+            else {hourArray[i] = i + ":";}
         }
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
         hourPicker.setAdapter(hourAdapter);
@@ -140,9 +139,13 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         minutePicker = (Spinner) findViewById(R.id.minute_picker);
         String[] minuteArray = new String[60];
-        minuteArray[0] = "00";
-        for (int i = 1; i< 60; i++){
-            minuteArray[i] = Integer.toString(i);
+        for (int i = 0; i< 60; i++){
+            if(i>9) {
+                minuteArray[i] = Integer.toString(i);
+            }
+            else {
+                minuteArray[i] = "0" + Integer.toString(i);
+            }
         }
         SpinnerAdapter minuteAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, minuteArray);
         minutePicker.setAdapter(minuteAdapter);
@@ -306,14 +309,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         am_pm = am_pm_spinner.getSelectedItemPosition();
          minutes = minutePicker.getSelectedItemPosition();
-        if (hourPicker.getSelectedItemPosition() == 11){
-            //it's Midnight which is represented by 0
-            hour = 0;
-        }
-        else {
-            //Hour spinner starts at 0 position for the 1 o'clock spot so 1 is added to the time
-            hour = hourPicker.getSelectedItemPosition() + 1;
-        }
+
+
         notificationTimeInMillis = Utility.getTimeForNotification(hour, minutes, am_pm);
 
 
@@ -468,6 +465,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contact_id, photo_uri, actionType, getApplicationContext());
         Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTimeInMillis, frequencyInDays);
+
+
     }
     public void addMessage(View view){
         String message = addMessageEditText.getText().toString();

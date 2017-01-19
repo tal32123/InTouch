@@ -96,7 +96,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
         final int contact_id = cursor.getInt(contact_idIndex);
         final int callCounter = cursor.getInt(callCounterIndex);
         final int textCounter = cursor.getInt(textCounterIndex);
-        final long notificationTime = cursor.getInt(notificationTimeIndex);
+        final long notificationTime = cursor.getLong(notificationTimeIndex);
 
 
 

@@ -58,7 +58,6 @@ public class Utility {
 
     public static long getTimeForNotification(int hour, int minutes, int am_pm){
         Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
         calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.MINUTE, minutes);
         calendar.set(Calendar.AM_PM, am_pm);

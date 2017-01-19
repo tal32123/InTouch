@@ -27,7 +27,7 @@ public class ContactsDbHelper extends SQLiteOpenHelper {
 
     private final String LOG_TAG = ContactsDbHelper.class.getSimpleName();
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 9;
 
     static final String DATABASE_NAME = "contacts.db";
 
