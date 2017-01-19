@@ -99,12 +99,13 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
-        for (int i = 1; i< 13; i++){
-            if(i-1 < 9){
-                hourArray[i-1] = "0" + i;
-
+        hourArray[0] = "12:";
+        for (int i = 1; i< 12; i++){
+            if(i < 10){
+                hourArray[i] = "0" + i + " :";
             }
-            else {hourArray[i-1] = i + "";}
+                else {hourArray[i] = i + ":";
+            }
         }
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
         hourPicker.setAdapter(hourAdapter);
@@ -276,14 +277,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
 
         minutes = minutePicker.getSelectedItemPosition();
-        if (hourPicker.getSelectedItemPosition() == 11){
-            //it's Midnight which is represented by 0
-            hour = 0;
-        }
-        else {
-            //Hour spinner starts at 0 position for the 1 o'clock spot so 1 is added to the time
-            hour = hourPicker.getSelectedItemPosition() + 1;
-        }
+        hour = hourPicker.getSelectedItemPosition();
         am_pm = am_pm_spinner.getSelectedItemPosition();
         notificationTime = Utility.getTimeForNotification(hour, minutes, am_pm);
 

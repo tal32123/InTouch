@@ -105,22 +105,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         Calendar timeCal = Calendar.getInstance();
         timeCal.setTimeInMillis(notificationTimeInMillis);
         hour = timeCal.get(Calendar.HOUR);
-        if(hour == 0){
-            hour = 11;
-        }
-        else {
-            hour = hour - 1;
-        }
-        Log.d(LOG_TAG, "hr  = " + hour);
-
         minutes = timeCal.get(Calendar.MINUTE);
-        Log.d(LOG_TAG, "mins  = " + minutes);
-
         am_pm = timeCal.get(Calendar.AM_PM);
-        Log.d(LOG_TAG, "AM_PM  = " + am_pm);
-
-
-        Log.d(LOG_TAG, "AM PM = " + am_pm);
 
         nameView = (EditText)findViewById(R.id.contact_name);
         nameView.setText(name);
@@ -137,12 +123,13 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
-        for (int i = 1; i< 13; i++){
-            if(i-1 < 9){
-                hourArray[i-1] = "0" + i + " :";
+        hourArray[0] = "12:";
+        for (int i = 1; i< 12; i++){
+            if(i < 10){
+                hourArray[i] = "0" + i + " :";
 
             }
-            else {hourArray[i-1] = i + ":";}
+            else {hourArray[i] = i + ":";}
         }
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
         hourPicker.setAdapter(hourAdapter);
@@ -315,22 +302,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         }
 
         am_pm = am_pm_spinner.getSelectedItemPosition();
-        Log.d(LOG_TAG, "AM_PM after = " + am_pm);
          minutes = minutePicker.getSelectedItemPosition();
-        Log.d(LOG_TAG, "mins after = " + minutes);
-
-        if (hourPicker.getSelectedItemPosition() == 11){
-            //it's Midnight which is represented by 0
-            hour = 0;
-        }
-        else {
-            //Hour spinner starts at 0 position for the 1 o'clock spot so 1 is added to the time
-            hour = hourPicker.getSelectedItemPosition() + 1;
-        }
-        Log.d(LOG_TAG, "hr after = " + hour);
+        hour = hourPicker.getSelectedItemPosition();
 
         notificationTimeInMillis = Utility.getTimeForNotification(hour, minutes, am_pm);
-        Log.d(LOG_TAG, "ntm on save = " + notificationTimeInMillis);
 
         if(!emptyField) {
 
