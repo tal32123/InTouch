@@ -309,7 +309,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         am_pm = am_pm_spinner.getSelectedItemPosition();
          minutes = minutePicker.getSelectedItemPosition();
-
+        hour = hourPicker.getSelectedItemPosition();
 
         notificationTimeInMillis = Utility.getTimeForNotification(hour, minutes, am_pm);
 
