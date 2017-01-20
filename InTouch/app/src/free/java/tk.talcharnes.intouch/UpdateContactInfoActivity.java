@@ -300,6 +300,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "arrayList String = " + messageArrayListString);
 
         }
+        else {
+            emptyField = true;
+            Toast.makeText(this, R.string.message_list_empty_error, Toast.LENGTH_SHORT).show();
+        }
 
         am_pm = am_pm_spinner.getSelectedItemPosition();
          minutes = minutePicker.getSelectedItemPosition();

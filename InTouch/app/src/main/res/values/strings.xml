@@ -38,6 +38,7 @@
     <string name="call_description">"Call "</string>
     <string name="add_message_to_list_description">Add message to list</string>
     <string name="message_empty_string">Message can not be empty</string>
+    <string name="message_list_empty_error">Message list can\'t be empty!</string>
 
 </resources>
 

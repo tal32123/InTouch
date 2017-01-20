@@ -282,6 +282,10 @@ public class ContactDetailActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "arrayList String = " + messageArrayListString);
 
         }
+        else {
+            emptyField = true;
+            Toast.makeText(this, R.string.message_list_empty_error, Toast.LENGTH_SHORT).show();
+        }
 
         minutes = minutePicker.getSelectedItemPosition();
         hour = hourPicker.getSelectedItemPosition();
