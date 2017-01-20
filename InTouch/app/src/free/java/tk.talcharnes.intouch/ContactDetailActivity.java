@@ -213,7 +213,6 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
 //// TODO: 1/3/2017 refactor interstitial code, most likely can remove some of the code/move it around especially in regards to requestnewinterstitial
-        //todo also if ad isn't shown save anyways
     }
 
 

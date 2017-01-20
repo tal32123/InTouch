@@ -132,7 +132,6 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 //                set content description here
 //                setRemoteContentDescription(views, description);
 
-                //// TODO: 12/27/2016 Add call, and text functions below
 
                 Bundle extras = new Bundle();
                 Intent fillInIntent = new Intent();
