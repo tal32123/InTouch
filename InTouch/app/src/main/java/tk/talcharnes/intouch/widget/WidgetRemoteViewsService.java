@@ -165,8 +165,19 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                     }
                     catch (Exception ex){
                         //if permission to get contact photos wasn't granted then use default photo
+                        Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                                R.mipmap.contact_photo);
+                        views.setImageViewBitmap(R.id.contact_image,
+                                icon);
                     }
 
+                }
+                else {
+                    //if permission to get contact photos wasn't granted then use default photo
+                    Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                            R.mipmap.contact_photo);
+                        views.setImageViewBitmap(R.id.contact_image,
+                                icon);
                 }
 
 //                set onclick intent for view

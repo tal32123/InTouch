@@ -96,7 +96,7 @@
             <!--android:enabled="true"-->
             <!--android:exported="true" />-->
         <service
-            android:name=".FService"
+            android:name=".BootNotificationService"
             android:exported="false"></service>
     </application>
 

@@ -14,12 +14,12 @@ import tk.talcharnes.intouch.data.ContactsContract;
  * TODO: Customize class - update intent actions, extra parameters and static
  * helper methods.
  */
-public class FService extends IntentService {
+public class BootNotificationService extends IntentService {
     final String ACTION_CALL_NOTIFICATION = "action_call";
     final String ACTION_SEND_TEXT = "action_send_text";
     final String ACTION_NOTIFICATION = "action_notification";
 
-    public FService() {
+    public BootNotificationService() {
         super("FService");
     }
 

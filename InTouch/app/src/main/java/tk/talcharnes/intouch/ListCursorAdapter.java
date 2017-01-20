@@ -203,8 +203,17 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
             }
             catch (Exception ex){
                 //if permission to get contact photos wasn't granted then use default photo
+                Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
+                        R.mipmap.contact_photo);
+                viewHolder.contactPhotoView.setImageBitmap(icon);
             }
 
+        }
+        else {
+            //if permission to get contact photos wasn't granted then use default photo
+            Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
+                    R.mipmap.contact_photo);
+            viewHolder.contactPhotoView.setImageBitmap(icon);
         }
 
     }           

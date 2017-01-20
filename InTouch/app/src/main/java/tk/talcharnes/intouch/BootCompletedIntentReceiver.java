@@ -17,7 +17,7 @@ public class BootCompletedIntentReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if ("android.intent.action.BOOT_COMPLETED".equals(intent.getAction())) {
-            Intent pushIntent = new Intent(context, FService.class);
+            Intent pushIntent = new Intent(context, BootNotificationService.class);
             pushIntent.setAction("ACTION_RESTARTED");
             context.startService(pushIntent);
         }
