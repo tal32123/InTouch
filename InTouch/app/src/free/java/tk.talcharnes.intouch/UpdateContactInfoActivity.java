@@ -137,9 +137,13 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         minutePicker = (Spinner) findViewById(R.id.minute_picker);
         String[] minuteArray = new String[60];
-        minuteArray[0] = "00";
-        for (int i = 1; i< 60; i++){
-            minuteArray[i] = Integer.toString(i);
+        for (int i = 0; i< 60; i++){
+            if(i>9) {
+                minuteArray[i] = Integer.toString(i);
+            }
+            else {
+                minuteArray[i] = "0" + Integer.toString(i);
+            }
         }
         SpinnerAdapter minuteAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, minuteArray);
         minutePicker.setAdapter(minuteAdapter);
