@@ -9,10 +9,13 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="tk.talcharnes.intouch.MainActivityFragment"
+    android:layoutDirection="locale"
     tools:showIn="@layout/activity_main">
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layoutDirection="inherit"
         android:id="@+id/contact_list_recycler_view"/>
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package tk.talcharnes.intouch;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -37,11 +38,10 @@ import tk.talcharnes.intouch.data.ContactsContract;
 /**
  * Credit to skyfishjy
  */
-public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorAdapter.ViewHolder> {
+public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapter.ViewHolder> {
     private Context mContext;
-    private final String LOG_TAG = MyListCursorAdapter.class.getSimpleName();
-
-    public MyListCursorAdapter(Context context,Cursor cursor){
+    private final String LOG_TAG = ListCursorAdapter.class.getSimpleName();
+    public ListCursorAdapter(Context context,Cursor cursor){
         super(context,cursor);
         mContext = context;
     }
@@ -84,6 +84,8 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         int callFrequencyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY);
         int callCounterIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER);
         int textCounterIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER);
+        int notificationTimeIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME);
+
 
         final String name = cursor.getString(nameIndex);
         final String photoThumbnailUri = cursor.getString(photoThumbnailUriIndex);
@@ -94,8 +96,12 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
         final int contact_id = cursor.getInt(contact_idIndex);
         final int callCounter = cursor.getInt(callCounterIndex);
         final int textCounter = cursor.getInt(textCounterIndex);
+        final long notificationTime = cursor.getLong(notificationTimeIndex);
+
+
 
         viewHolder.contactName.setText(name);
+
 
         // Sends a random text
         viewHolder.textButton.setOnClickListener(
@@ -145,6 +151,7 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                     }
                 }
         );
+        viewHolder.textButton.setContentDescription(mContext.getString(R.string.send_text_description_string) + name);
 
         viewHolder.callButton.setOnClickListener(
                 new View.OnClickListener(){
@@ -159,12 +166,13 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                 }
         );
 
+        viewHolder.callButton.setContentDescription(mContext.getString(R.string.call_description) + name);
         viewHolder.contactCardView.setOnClickListener(
                 new View.OnClickListener(){
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(mContext, "Edit field", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(mContext, UpdateContactInfoActivity.class);
+                        Activity activity = (Activity) mContext;
+                        Intent intent = new Intent(activity, UpdateContactInfoActivity.class);
                         intent.putExtra("messageList", messageList);
                         intent.putExtra("name", name);
                         intent.putExtra("number", phoneNumber);
@@ -172,8 +180,11 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
                         intent.putExtra("textFequency", textFrequency);
                         intent.putExtra("callFrequency", callFrequency);
                         intent.putExtra("photo_uri", photoThumbnailUri);
+                        intent.putExtra("notificationTime", notificationTime);
 
-                        mContext.startActivity(intent);
+
+                        activity.startActivity(intent);
+                        activity.overridePendingTransition(R.anim.slide, R.anim.slide_out);
 
 
                     }
@@ -192,11 +203,20 @@ public class MyListCursorAdapter extends CursorRecyclerViewAdapter<MyListCursorA
             }
             catch (Exception ex){
                 //if permission to get contact photos wasn't granted then use default photo
+                Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
+                        R.mipmap.contact_photo);
+                viewHolder.contactPhotoView.setImageBitmap(icon);
             }
 
         }
+        else {
+            //if permission to get contact photos wasn't granted then use default photo
+            Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
+                    R.mipmap.contact_photo);
+            viewHolder.contactPhotoView.setImageBitmap(icon);
+        }
 
-    }
+    }           
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
 

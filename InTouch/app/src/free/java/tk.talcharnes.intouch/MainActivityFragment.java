@@ -1,5 +1,9 @@
 package tk.talcharnes.intouch;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,9 +35,20 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     MyListCursorAdapter mAdapter;
     final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     Cursor mCursor;
+    String contact_id;
+    String name;
+    String number;
+    String photo_uri;
+    String messageArrayListString;
+    String ACTION_SEND_TEXT;
+    String ACTION_CALL_NOTIFICATION;
+    String ACTION_NOTIFICATION;
 
 
     public MainActivityFragment() {
+        ACTION_CALL_NOTIFICATION = "action_call";
+        ACTION_SEND_TEXT = "action_send_text";
+        ACTION_NOTIFICATION = "action_notification";
     }
 
     @Override
@@ -91,7 +106,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY,
                 ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY,
                 ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER,
-                ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER
+                ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER,
+                ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME
         };
 
 
@@ -142,16 +158,55 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
 
         int contact_idIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry._ID);
         mCursor.moveToPosition(position);
+
+
+        int nameIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_NAME);
+        int numberIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER);
+        int photo_uriIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI);
+        int messageListIndex = mCursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST);
+
+
+        name = mCursor.getString(nameIndex);
+        number = mCursor.getString(numberIndex);
+        photo_uri = mCursor.getString(photo_uriIndex);
+        messageArrayListString = mCursor.getString(messageListIndex);
+
+
+
         int deletePosition = mCursor.getInt(contact_idIndex);
-                getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
+        contact_id = ""+(deletePosition);
+
+        getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
                 "_ID = ?",
                         new String[]{""+deletePosition});
         mAdapter.notifyItemRemoved(position);
+
+
+        //Cancel current notifications
+        NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(deletePosition);
+        notificationManager.cancel(-1 * deletePosition);
+
+        //Cancel future notifications
+
+
+        PendingIntent textPendingIntent = createNotificationPendingIntent(ACTION_SEND_TEXT);
+        PendingIntent callPendingIntent = createNotificationPendingIntent(ACTION_CALL_NOTIFICATION);
+
+        AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
+
+        alarmManager.cancel(textPendingIntent);
+        alarmManager.cancel(callPendingIntent);
+
+
 
         Utility.updateWidgets(getContext());
         Log.d(LOG_TAG, "deleteItem position = " + position);
     }
 
+    private PendingIntent createNotificationPendingIntent(String action){
+     return Utility.createNotificationPendingIntent(name, number, messageArrayListString,contact_id, photo_uri, action, getContext());
+    }
 
 }
 

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "22833853207-bnltcv0a8b5jc8lhmsi8igg1heo5p4td.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tk.talcharnes.intouch.free",
+            "certificate_hash": "3737AE412440F45FC8C9378816ADB53D496B7D18"
+          }
+        },
+        {
           "client_id": "22833853207-3bc5d67ke2p7k6ebv3q2ipaefodlj392.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22833853207-3bc5d67ke2p7k6ebv3q2ipaefodlj392.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2
@@ -46,6 +59,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "22833853207-sod4bhr407mgair3jskvj5qtn3v2tvph.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tk.talcharnes.intouch.paid",
+            "certificate_hash": "3737AE412440F45FC8C9378816ADB53D496B7D18"
+          }
+        },
+        {
           "client_id": "22833853207-3bc5d67ke2p7k6ebv3q2ipaefodlj392.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -60,8 +81,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22833853207-3bc5d67ke2p7k6ebv3q2ipaefodlj392.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

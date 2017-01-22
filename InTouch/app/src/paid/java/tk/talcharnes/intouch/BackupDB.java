@@ -1,13 +1,26 @@
 package tk.talcharnes.intouch;
 
+import android.app.PendingIntent;
+import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Vector;
 
 import tk.talcharnes.intouch.data.ContactsContract;
+import tk.talcharnes.intouch.paid.Contact;
 
 /**
  * Created by Tal on 1/1/2017.
@@ -16,83 +29,145 @@ import tk.talcharnes.intouch.data.ContactsContract;
 public class BackupDB {
     public Context mContext;
     Cursor mCursor;
-
+    private static final String LOG_TAG = BackupDB.class.getSimpleName();
 
     public BackupDB(Context context) {
         mContext = context;
-        mCursor = mContext.getContentResolver().query(ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null);
+
 
 
     }
 
-    public void uploadToDrive() {
-    }
+    public void deleteContactFromFirebase(String deleteKey) {
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mFirebaseDatabaseReference = mFirebaseDatabase.getReference();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null){
+            String uid = firebaseUser.getUid();
+            if(uid != null) {
+                Log.d(LOG_TAG, "uid = " + uid);
+                Log.d(LOG_TAG, "deleteKey = " + deleteKey);
 
-    {
-        int contact_idIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry._ID);
-        int nameIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_NAME);
-        int photoThumbnailUriIndex = mCursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI);
-        int phoneNumberIndex = mCursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER);
-        int messageListIndex = mCursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST);
-        int textFrequencyIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY);
-        int callFrequencyIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY);
-        int callCounterIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER);
-        int textCounterIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER);
-
-        if (mCursor.getCount() > 0) {
-            for (int i = 0; i < mCursor.getCount(); i++) {
-                final String name = mCursor.getString(nameIndex);
-                final String photoThumbnailUri = mCursor.getString(photoThumbnailUriIndex);
-                final String phoneNumber = mCursor.getString(phoneNumberIndex);
-                final String messageList = mCursor.getString(messageListIndex);
-                final int textFrequency = mCursor.getInt(textFrequencyIndex);
-                final int callFrequency = mCursor.getInt(callFrequencyIndex);
-                final int contact_id = mCursor.getInt(contact_idIndex);
-                final int callCounter = mCursor.getInt(callCounterIndex);
-                final int textCounter = mCursor.getInt(textCounterIndex);
-                //todo add to a csv file or something
+                 mFirebaseDatabaseReference.child(uid).child(deleteKey).removeValue();
             }
-            //todo upload to google docs
-
+            else{
+                Log.d(LOG_TAG, "uid = null");
+            }
+        }
+        else{
+            Intent intent = new Intent(mContext, MainActivity.class);
+            mContext.startActivity(intent);
         }
     }
 
+    public void updateFirebaseContact(String firebaseContactKey, Contact contact){
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mFirebaseDatabaseReference = mFirebaseDatabase.getReference();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null){
+            String uid = firebaseUser.getUid();
+            if(uid != null) {
+                Log.d(LOG_TAG, "uid = " + uid);
+                Log.d(LOG_TAG, "firebaseContactKey = " + firebaseContactKey);
 
-    public void restoreFromDrive() {
-        //todo get file from drive
-        //todo go over values, put into content values, and bulkinsert them all into db.
+                mFirebaseDatabaseReference.child(uid).child(firebaseContactKey).setValue(contact);
+
+            }
+            else{
+                Log.d(LOG_TAG, "uid = null");
+            }
+        }
+        else{
+            Intent intent = new Intent(mContext, MainActivity.class);
+            mContext.startActivity(intent);
+        }
+
     }
 
 
-    private JSONArray getResults() {
+    public void restoreDB(){
 
-        JSONArray resultSet = new JSONArray();
+        FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference mFirebaseDatabaseReference = mFirebaseDatabase.getReference();
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseUser != null){
+            String uid = firebaseUser.getUid();
+            if(uid != null) {
+                Log.d(LOG_TAG, "uid = " + uid);
 
-        mCursor.moveToFirst();
-        while (mCursor.isAfterLast() == false) {
+                mFirebaseDatabaseReference = mFirebaseDatabaseReference.child(uid);
 
-            int totalColumn = mCursor.getColumnCount();
-            JSONObject rowObject = new JSONObject();
+                mFirebaseDatabaseReference.addListenerForSingleValueEvent(
+                        new ValueEventListener() {
+                            @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                Vector<ContentValues> cVVector = new Vector<ContentValues>();
 
-            for (int i = 0; i < totalColumn; i++) {
-                if (mCursor.getColumnName(i) != null) {
-                    try {
-                        if (mCursor.getString(i) != null) {
-                            Log.d("TAG_NAME", mCursor.getString(i));
-                            rowObject.put(mCursor.getColumnName(i), mCursor.getString(i));
-                        } else {
-                            rowObject.put(mCursor.getColumnName(i), "");
-                        }
-                    } catch (Exception e) {
-                        Log.d("TAG_NAME", e.getMessage());
-                    }
-                }
+                                //Get map of users in datasnapshot
+                                for (DataSnapshot childDataSnapshot : dataSnapshot.getChildren()) {
+                                    ContentValues contactValues = new ContentValues();
+                                    String key = childDataSnapshot.getKey().toString(); //displays the key for the node
+
+
+                                    Cursor cursor = mContext.getContentResolver().query(
+                                            ContactsContract.ContactsEntry.CONTENT_URI,
+                                            new String[]{
+                                                    ContactsContract.ContactsEntry._ID,
+                                                    ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY},
+                                            ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY + " = ?",
+                                            new String[]{key},
+                                            null
+                                    );
+
+                                    if (!cursor.moveToFirst()) {
+                                        String name = childDataSnapshot.child("name").getValue().toString();   //gives the value for given keyname
+                                        String number = childDataSnapshot.child("number").getValue().toString();
+
+                                        int callFrequency = Integer.parseInt(childDataSnapshot.child("callFrequency").getValue().toString());
+                                        int textFrequency = Integer.parseInt(childDataSnapshot.child("textFrequency").getValue().toString());
+                                        String messageListJsonString = childDataSnapshot.child("messageListJsonString").getValue().toString();
+                                        Long notificationTime = Long.parseLong(childDataSnapshot.child("notificationTime").getValue().toString());
+
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_NAME, name);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST, messageListJsonString);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, textFrequency);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, callFrequency);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, key);
+
+                                        Uri contactUri = mContext.getContentResolver().insert(ContactsContract.ContactsEntry.CONTENT_URI, contactValues);
+
+                                        Long contactID = ContentUris.parseId(contactUri);
+
+                                        PendingIntent callPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_CALL_NOTIFICATION, mContext);
+                                        PendingIntent textPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_SEND_TEXT, mContext);
+
+                                        Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency);
+                                        Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency);
+                                        Utility.updateWidgets(mContext);
+
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                //handle databaseError
+                            }
+                        });
+
+
             }
-            resultSet.put(rowObject);
-            mCursor.moveToNext();
+            else{
+                Log.d(LOG_TAG, "uid = null");
+            }
         }
-        mCursor.close();
-        Log.d("TAG_NAME", resultSet.toString());
-        return resultSet;
+        else{
+            Intent intent = new Intent(mContext, MainActivity.class);
+            mContext.startActivity(intent);
+        }
     }
 }

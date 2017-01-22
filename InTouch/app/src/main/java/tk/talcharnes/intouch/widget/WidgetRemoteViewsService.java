@@ -132,7 +132,6 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
 //                set content description here
 //                setRemoteContentDescription(views, description);
 
-                //// TODO: 12/27/2016 Add call, and text functions below
 
                 Bundle extras = new Bundle();
                 Intent fillInIntent = new Intent();
@@ -140,6 +139,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                 fillInIntent.putExtras(extras);
                 fillInIntent.putExtra("number", number);
                 views.setOnClickFillInIntent(R.id.call_button, fillInIntent);
+                views.setContentDescription(R.id.call_button, getString(R.string.widget_call_content_description) + name);
 
 
                 Bundle textExtras = new Bundle();
@@ -149,7 +149,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                 textFillInIntent.putExtra("number", number);
                 textFillInIntent.putExtra("message_list", messageList);
                 views.setOnClickFillInIntent(R.id.send_text_button, textFillInIntent);
-
+                views.setContentDescription(R.id.send_text_button, getString(R.string.widget_send_text_content_description) + name);
 
 
                 views.setTextViewText(R.id.contact_name, name);
@@ -165,8 +165,19 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                     }
                     catch (Exception ex){
                         //if permission to get contact photos wasn't granted then use default photo
+                        Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                                R.mipmap.contact_photo);
+                        views.setImageViewBitmap(R.id.contact_image,
+                                icon);
                     }
 
+                }
+                else {
+                    //if permission to get contact photos wasn't granted then use default photo
+                    Bitmap icon = BitmapFactory.decodeResource(getApplicationContext().getResources(),
+                            R.mipmap.contact_photo);
+                        views.setImageViewBitmap(R.id.contact_image,
+                                icon);
                 }
 
 //                set onclick intent for view

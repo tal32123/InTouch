@@ -1,10 +1,12 @@
 package tk.talcharnes.intouch;
 
+import android.app.AlarmManager;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,7 +24,8 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -31,6 +34,7 @@ import android.widget.Toast;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class UpdateContactInfoActivity extends AppCompatActivity {
@@ -39,7 +43,6 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     private String phone_number;
     private int call_frequency;
     private int text_frequency;
-    private String notification_time;
     EditText nameView;
     EditText phoneNumberView;
     EditText callFrequencyView;
@@ -57,10 +60,20 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     RecyclerView.LayoutManager mLayoutManager;
     RecyclerView.Adapter mAdapter;
     ArrayList<String> myDataset;
-    String messageListString;
     String contact_id;
+    String ACTION_CALL_NOTIFICATION;
+    String ACTION_SEND_TEXT;
+    String ACTION_NOTIFICATION;
+    int hour;
+    int minutes;
+    int am_pm;
+    long notificationTimeInMillis;
 
-
+    @Override
+    protected void onPause() {
+        super.onPause();
+        overridePendingTransition(R.anim.re_enter_slide_out, R.anim.re_enter_slide);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,56 +81,81 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact_detail);
 
         Intent intent = getIntent();
-        messageListString = intent.getStringExtra("messageList");
-        phone_number = intent.getStringExtra("number");
+        messageArrayListString = intent.getStringExtra("messageList");
+        number = intent.getStringExtra("number");
         name = intent.getStringExtra("name");
         contact_id = intent.getStringExtra("contact_id");
         text_frequency = intent.getIntExtra("textFequency", 0);
         call_frequency = intent.getIntExtra("callFrequency", 0);
+        notificationTimeInMillis = intent.getLongExtra("notificationTime", 0);
+        Log.d(LOG_TAG, "ntm before fix = " + notificationTimeInMillis);
+        //For some reason the calculation is off by 2 minutes so this adds the 2 minutes back
+
+
         String photoUri = intent.getStringExtra("photo_uri");
         if (photoUri!= null){
             photo_uri = photoUri;
         }
 
 
+        ACTION_CALL_NOTIFICATION = "action_call";
+        ACTION_SEND_TEXT = "action_send_text";
+        ACTION_NOTIFICATION = "action_notification";
+
+        Calendar timeCal = Calendar.getInstance();
+        timeCal.setTimeInMillis(notificationTimeInMillis);
+        hour = timeCal.get(Calendar.HOUR);
+        minutes = timeCal.get(Calendar.MINUTE);
+        am_pm = timeCal.get(Calendar.AM_PM);
 
         nameView = (EditText)findViewById(R.id.contact_name);
         nameView.setText(name);
         phoneNumberView = (EditText)findViewById(R.id.contact_phone_number);
-        phoneNumberView.setText(phone_number);
+        phoneNumberView.setText(number);
         callFrequencyView = (EditText)findViewById(R.id.contact_call_frequency);
         callFrequencyView.setText(""+call_frequency, TextView.BufferType.EDITABLE);
         textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
         textFrequencyView.setText(""+text_frequency, TextView.BufferType.EDITABLE);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
+        ImageButton addMessageButton = (ImageButton) findViewById(R.id.add_message_button);
+        addMessageButton.setContentDescription(getString(R.string.add_message_to_list_description));
+
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
-        for (int i = 1; i< 13; i++){
-            if(i-1 < 9){
-                hourArray[i-1] = "0" + i + " :";
+        hourArray[0] = "12:";
+        for (int i = 1; i< 12; i++){
+            if(i < 10){
+                hourArray[i] = "0" + i + " :";
 
             }
-            else {hourArray[i-1] = i + ":";}
+            else {hourArray[i] = i + ":";}
         }
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
         hourPicker.setAdapter(hourAdapter);
+        hourPicker.setSelection(hour);
 
         minutePicker = (Spinner) findViewById(R.id.minute_picker);
         String[] minuteArray = new String[60];
-        minuteArray[0] = "00";
-        for (int i = 1; i< 60; i++){
-            minuteArray[i] = Integer.toString(i);
+        for (int i = 0; i< 60; i++){
+            if(i>9) {
+                minuteArray[i] = Integer.toString(i);
+            }
+            else {
+                minuteArray[i] = "0" + Integer.toString(i);
+            }
         }
         SpinnerAdapter minuteAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, minuteArray);
         minutePicker.setAdapter(minuteAdapter);
+        minutePicker.setSelection(minutes);
 
 
         am_pm_spinner = (Spinner) findViewById(R.id.am_pm_spinner);
 
-        String[] sortingCriteria = {"A.M.", "P.M."};
+        String[] sortingCriteria = {getString(R.string.AM), getString(R.string.PM)};
         am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
         am_pm_spinner.setAdapter(am_pm_spinnerAdapter);
+        am_pm_spinner.setSelection(am_pm);
 
         message_list_recycler_view = (RecyclerView) findViewById(R.id.message_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
@@ -125,7 +163,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         // specify an adapter (see also next example)
         try {
-            myDataset = Utility.getArrayListFromJSONString(messageListString);
+            myDataset = Utility.getArrayListFromJSONString(messageArrayListString);
         } catch (JSONException e) {
             e.printStackTrace();
             myDataset = new ArrayList<String>();
@@ -156,9 +194,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                     else {
 
                         //snackbar code from: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
-                        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.activity_contact_detail);
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
                         Snackbar snackbar = Snackbar
-                                .make(linearLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
                                 .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -236,16 +274,28 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
 
         if (phoneNumberView.getText().toString() != null && !phoneNumberView.getText().toString().equals("") && !phoneNumberView.getText().toString().isEmpty()) {
-            phone_number = phoneNumberView.getText().toString();
+            number = phoneNumberView.getText().toString();
         }
         else {emptyField = true;}
 
         if (callFrequencyView.getText().toString() != null && !callFrequencyView.getText().toString().equals("") && !callFrequencyView.getText().toString().isEmpty()) {
-            call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
+            if (!callFrequencyView.getText().toString().equals("0")) {
+                call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
+            }
+            else {
+                emptyField = true;
+                callFrequencyView.setError(getString(R.string.call_frequency_0_error));
+            }
         }
         else {emptyField = true;}
         if(textFrequencyView.getText().toString() != null && !textFrequencyView.getText().toString().equals("") && !textFrequencyView.getText().toString().isEmpty()){
-            text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
+            if (!textFrequencyView.getText().toString().equals("0")) {
+                text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
+            }
+            else{
+                emptyField = true;
+                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
+            }
         }
         else {emptyField = true;}
         if(!myDataset.isEmpty()){
@@ -254,18 +304,26 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "arrayList String = " + messageArrayListString);
 
         }
+        else {
+            emptyField = true;
+            Toast.makeText(this, R.string.message_list_empty_error, Toast.LENGTH_SHORT).show();
+        }
 
-        int  minutes = minutePicker.getSelectedItemPosition();
+        am_pm = am_pm_spinner.getSelectedItemPosition();
+         minutes = minutePicker.getSelectedItemPosition();
+        hour = hourPicker.getSelectedItemPosition();
+
+        notificationTimeInMillis = Utility.getTimeForNotification(hour, minutes, am_pm);
 
         if(!emptyField) {
 
             // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME, name);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, phone_number);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, call_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, text_frequency);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, minutes);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTimeInMillis);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
             if(photo_uri != null){
@@ -285,6 +343,11 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                     new String[]{contact_id});
             Log.d(LOG_TAG, "Updated row " + updateArray );
             Utility.updateWidgets(getApplicationContext());
+
+            //Create text notifications
+            createNotifications(ACTION_SEND_TEXT, text_frequency);
+            createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
+
             NavUtils.navigateUpFromSameTask(this);
 
         }
@@ -295,9 +358,48 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     }
 
     public void deleteData(View view){
+
+        //Delete contact from database
         getContentResolver().delete(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
                 "_ID = ?",
                 new String[]{contact_id});
+
+        //Cancel current notifications
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancel(Integer.parseInt(contact_id));
+        notificationManager.cancel(-1 * Integer.parseInt(contact_id));
+
+        //Cancel future notifications
+        PendingIntent textPendingIntent =
+        Utility.createNotificationPendingIntent(
+                name,
+                number,
+                messageArrayListString,
+                contact_id,
+                photo_uri,
+                ACTION_SEND_TEXT,
+                getApplicationContext());
+
+
+        PendingIntent callPendingIntent =
+                Utility.createNotificationPendingIntent(
+                        name,
+                        number,
+                        messageArrayListString,
+                        contact_id,
+                        photo_uri,
+                        ACTION_CALL_NOTIFICATION,
+                        getApplicationContext());
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        alarmManager.cancel(textPendingIntent);
+        alarmManager.cancel(callPendingIntent);
+
+
+        Utility.updateWidgets(getApplicationContext());
+
+        //Go back to home screen
         NavUtils.navigateUpFromSameTask(this);
     }
     public void chooseContact(View view) {
@@ -345,13 +447,20 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         }
     }
 
-
-
-    public void readFromDB(View view){
-        Cursor cursor = getContentResolver().query(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null, null);
-        if(cursor.moveToFirst()){
-            String cursorString =  DatabaseUtils.dumpCursorToString(cursor);
-            Log.d(LOG_TAG, cursorString);
+    public void addMessage(View view){
+        String message = addMessageEditText.getText().toString();
+        if(message != null && !message.equals("")) {
+            myDataset.add(message);
+            addMessageEditText.setText("");
+            mAdapter.notifyDataSetChanged();
         }
+        else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
     }
+
+    private void createNotifications(String actionType, int frequencyInDays){
+
+        PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contact_id, photo_uri, actionType, getApplicationContext());
+        Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTimeInMillis, frequencyInDays);
+    }
+
 }

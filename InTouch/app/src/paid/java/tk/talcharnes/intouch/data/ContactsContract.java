@@ -77,6 +77,9 @@ public class ContactsContract {
         //Uri of photo thumbnail
         public static final String COLUMN_PHOTO_THUMBNAIL_URI="photo_thumbnail_uri";
 
+        //Key of contact file on Firebase
+        public static final String COLUMN_FIREBASE_CONTACT_KEY="firebase_contact_key";
+
 
         public static Uri buildContactsUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);

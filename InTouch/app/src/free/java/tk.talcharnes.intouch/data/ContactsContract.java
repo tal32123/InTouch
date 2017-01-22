@@ -47,7 +47,7 @@ public class ContactsContract {
         public static final String TABLE_NAME = "contacts";
 
 
-        // Contact name stored as string
+        // tk.talcharnes.intouch.paid.Contact name stored as string
         public static final String COLUMN_NAME = "name";
 
         // Date, stored as long in milliseconds since the epoch
