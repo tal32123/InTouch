@@ -139,6 +139,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                 fillInIntent.putExtras(extras);
                 fillInIntent.putExtra("number", number);
                 views.setOnClickFillInIntent(R.id.call_button, fillInIntent);
+                views.setContentDescription(R.id.call_button, getString(R.string.widget_call_content_description) + name);
 
 
                 Bundle textExtras = new Bundle();
@@ -148,7 +149,7 @@ public class WidgetRemoteViewsService extends RemoteViewsService {
                 textFillInIntent.putExtra("number", number);
                 textFillInIntent.putExtra("message_list", messageList);
                 views.setOnClickFillInIntent(R.id.send_text_button, textFillInIntent);
-
+                views.setContentDescription(R.id.send_text_button, getString(R.string.widget_send_text_content_description) + name);
 
 
                 views.setTextViewText(R.id.contact_name, name);

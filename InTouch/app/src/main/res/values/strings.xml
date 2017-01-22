@@ -38,6 +38,8 @@
     <string name="add_message_to_list_description">Add message to list</string>
     <string name="message_empty_string">Message can not be empty</string>
     <string name="message_list_empty_error">Message list can\'t be empty!</string>
+    <string name="widget_send_text_content_description">"Send a random text message from list to "</string>
+    <string name="widget_call_content_description">"Call "</string>
 
 </resources>
 
