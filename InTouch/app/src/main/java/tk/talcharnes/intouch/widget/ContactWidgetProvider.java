@@ -34,7 +34,7 @@ public class ContactWidgetProvider extends AppWidgetProvider {
         // Perform this loop procedure for each App Widget that belongs to this provider
         for (int appWidgetId : appWidgetIds) {
 
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.contact_widget);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_main);
 
             //This intent launches main activity (MyStocksActivity) when widget_bar is clicked
             Intent intent = new Intent(context, MainActivity.class);

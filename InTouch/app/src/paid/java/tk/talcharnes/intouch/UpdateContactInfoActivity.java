@@ -139,13 +139,13 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
-        hourArray[0] = "12:";
+        hourArray[0] = "12";
         for (int i = 1; i< 12; i++){
             if(i < 10){
-                hourArray[i] = "0" + i + " :";
+                hourArray[i] = "0" + i;
 
             }
-            else {hourArray[i] = i + ":";}
+            else {hourArray[i] = Integer.toString(i);}
         }
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
         hourPicker.setAdapter(hourAdapter);
