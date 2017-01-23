@@ -14,19 +14,11 @@
     tools:showIn="@layout/activity_main">
 
     <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
+        android:layout_width="640dp"
         android:layout_height="match_parent"
         android:paddingBottom="48dp"
+        android:layout_centerHorizontal="true"
         android:id="@+id/contact_list_recycler_view"/>
 
-    <!-- view for AdMob Banner Ad -->
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/fragment_main_adview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        ads:adSize="@string/banner_size"
-        ads:adUnitId="@string/banner_ad_unit_id" />
 
 </RelativeLayout>

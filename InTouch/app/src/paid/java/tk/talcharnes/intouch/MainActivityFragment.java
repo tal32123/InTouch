@@ -23,8 +23,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -37,10 +39,10 @@ import tk.talcharnes.intouch.data.ContactsContract;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     RecyclerView contacts_list_recycler_view;
     RecyclerView.LayoutManager mLayoutManager;
-//    ContactsListAdapter mAdapter;
+    //    ContactsListAdapter mAdapter;
     MyListCursorAdapter mAdapter;
     final String LOG_TAG = MainActivityFragment.class.getSimpleName();
     Cursor mCursor;
@@ -62,49 +64,65 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     public static final int RC_SIGN_IN = 1;
 
     private String firebaseContactKey;
-
+    boolean googlePlayServicesApiValid;
 
 
     public MainActivityFragment() {
         ACTION_CALL_NOTIFICATION = "action_call";
         ACTION_SEND_TEXT = "action_send_text";
         ACTION_NOTIFICATION = "action_notification";
+        if (GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE >= 10084000) {
+            googlePlayServicesApiValid = true;
+            Log.d(LOG_TAG, "GOOGLE PLAY SERVICES VERSION = " + GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE);
+        } else {
+            googlePlayServicesApiValid = false;
+        }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
 
-        //firebase
-        mUsername = "ANONYMOUS";
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseAuth = FirebaseAuth.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
+        if (googlePlayServicesApiValid == true) {
+            setHasOptionsMenu(true);
 
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            //firebase
+            mUsername = "ANONYMOUS";
+            mFirebaseDatabase = FirebaseDatabase.getInstance();
+            mFirebaseAuth = FirebaseAuth.getInstance();
+            mDatabaseReference = mFirebaseDatabase.getReference();
 
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if(user != null){
-                    //User is signed in
+
+            mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+                @Override
+                public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+
+                    FirebaseUser user = firebaseAuth.getCurrentUser();
+                    if (user != null) {
+                        //User is signed in
+                    } else {
+                        //User is signed out
+                        startActivityForResult(
+                                AuthUI.getInstance()
+                                        .createSignInIntentBuilder()
+                                        .setIsSmartLockEnabled(false)
+                                        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                        .build(),
+                                RC_SIGN_IN);
+                    }
                 }
-                else{
-                    //User is signed out
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                            new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                    .build(),
-                            RC_SIGN_IN);
-                }
-            }
-        };
+            };
+        }
+
+    else
+    {
+        setHasOptionsMenu(false);
+        Toast.makeText(getContext(), "Please upgrade Google Play Services for all features", Toast.LENGTH_SHORT).show();
     }
+
+}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -272,13 +290,17 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onPause() {
         super.onPause();
-        mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        if(googlePlayServicesApiValid) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        if(googlePlayServicesApiValid) {
+            mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+        }
     }
 
     private void restoreDatabase(Context context){
