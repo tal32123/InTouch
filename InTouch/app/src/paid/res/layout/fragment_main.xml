@@ -17,5 +17,6 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layoutDirection="inherit"
+        android:paddingBottom="48dp"
         android:id="@+id/contact_list_recycler_view"/>
 </RelativeLayout>
