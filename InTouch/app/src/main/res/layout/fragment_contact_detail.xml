@@ -60,39 +60,48 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:hint="@string/what_time_should_we_notify_you"
+        android:textSize="18sp"
+        android:text="@string/what_time_should_we_notify_you"
         android:layout_below="@id/contact_text_frequency"
         android:id="@+id/contact_time"/>
 
-        <Spinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/hour_picker"
-            android:layout_below="@+id/contact_time"
-            android:layout_alignParentStart="true"/>
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/minute_picker"
-            android:layout_below="@id/contact_time"
-            android:layout_centerHorizontal="true"
-        />
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:orientation="horizontal"
+           android:id="@+id/time_picker_layout"
+           android:layout_below="@id/contact_time">
+           <android.support.v7.widget.AppCompatSpinner
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/hour_picker"/>
+           <android.support.v7.widget.AppCompatSpinner
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/minute_picker"
+               />
 
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/am_pm_spinner"
-            android:layout_below="@id/contact_time"
-            android:layout_toEndOf="@id/minute_picker"
-            android:layout_alignParentEnd="true"/>
+           <android.support.v7.widget.AppCompatSpinner
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:id="@+id/am_pm_spinner"/>
+       </LinearLayout>
+
+       <TextView
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_below="@+id/time_picker_layout"
+           android:id="@+id/message_list_title"
+           android:textSize="18sp"
+           android:text="@string/messages_to_send_contact"/>
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:id="@+id/message_list_recycler_view"
-        android:layout_below="@id/hour_picker"/>
+        android:layout_below="@id/message_list_title"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

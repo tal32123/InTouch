@@ -15,6 +15,7 @@
                 android:layout_height="48dp"
                 android:layout_margin="16dp"
                 android:src="@mipmap/contact_photo"
+                android:layout_gravity="center_vertical"
                 android:id="@+id/contact_image"/>
             <LinearLayout
                 android:layout_width="0dp"
@@ -34,19 +35,23 @@
                     android:id="@+id/contact_name"/>
             </LinearLayout>
             <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:backgroundTint="@color/colorPrimaryDark"
+                android:background="@color/colorPrimaryDark"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_message_white_24dp"
                 android:id="@+id/send_text_button"
                 />
             <ImageButton
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_margin="16dp"
                 android:backgroundTint="@color/colorPrimaryDark"
+                android:background="@color/colorPrimaryDark"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_call_white_24dp"
                 android:id="@+id/call_button"
                 />

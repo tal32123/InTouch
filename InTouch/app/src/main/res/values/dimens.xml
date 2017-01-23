@@ -4,4 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="Message_Text_Size">14sp</dimen>
 </resources>

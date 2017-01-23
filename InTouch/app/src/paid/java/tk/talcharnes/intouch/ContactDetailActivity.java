@@ -27,6 +27,7 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -69,6 +70,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     int am_pm;
     long notificationTime;
     String mUserID;
+    boolean googlePlayServicesApiValid;
 
 
     //Needed for firebase
@@ -83,15 +85,23 @@ public class ContactDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
 
+        if (GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE >= 10084000) {
+            googlePlayServicesApiValid = true;
+            Log.d(LOG_TAG, "GOOGLE PLAY SERVICES VERSION = " + GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE);
+        } else {
+            Log.d(LOG_TAG, "GOOGLE PLAY SERVICES VERSION is too low. Version = " + GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE);
+            googlePlayServicesApiValid = false;
+        }
+
         ACTION_CALL_NOTIFICATION = "action_call";
         ACTION_SEND_TEXT = "action_send_text";
         ACTION_NOTIFICATION = "action_notification";
 
 
-        nameView = (EditText)findViewById(R.id.contact_name);
-        phoneNumberView = (EditText)findViewById(R.id.contact_phone_number);
-        callFrequencyView = (EditText)findViewById(R.id.contact_call_frequency);
-        textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
+        nameView = (EditText) findViewById(R.id.contact_name);
+        phoneNumberView = (EditText) findViewById(R.id.contact_phone_number);
+        callFrequencyView = (EditText) findViewById(R.id.contact_call_frequency);
+        textFrequencyView = (EditText) findViewById(R.id.contact_text_frequency);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
         ImageButton addMessageButton = (ImageButton) findViewById(R.id.add_message_button);
         addMessageButton.setContentDescription(getString(R.string.add_message_to_list_description));
@@ -99,12 +109,12 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
-        hourArray[0] = "12:";
-        for (int i = 1; i< 12; i++){
-            if(i < 10){
-                hourArray[i] = "0" + i + " :";
-            }
-                else {hourArray[i] = i + ":";
+        hourArray[0] = "12";
+        for (int i = 1; i < 12; i++) {
+            if (i < 10) {
+                hourArray[i] = "0" + i;
+            } else {
+                hourArray[i] = Integer.toString(i);
             }
         }
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
@@ -112,11 +122,10 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         minutePicker = (Spinner) findViewById(R.id.minute_picker);
         String[] minuteArray = new String[60];
-        for (int i = 0; i< 60; i++){
-            if(i>9) {
+        for (int i = 0; i < 60; i++) {
+            if (i > 9) {
                 minuteArray[i] = Integer.toString(i);
-            }
-            else {
+            } else {
                 minuteArray[i] = "0" + Integer.toString(i);
             }
         }
@@ -127,7 +136,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         am_pm_spinner = (Spinner) findViewById(R.id.am_pm_spinner);
 
         String[] sortingCriteria = {getString(R.string.AM), getString(R.string.PM)};
-         am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
+        am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
         am_pm_spinner.setAdapter(am_pm_spinnerAdapter);
 
         message_list_recycler_view = (RecyclerView) findViewById(R.id.message_list_recycler_view);
@@ -143,25 +152,23 @@ public class ContactDetailActivity extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
-                    if (actionId == EditorInfo.IME_ACTION_SEND) {
-                        String message = addMessageEditText.getText().toString();
-                        if(message != null && !message.equals("")) {
-                            myDataset.add(message);
-                            addMessageEditText.setText("");
-                            mAdapter.notifyDataSetChanged();
-                        }
-
-
-                        else{ Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    String message = addMessageEditText.getText().toString();
+                    if (message != null && !message.equals("")) {
+                        myDataset.add(message);
+                        addMessageEditText.setText("");
+                        mAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
                     }
 
-                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
                     handled = true;
 
                 }
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
 
                     String message = addMessageEditText.getText().toString();
                     if (message != null && !message.equals("")) {
@@ -183,30 +190,29 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
 
 
-
-
         mAdapter = new MessageListAdapter(myDataset);
         message_list_recycler_view.setAdapter(mAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
         itemTouchHelper.attachToRecyclerView(message_list_recycler_view);
 
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
+        if (googlePlayServicesApiValid) {
+            mFirebaseDatabase = FirebaseDatabase.getInstance();
+            mDatabaseReference = mFirebaseDatabase.getReference();
 
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user != null){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null) {
 //                    //User is signed in
-                    mUsername = user.getDisplayName();
-                    mUserID = user.getUid();
-                }
-                else{
+                mUsername = user.getDisplayName();
+                mUserID = user.getUid();
+            } else {
 //                    //User is signed out
-                    Toast.makeText(this, R.string.please_log_in, Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(this, MainActivity.class);
-                    startActivity(intent);
-                }
+                Toast.makeText(this, R.string.please_log_in, Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            }
 
+        }
     }
 
 
@@ -291,24 +297,9 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         if(!emptyField) {
 
-            Contact contact = new Contact();
-            contact.setCallFrequency(call_frequency);
-            contact.setName(name);
-            contact.setTextFrequency(text_frequency);
-            contact.setNumber(number);
-            contact.setMessageListJsonString(messageArrayListString);
-            contact.setNotificationTime(notificationTime);
-
-            mDatabaseReference = mDatabaseReference.child(mUserID);
-
-            DatabaseReference db_ref = mDatabaseReference.push() ;  //creates blank record in db
-            String firebaseContactKey = db_ref.getKey();             //the UniqueID/key
-            db_ref.setValue( contact);
-            Log.d(LOG_TAG, "firebase key = " + firebaseContactKey);
 
 
-
-         // Defines an object to contain the new values to insert
+            // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME, name);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
@@ -317,7 +308,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, firebaseContactKey);
+
             if(photo_uri != null){
                 if(!photo_uri.equals(null) && !photo_uri.equals("")) {
                     mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI, photo_uri);
@@ -325,6 +316,28 @@ public class ContactDetailActivity extends AppCompatActivity {
             }
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST, messageArrayListString);
 
+
+
+            if(googlePlayServicesApiValid) {
+                Contact contact = new Contact();
+                contact.setCallFrequency(call_frequency);
+                contact.setName(name);
+                contact.setTextFrequency(text_frequency);
+                contact.setNumber(number);
+                contact.setMessageListJsonString(messageArrayListString);
+                contact.setNotificationTime(notificationTime);
+
+                mDatabaseReference = mDatabaseReference.child(mUserID);
+
+                DatabaseReference db_ref = mDatabaseReference.push();  //creates blank record in db
+                String firebaseContactKey = db_ref.getKey();             //the UniqueID/key
+                db_ref.setValue(contact);
+                Log.d(LOG_TAG, "firebase key = " + firebaseContactKey);
+                if(googlePlayServicesApiValid) {
+                    mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, firebaseContactKey);
+                }
+
+            }
 
 
             Uri mNewUri = getApplicationContext().getContentResolver().insert(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, mNewValues);

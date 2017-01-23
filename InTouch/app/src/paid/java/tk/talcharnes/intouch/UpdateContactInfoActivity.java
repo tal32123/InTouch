@@ -28,6 +28,8 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GoogleApiAvailability;
+
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -69,12 +71,22 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     long notificationTimeInMillis;
     String firebaseContactKey;
     boolean paidVersion = false;
+    boolean googlePlayServicesApiValid;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_detail);
+
+        if (GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE >= 10084000) {
+            googlePlayServicesApiValid = true;
+            Log.d(LOG_TAG, "GOOGLE PLAY SERVICES VERSION = " + GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE);
+        } else {
+            Log.d(LOG_TAG, "GOOGLE PLAY SERVICES VERSION is too low. Version = " + GoogleApiAvailability.GOOGLE_PLAY_SERVICES_VERSION_CODE);
+            googlePlayServicesApiValid = false;
+        }
+
 
         Intent intent = getIntent();
         messageArrayListString = intent.getStringExtra("messageList");
@@ -92,7 +104,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         }
         if(getString(R.string.paid_version).equals(getString(R.string.version))){
             paidVersion = true;
-            firebaseContactKey = intent.getStringExtra("firebaseContactKey");
+            if(googlePlayServicesApiValid) {
+                firebaseContactKey = intent.getStringExtra("firebaseContactKey");
+            }
         }
 
 
@@ -338,7 +352,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
 
 
-            if(paidVersion && firebaseContactKey != null){
+            if(paidVersion && firebaseContactKey != null && googlePlayServicesApiValid){
                 Contact contact = new Contact();
                 contact.setNotificationTime(notificationTimeInMillis);
                 contact.setMessageListJsonString(messageArrayListString);
@@ -410,7 +424,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         alarmManager.cancel(textPendingIntent);
         alarmManager.cancel(callPendingIntent);
 
-        if(paidVersion && firebaseContactKey != null){
+        if(paidVersion && firebaseContactKey != null && googlePlayServicesApiValid){
             BackupDB backupDB = new BackupDB(getApplicationContext());
             backupDB.deleteContactFromFirebase(firebaseContactKey);
         }

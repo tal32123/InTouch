@@ -3,5 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/message_view"
+    android:textSize="@dimen/Message_Text_Size"
+    android:textColor="@color/secondary_text"
     android:paddingTop="16dp"
     android:paddingBottom="16dp"/>

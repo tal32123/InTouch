@@ -40,6 +40,8 @@
     <string name="message_list_empty_error">Message list can\'t be empty!</string>
     <string name="widget_send_text_content_description">"Send a random text message from list to "</string>
     <string name="widget_call_content_description">"Call "</string>
+    <string name="messages_to_send_contact">Messages to send contact</string>
+    <string name="firstname_last_temp_text">Firstname Last</string>
 
 </resources>
 
