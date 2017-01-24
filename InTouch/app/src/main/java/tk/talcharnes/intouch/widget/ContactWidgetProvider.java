@@ -44,7 +44,6 @@ public class ContactWidgetProvider extends AppWidgetProvider {
             // Set up the collection
             setRemoteAdapter(context, views);
 
-            //todo check this out more
             PendingIntent clickPendingIntentTemplate = TaskStackBuilder.create(context)
                     .addNextIntentWithParentStack(new Intent(context, MainActivity.class))
                     .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);

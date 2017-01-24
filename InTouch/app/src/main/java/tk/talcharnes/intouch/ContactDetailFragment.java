@@ -39,7 +39,6 @@ public class ContactDetailFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment ContactDetailFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static ContactDetailFragment newInstance(String param1, String param2) {
         ContactDetailFragment fragment = new ContactDetailFragment();
         Bundle args = new Bundle();
@@ -65,7 +64,6 @@ public class ContactDetailFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_contact_detail, container, false);
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -100,7 +98,6 @@ public class ContactDetailFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
 }
