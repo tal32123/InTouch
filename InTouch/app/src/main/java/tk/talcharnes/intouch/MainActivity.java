@@ -18,6 +18,10 @@ import android.widget.Toast;
 
 import static android.R.id.message;
 
+/*
+ * Credit to: https://www.tutorialspoint.com/android/android_sending_sms.htm
+ * Credit to: http://stackoverflow.com/questions/32115650/android-app-crashes-when-trying-to-read-contacts-in-android-marshmallow-android
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -28,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-//        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
         getPermissionToReadUserContacts();
         getTextPermission();
 
@@ -51,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -60,20 +62,12 @@ public class MainActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
 
         return super.onOptionsItemSelected(item);
     }
 
-    /*
-        The following code for the permission to read contacts
-         is from: http://stackoverflow.com/questions/32115650/android-app-crashes-when-trying-to-read-contacts-in-android-marshmallow-android
-     */
+
     // Identifier for the permission request
     private static final int READ_CONTACTS_PERMISSIONS_REQUEST = 1;
 
@@ -120,7 +114,9 @@ public class MainActivity extends AppCompatActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
+
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0;
+
     private void getTextPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.SEND_SMS)
@@ -132,10 +128,6 @@ public class MainActivity extends AppCompatActivity {
                         new String[]{Manifest.permission.SEND_SMS},
                         MY_PERMISSIONS_REQUEST_SEND_SMS);
             }
-
         }
     }
-
-
-
 }
