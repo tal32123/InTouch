@@ -10,9 +10,13 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
+
+import static android.R.id.message;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
 
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
+//        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS},1);
         getPermissionToReadUserContacts();
-
+        getTextPermission();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +120,22 @@ public class MainActivity extends AppCompatActivity {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0 ;
+    private void getTextPermission() {
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.SEND_SMS)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.SEND_SMS)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.SEND_SMS},
+                        MY_PERMISSIONS_REQUEST_SEND_SMS);
+            }
+
+        }
+    }
+
 
 
 }
