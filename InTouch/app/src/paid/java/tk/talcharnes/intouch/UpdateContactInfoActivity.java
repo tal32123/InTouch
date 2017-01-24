@@ -174,11 +174,15 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        try {
-            myDataset = Utility.getArrayListFromJSONString(messageArrayListString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            myDataset = new ArrayList<String>();
+        if (savedInstanceState != null) {
+            myDataset = savedInstanceState.getStringArrayList("myDataset");
+        } else {
+            try {
+                myDataset = Utility.getArrayListFromJSONString(messageArrayListString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                myDataset = new ArrayList<String>();
+            }
         }
 
         addMessageEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -186,43 +190,26 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    if (myDataset.size() < 6 || getString(R.string.version).equals(getString(R.string.paid_version))) {
-                        String message = addMessageEditText.getText().toString();
-                        if (message != null && !message.equals("")) {
-                            myDataset.add(message);
-                            addMessageEditText.setText("");
-                            mAdapter.notifyDataSetChanged();
-                        } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
-                        }
 
-                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+//                      Hide keyboard
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                    }
+                    addMessage();
 
                     handled = true;
+                    Log.d(LOG_TAG, "ACTION_SEND");
 
                 }
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //If it is the free version of the app user has a limited amount of messages they can have
-                    if (myDataset.size() < 6 || getString(R.string.version).equals(getString(R.string.paid_version))) {
+//                      Hide keyboard
+                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                        String message = addMessageEditText.getText().toString();
-                        if (message != null && !message.equals("")) {
-                            myDataset.add(message);
-                            addMessageEditText.setText("");
-                            mAdapter.notifyDataSetChanged();
-                        } else {
-                            Toast.makeText(getApplicationContext(), R.string.message_empty_string, Toast.LENGTH_SHORT).show();
-                        }
-
-                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                    }
+                    addMessage();
 
                     handled = true;
+                    Log.d(LOG_TAG, "ACTION_DONE");
                 }
                 return handled;
             }
@@ -477,7 +464,11 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
     }
 
-    public void addMessage(View view) {
+    public void addMessageButton(View view) {
+        addMessage();
+    }
+
+    public void addMessage() {
         String message = addMessageEditText.getText().toString();
         if (message != null && !message.equals("")) {
             myDataset.add(message);
@@ -491,5 +482,11 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         overridePendingTransition(R.anim.re_enter_slide_out, R.anim.re_enter_slide);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("myDataset", myDataset);
     }
 }
