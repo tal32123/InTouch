@@ -134,7 +134,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:background="@color/tw__transparent"
-                android:onClick="addMessage"
+                android:onClick="addMessageButton"
                 android:padding="8dp"
                 android:src="@drawable/add_icon" />
 

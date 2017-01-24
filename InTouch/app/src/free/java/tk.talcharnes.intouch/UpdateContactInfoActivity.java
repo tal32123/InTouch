@@ -164,11 +164,17 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         message_list_recycler_view = (RecyclerView) findViewById(R.id.message_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         message_list_recycler_view.setLayoutManager(mLayoutManager);
-        try {
-            myDataset = Utility.getArrayListFromJSONString(messageArrayListString);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            myDataset = new ArrayList<String>();
+        if(savedInstanceState!= null){
+            myDataset = savedInstanceState.getStringArrayList("myDataset");
+
+        }
+        else {
+            try {
+                myDataset = Utility.getArrayListFromJSONString(messageArrayListString);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                myDataset = new ArrayList<String>();
+            }
         }
 
 //      Set up add message edit text functionality
@@ -177,20 +183,18 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    myDataset.add(addMessageEditText.getText().toString());
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    handled = true;
-                }
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    //If it is the free version of the app user has a limited amount of messages they can have
-                    if (myDataset.size() < 6 || getString(R.string.version).equals(getString(R.string.paid_version))) {
-                        myDataset.add(addMessageEditText.getText().toString());
-
+                    if (myDataset.size() < 6) {
+//                      Hide keyboard
                         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        addMessageEditText.setText("");
+
+                        addMessage();
                     } else {
+
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
                         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
                         Snackbar snackbar = Snackbar
                                 .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
@@ -202,10 +206,50 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
 // Changing message text color
                         snackbar.setActionTextColor(Color.RED);
+
 // Changing action button text color
                         View sbView = snackbar.getView();
                         TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
                         textView.setTextColor(Color.YELLOW);
+
+
+                        snackbar.show();
+                    }
+                    handled = true;
+
+                }
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (myDataset.size() < 6) {
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                        addMessage();
+                    } else {
+
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
+                        Snackbar snackbar = Snackbar
+                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+// Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+// Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+
                         snackbar.show();
                     }
                     handled = true;
@@ -433,14 +477,18 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     }
 
     //  Add message to list
-    public void addMessage(View view) {
+    public void addMessageButton(View view) {
+        addMessage();
+    }
+
+    public void addMessage() {
         String message = addMessageEditText.getText().toString();
         if (message != null && !message.equals("")) {
             myDataset.add(message);
             addMessageEditText.setText("");
             mAdapter.notifyDataSetChanged();
         } else
-            Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.message_can_not_be_empty_error, Toast.LENGTH_SHORT).show();
     }
 
     private void createNotifications(String actionType, int frequencyInDays) {
@@ -448,4 +496,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTimeInMillis, frequencyInDays);
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("myDataset", myDataset);
+    }
 }

@@ -136,32 +136,69 @@ public class ContactDetailActivity extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
-        String[] preSetMessages = new String[]{getString(R.string.message_1), getString(R.string.message_2), getString(R.string.message_3), getString(R.string.message_4)};
-        myDataset = new ArrayList<String>();
-        myDataset.addAll(Arrays.asList(preSetMessages));
 
+        if (savedInstanceState != null) {
+            myDataset = savedInstanceState.getStringArrayList("myDataset");
+
+        } else {
+            String[] preSetMessages = new String[]{getString(R.string.message_1), getString(R.string.message_2), getString(R.string.message_3), getString(R.string.message_4)};
+            myDataset = new ArrayList<String>();
+            myDataset.addAll(Arrays.asList(preSetMessages));
+        }
         //Messages are added to recyclerview
         addMessageEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    myDataset.add(addMessageEditText.getText().toString());
+                    if (myDataset.size() < 6) {
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        addMessage();
+                    } else {
 
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
+                        Snackbar snackbar = Snackbar
+                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+// Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+// Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+
+                        snackbar.show();
+                    }
                     handled = true;
 
                 }
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (myDataset.size() < 6) {
-                        myDataset.add(addMessageEditText.getText().toString());
-
+//                      Hide keyboard
                         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                        addMessageEditText.setText("");
+
+                        addMessage();
                     } else {
+
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
 
                         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
                         Snackbar snackbar = Snackbar
@@ -437,7 +474,11 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
     //    Add message to list of random messages to send contact
-    public void addMessage(View view) {
+    public void addMessageButton(View view) {
+        addMessage();
+    }
+
+    public void addMessage() {
         String message = addMessageEditText.getText().toString();
         if (message != null && !message.equals("")) {
             myDataset.add(message);
@@ -445,5 +486,12 @@ public class ContactDetailActivity extends AppCompatActivity {
             mAdapter.notifyDataSetChanged();
         } else
             Toast.makeText(getApplicationContext(), R.string.message_can_not_be_empty_error, Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("myDataset", myDataset);
     }
 }
