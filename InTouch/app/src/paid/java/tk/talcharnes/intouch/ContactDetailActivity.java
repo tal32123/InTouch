@@ -6,9 +6,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -144,47 +147,90 @@ public class ContactDetailActivity extends AppCompatActivity {
         message_list_recycler_view.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] preSetMessages = new String[]{getString(R.string.message_1), getString(R.string.message_2), getString(R.string.message_3), getString(R.string.message_4)};
-        myDataset = new ArrayList<String>();
-        myDataset.addAll(Arrays.asList(preSetMessages));
+        if (savedInstanceState != null) {
+            myDataset = savedInstanceState.getStringArrayList("myDataset");
+        } else {
+            String[] preSetMessages = new String[]{getString(R.string.message_1), getString(R.string.message_2), getString(R.string.message_3), getString(R.string.message_4)};
+            myDataset = new ArrayList<String>();
+            myDataset.addAll(Arrays.asList(preSetMessages));
+        }
 
         addMessageEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_SEND) {
-                    String message = addMessageEditText.getText().toString();
-                    if (message != null && !message.equals("")) {
-                        myDataset.add(message);
-                        addMessageEditText.setText("");
-                        mAdapter.notifyDataSetChanged();
+                    if (myDataset.size() < 6) {
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                        addMessage();
                     } else {
-                        Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
+
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
+                        Snackbar snackbar = Snackbar
+                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+// Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+// Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+
+                        snackbar.show();
                     }
-
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
                     handled = true;
 
                 }
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (myDataset.size() < 6) {
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
-                    String message = addMessageEditText.getText().toString();
-                    if (message != null && !message.equals("")) {
-                        myDataset.add(message);
-                        addMessageEditText.setText("");
-                        mAdapter.notifyDataSetChanged();
+                        addMessage();
                     } else {
-                        Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
+
+//                      Hide keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+
+                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
+                        Snackbar snackbar = Snackbar
+                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
+
+// Changing message text color
+                        snackbar.setActionTextColor(Color.RED);
+
+// Changing action button text color
+                        View sbView = snackbar.getView();
+                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                        textView.setTextColor(Color.YELLOW);
+
+
+                        snackbar.show();
                     }
-
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
                     handled = true;
                 }
-
                 return handled;
             }
         });
@@ -378,14 +424,20 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
 
-    public void addMessage(View view) {
+    //    Add message to list of random messages to send contact
+    public void addMessageButton(View view) {
+        addMessage();
+    }
+
+    public void addMessage() {
         String message = addMessageEditText.getText().toString();
         if (message != null && !message.equals("")) {
             myDataset.add(message);
             addMessageEditText.setText("");
             mAdapter.notifyDataSetChanged();
-        } else
-            Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.message_can_not_be_empty_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -433,7 +485,12 @@ public class ContactDetailActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         overridePendingTransition(R.anim.re_enter_up_out, R.anim.re_enter_up_in);
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putStringArrayList("myDataset", myDataset);
     }
 
 }

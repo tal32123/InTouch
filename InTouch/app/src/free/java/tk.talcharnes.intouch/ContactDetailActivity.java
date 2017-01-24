@@ -484,8 +484,9 @@ public class ContactDetailActivity extends AppCompatActivity {
             myDataset.add(message);
             addMessageEditText.setText("");
             mAdapter.notifyDataSetChanged();
-        } else
+        } else {
             Toast.makeText(getApplicationContext(), R.string.message_can_not_be_empty_error, Toast.LENGTH_SHORT).show();
+        }
     }
 
 
