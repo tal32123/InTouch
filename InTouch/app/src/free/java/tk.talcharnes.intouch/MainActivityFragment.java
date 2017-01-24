@@ -15,7 +15,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +25,9 @@ import com.google.android.gms.ads.AdView;
 import tk.talcharnes.intouch.data.ContactsContract;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Credit to: http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
  */
-public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     RecyclerView contacts_list_recycler_view;
     RecyclerView.LayoutManager mLayoutManager;
     AdView mAdView;
@@ -54,9 +53,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
         getActivity().getSupportLoaderManager().initLoader(1, null, this);
-
     }
 
     @Override
@@ -75,17 +72,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         itemTouchHelper.attachToRecyclerView(contacts_list_recycler_view);
 
 
-
-
         // Load an ad into the AdMob banner view.
         mAdView = (AdView) rootView.findViewById(R.id.fragment_main_adview);
         AdRequest adRequest = new AdRequest.Builder()
                 .setRequestAgent("android_studio:ad_template").build();
-
         mAdView.loadAd(adRequest);
-
-        //todo Next version/update add reward video after third contact addition?
-        // https://firebase.google.com/docs/admob/android/rewarded-video
 
 
         return rootView;
@@ -119,7 +110,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader loader, Cursor cursor) {
         mCursor = cursor;
-//        cursor.moveToFirst();
         mAdapter.swapCursor(cursor);
     }
 
@@ -128,9 +118,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         mAdapter.swapCursor(null);
     }
 
-
-
-    //code from http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
+    //  Code for swipe to delete/touch actions
     private ItemTouchHelper.Callback createHelperCallback() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
                 new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
@@ -150,11 +138,13 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 };
         return simpleItemTouchCallback;
     }
-    private void moveItem(int oldPos, int newPos){
+
+    private void moveItem(int oldPos, int newPos) {
 
     }
 
-    private void deleteItem(final int position){
+    //  Code for delete contact
+    private void deleteItem(final int position) {
 
         int contact_idIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry._ID);
         mCursor.moveToPosition(position);
@@ -172,13 +162,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         messageArrayListString = mCursor.getString(messageListIndex);
 
 
-
         int deletePosition = mCursor.getInt(contact_idIndex);
-        contact_id = ""+(deletePosition);
+        contact_id = "" + (deletePosition);
 
         getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
                 "_ID = ?",
-                        new String[]{""+deletePosition});
+                new String[]{"" + deletePosition});
         mAdapter.notifyItemRemoved(position);
 
 
@@ -188,24 +177,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         notificationManager.cancel(-1 * deletePosition);
 
         //Cancel future notifications
-
-
         PendingIntent textPendingIntent = createNotificationPendingIntent(ACTION_SEND_TEXT);
         PendingIntent callPendingIntent = createNotificationPendingIntent(ACTION_CALL_NOTIFICATION);
-
         AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
-
         alarmManager.cancel(textPendingIntent);
         alarmManager.cancel(callPendingIntent);
 
-
-
+//      Update widgets
         Utility.updateWidgets(getContext());
-        Log.d(LOG_TAG, "deleteItem position = " + position);
     }
 
-    private PendingIntent createNotificationPendingIntent(String action){
-     return Utility.createNotificationPendingIntent(name, number, messageArrayListString,contact_id, photo_uri, action, getContext());
+    private PendingIntent createNotificationPendingIntent(String action) {
+        return Utility.createNotificationPendingIntent(name, number, messageArrayListString, contact_id, photo_uri, action, getContext());
     }
 
 }

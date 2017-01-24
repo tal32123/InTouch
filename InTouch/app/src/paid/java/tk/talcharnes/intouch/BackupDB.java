@@ -24,6 +24,7 @@ import tk.talcharnes.intouch.paid.Contact;
 
 /**
  * Created by Tal on 1/1/2017.
+ * Class to help manage database backup and restore
  */
 
 public class BackupDB {
@@ -35,49 +36,44 @@ public class BackupDB {
         mContext = context;
 
 
-
     }
 
     public void deleteContactFromFirebase(String deleteKey) {
         FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mFirebaseDatabaseReference = mFirebaseDatabase.getReference();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null){
+        if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
-            if(uid != null) {
+            if (uid != null) {
                 Log.d(LOG_TAG, "uid = " + uid);
                 Log.d(LOG_TAG, "deleteKey = " + deleteKey);
 
-                 mFirebaseDatabaseReference.child(uid).child(deleteKey).removeValue();
-            }
-            else{
+                mFirebaseDatabaseReference.child(uid).child(deleteKey).removeValue();
+            } else {
                 Log.d(LOG_TAG, "uid = null");
             }
-        }
-        else{
+        } else {
             Intent intent = new Intent(mContext, MainActivity.class);
             mContext.startActivity(intent);
         }
     }
 
-    public void updateFirebaseContact(String firebaseContactKey, Contact contact){
+    public void updateFirebaseContact(String firebaseContactKey, Contact contact) {
         FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mFirebaseDatabaseReference = mFirebaseDatabase.getReference();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null){
+        if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
-            if(uid != null) {
+            if (uid != null) {
                 Log.d(LOG_TAG, "uid = " + uid);
                 Log.d(LOG_TAG, "firebaseContactKey = " + firebaseContactKey);
 
                 mFirebaseDatabaseReference.child(uid).child(firebaseContactKey).setValue(contact);
 
-            }
-            else{
+            } else {
                 Log.d(LOG_TAG, "uid = null");
             }
-        }
-        else{
+        } else {
             Intent intent = new Intent(mContext, MainActivity.class);
             mContext.startActivity(intent);
         }
@@ -85,14 +81,14 @@ public class BackupDB {
     }
 
 
-    public void restoreDB(){
+    public void restoreDB() {
 
         FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mFirebaseDatabaseReference = mFirebaseDatabase.getReference();
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-        if(firebaseUser != null){
+        if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
-            if(uid != null) {
+            if (uid != null) {
                 Log.d(LOG_TAG, "uid = " + uid);
 
                 mFirebaseDatabaseReference = mFirebaseDatabaseReference.child(uid);
@@ -100,7 +96,7 @@ public class BackupDB {
                 mFirebaseDatabaseReference.addListenerForSingleValueEvent(
                         new ValueEventListener() {
                             @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
+                            public void onDataChange(DataSnapshot dataSnapshot) {
                                 Vector<ContentValues> cVVector = new Vector<ContentValues>();
 
                                 //Get map of users in datasnapshot
@@ -160,12 +156,10 @@ public class BackupDB {
                         });
 
 
-            }
-            else{
+            } else {
                 Log.d(LOG_TAG, "uid = null");
             }
-        }
-        else{
+        } else {
             Intent intent = new Intent(mContext, MainActivity.class);
             mContext.startActivity(intent);
         }

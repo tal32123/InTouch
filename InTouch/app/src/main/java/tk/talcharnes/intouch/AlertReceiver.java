@@ -17,7 +17,6 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import org.json.JSONException;
 
@@ -28,6 +27,7 @@ import java.util.Random;
 
 /**
  * Created by Tal on 12/29/2016.
+ * This class creates the notifications
  */
 
 public class AlertReceiver extends BroadcastReceiver {
@@ -47,14 +47,12 @@ public class AlertReceiver extends BroadcastReceiver {
     String message;
 
 
-
-    public AlertReceiver(){
+    public AlertReceiver() {
         ACTION_CALL_NOTIFICATION = "action_call";
         ACTION_SEND_TEXT = "action_send_text";
         ACTION_NOTIFICATION = "action_notification";
-
-
     }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         mContext = context;
@@ -67,32 +65,28 @@ public class AlertReceiver extends BroadcastReceiver {
         message = getMessage();
 
 
-        if(action.equals(ACTION_CALL_NOTIFICATION)){
+        if (action.equals(ACTION_CALL_NOTIFICATION)) {
             // *1 in front is for calls so that ID is positive.
             // We add this in front of the contact ID to have a unique notification
             notificationID = 1 * Integer.parseInt(contactID);
             createNotification(context, "Call " + name, "Call " + name, "It is time to call " + name, action);
 
-        }
-        else if(action.equals(ACTION_SEND_TEXT)){
+        } else if (action.equals(ACTION_SEND_TEXT)) {
             //-1 in front is for texts.
             // We add this in front of the contact ID to have a unique notification
             notificationID = -1 * Integer.parseInt(contactID);
             createNotification(context, "Text " + name, "Text " + name, "Click to send the following message to " + name + ": " + message, action);
-
         }
 
 
-
-
     }
-    public void createNotification(Context context, String title, String messageText, String messageAlert, String action){
+
+    public void createNotification(Context context, String title, String messageText, String messageAlert, String action) {
         Intent testIntent = new Intent(context, NotificationReceiver.class);
         testIntent.putExtra("name", name);
         testIntent.putExtra("number", number);
         testIntent.putExtra("message", message);
         testIntent.putExtra("contactID", contactID);
-        Log.d("ALERTRECEIVER ", "name " + name + "number " + number + " message " + message);
         testIntent.setAction(action);
 
         PendingIntent notificIntent = PendingIntent.getBroadcast(context, notificationID, testIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -102,7 +96,7 @@ public class AlertReceiver extends BroadcastReceiver {
                 .setContentTitle(title)
                 .setTicker(messageText)
                 .setContentText(messageAlert)
-        .setStyle(new NotificationCompat.BigTextStyle().bigText(messageAlert));
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(messageAlert));
 
 
         mBuilder.setContentIntent(notificIntent);
@@ -111,16 +105,16 @@ public class AlertReceiver extends BroadcastReceiver {
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(notificationID, mBuilder.build());
     }
-    private Bitmap getBMP(String photo_uri){
-    if(photo_uri!= null && !photo_uri.equals(null) && !photo_uri.equals("")) {
-        InputStream photo_stream = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(mContext.getContentResolver(), Uri.parse(photo_uri.substring(0, photo_uri.length() - 6)));
-        BufferedInputStream buf = new BufferedInputStream(photo_stream);
-        Bitmap my_btmp = BitmapFactory.decodeStream(buf);
 
-        return getCircleBitmap(my_btmp);
-    }
-        else return BitmapFactory.decodeResource(mContext.getResources(),
-            R.mipmap.contact_photo);
+    private Bitmap getBMP(String photo_uri) {
+        if (photo_uri != null && !photo_uri.equals(null) && !photo_uri.equals("")) {
+            InputStream photo_stream = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(mContext.getContentResolver(), Uri.parse(photo_uri.substring(0, photo_uri.length() - 6)));
+            BufferedInputStream buf = new BufferedInputStream(photo_stream);
+            Bitmap my_btmp = BitmapFactory.decodeStream(buf);
+
+            return getCircleBitmap(my_btmp);
+        } else return BitmapFactory.decodeResource(mContext.getResources(),
+                R.mipmap.contact_photo);
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
@@ -148,7 +142,7 @@ public class AlertReceiver extends BroadcastReceiver {
         return output;
     }
 
-    private String getMessage(){
+    private String getMessage() {
 
         //Turn string of all messages into an ArrayList in order to get one specific message at random
         ArrayList<String> messagesArrayList = null;
@@ -159,9 +153,7 @@ public class AlertReceiver extends BroadcastReceiver {
         }
         Random rand = new Random();
 
-        int  n = rand.nextInt(messagesArrayList.size());
-
-
+        int n = rand.nextInt(messagesArrayList.size());
 
         return messagesArrayList.get(n);
     }

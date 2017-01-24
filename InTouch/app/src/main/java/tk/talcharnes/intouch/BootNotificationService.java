@@ -8,20 +8,15 @@ import android.database.Cursor;
 import tk.talcharnes.intouch.data.ContactsContract;
 
 /**
- * An {@link IntentService} subclass for handling asynchronous task requests in
- * a service on a separate handler thread.
- * <p>
- * helper methods.
+ * This class re-creates all notifications on restart
  */
 public class BootNotificationService extends IntentService {
     final String ACTION_CALL_NOTIFICATION = "action_call";
     final String ACTION_SEND_TEXT = "action_send_text";
-    final String ACTION_NOTIFICATION = "action_notification";
 
     public BootNotificationService() {
         super("FService");
     }
-
 
 
     @Override
@@ -41,10 +36,8 @@ public class BootNotificationService extends IntentService {
             int notificationTimeIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME);
 
 
-
-
             if (cursor != null && cursor.moveToFirst()) {
-                for( int i = 0; i < cursor.getCount(); i++){
+                for (int i = 0; i < cursor.getCount(); i++) {
 
                     String name = cursor.getString(nameIndex);
                     String photoThumbnailUri = cursor.getString(photoThumbnailUriIndex);

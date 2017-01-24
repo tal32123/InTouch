@@ -1,60 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contact_list_file"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:id="@+id/contact_list_file">
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/contact_image"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="16dp"
+            android:src="@mipmap/contact_photo" />
+
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_margin="16dp"
-                android:src="@mipmap/contact_photo"
-                android:layout_gravity="center_vertical"
-                android:id="@+id/contact_image"/>
-            <LinearLayout
-                android:layout_width="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    xmlns:tools="http://schemas.android.com/tools"
-                    tools:text="ffffaaaaf"
-                    android:text="Firstname Last"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-                    android:id="@+id/contact_name"/>
-            </LinearLayout>
-            <ImageButton
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:background="@color/colorPrimaryDark"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_message_white_24dp"
-                android:id="@+id/send_text_button"
-                />
-            <ImageButton
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_margin="16dp"
-                android:backgroundTint="@color/colorPrimaryDark"
-                android:background="@color/colorPrimaryDark"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/ic_call_white_24dp"
-                android:id="@+id/call_button"
-                />
+                android:text="@string/firstname_last_temp_text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
         </LinearLayout>
 
+        <ImageButton
+            android:id="@+id/send_text_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:src="@drawable/ic_message_white_24dp" />
+
+        <ImageButton
+            android:id="@+id/call_button"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="16dp"
+            android:background="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:src="@drawable/ic_call_white_24dp" />
     </LinearLayout>
+
+</LinearLayout>

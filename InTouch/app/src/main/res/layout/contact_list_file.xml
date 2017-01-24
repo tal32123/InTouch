@@ -1,61 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contact_card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/contact_card_view"
     android:layoutDirection="locale">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <LinearLayout
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_margin="16dp"
-        android:src="@mipmap/contact_photo"
-        android:id="@+id/contact_image"/>
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="vertical">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/firstname_last_temp_text"
-        android:textColor="@color/primary_text"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-        android:id="@+id/contact_name"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/contact_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_margin="16dp"
+                android:src="@mipmap/contact_photo" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/contact_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/firstname_last_temp_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+                    android:textColor="@color/primary_text" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/send_text_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:src="@drawable/ic_message_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/call_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_margin="16dp"
+                android:background="@color/colorPrimaryDark"
+                android:backgroundTint="@color/colorPrimaryDark"
+                android:src="@drawable/ic_call_white_24dp" />
+        </LinearLayout>
 
     </LinearLayout>
-    <ImageButton
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:background="@color/colorPrimaryDark"
-        android:src="@drawable/ic_message_white_24dp"
-        android:id="@+id/send_text_button"
-        />
-    <ImageButton
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:background="@color/colorPrimaryDark"
-        android:src="@drawable/ic_call_white_24dp"
-        android:id="@+id/call_button"
-        />
-    </LinearLayout>
-
-</LinearLayout>
 </android.support.v7.widget.CardView>

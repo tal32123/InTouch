@@ -75,7 +75,7 @@ public class ContactsContract {
         public static final String COLUMN_MESSAGE_LIST = "message_list";
 
         //Uri of photo thumbnail
-        public static final String COLUMN_PHOTO_THUMBNAIL_URI="photo_thumbnail_uri";
+        public static final String COLUMN_PHOTO_THUMBNAIL_URI = "photo_thumbnail_uri";
 
 
         public static Uri buildContactsUri(long id) {

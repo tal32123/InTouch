@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 
 /**
  * Created by Tal on 6/26/2016.
+ * Database provider
  */
 public class ContactsProvider extends ContentProvider {
     final static int CONTACTS = 100;
@@ -39,7 +40,7 @@ public class ContactsProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         Cursor retCursor;
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        switch (sUriMatcher.match(uri)){
+        switch (sUriMatcher.match(uri)) {
             case CONTACTS: {
                 retCursor = db.query(ContactsContract.ContactsEntry.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
                 break;
@@ -49,7 +50,8 @@ public class ContactsProvider extends ContentProvider {
                 break;
             }
 
-            default: throw new UnsupportedOperationException("Unknown Uri " + uri);
+            default:
+                throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
 
         retCursor.setNotificationUri(getContext().getContentResolver(), uri);
@@ -61,11 +63,14 @@ public class ContactsProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         final int match = sUriMatcher.match(uri);
-        switch (match){
-            case CONTACTS: return ContactsContract.ContactsEntry.CONTENT_TYPE;
-            case CONTACTS_WITH_ID: return ContactsContract.ContactsEntry.CONTENT_ITEM_TYPE;
+        switch (match) {
+            case CONTACTS:
+                return ContactsContract.ContactsEntry.CONTENT_TYPE;
+            case CONTACTS_WITH_ID:
+                return ContactsContract.ContactsEntry.CONTENT_ITEM_TYPE;
 
-            default: throw new UnsupportedOperationException("Unknown uri: " + uri);
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
 
         }
 
@@ -77,7 +82,7 @@ public class ContactsProvider extends ContentProvider {
         final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         final int match = sUriMatcher.match(uri);
         Uri returnUri;
-        switch (match){
+        switch (match) {
             case CONTACTS: {
                 long _id = db.insert(ContactsContract.ContactsEntry.TABLE_NAME, null, values);
                 if (_id > 0) returnUri = ContactsContract.ContactsEntry.buildContactsUri(_id);
@@ -98,8 +103,8 @@ public class ContactsProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int rowsDeleted;
         //This makes delete all rows return number of rows deleted
-        if (null == selection)  selection = "1";
-        switch (match){
+        if (null == selection) selection = "1";
+        switch (match) {
             case CONTACTS:
                 rowsDeleted = db.delete(ContactsContract.ContactsEntry.TABLE_NAME, selection, selectionArgs);
                 break;
@@ -108,7 +113,7 @@ public class ContactsProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
         //because a null deletes all rows
-        if (rowsDeleted !=0 ){
+        if (rowsDeleted != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsDeleted;
@@ -120,7 +125,7 @@ public class ContactsProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
         int rowsUpdated;
 
-        switch (match){
+        switch (match) {
             case CONTACTS:
                 rowsUpdated = db.update(ContactsContract.ContactsEntry.TABLE_NAME, values, selection, selectionArgs);
                 break;
@@ -128,7 +133,7 @@ public class ContactsProvider extends ContentProvider {
             default:
                 throw new UnsupportedOperationException("Unknown Uri " + uri);
         }
-        if (rowsUpdated != 0){
+        if (rowsUpdated != 0) {
             getContext().getContentResolver().notifyChange(uri, null);
         }
         return rowsUpdated;
@@ -140,8 +145,7 @@ public class ContactsProvider extends ContentProvider {
         final int match = sUriMatcher.match(uri);
 
         switch (match) {
-            case CONTACTS:
-            {
+            case CONTACTS: {
                 db.beginTransaction();
                 int returnCount = 0;
                 try {

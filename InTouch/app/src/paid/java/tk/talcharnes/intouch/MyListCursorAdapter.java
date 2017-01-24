@@ -33,7 +33,6 @@ public class MyListCursorAdapter extends ListCursorAdapter {
     }
 
 
-
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, Cursor cursor) {
         super.onBindViewHolder(viewHolder, cursor);
@@ -44,6 +43,6 @@ public class MyListCursorAdapter extends ListCursorAdapter {
             intent.putExtra("firebaseContactKey", firebaseContactKey);
         }
     }
-    }
+}
 
 

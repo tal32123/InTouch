@@ -16,6 +16,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
+
         public ViewHolder(TextView v) {
             super(v);
             mTextView = v;
@@ -30,7 +31,7 @@ public class MessageListAdapter extends RecyclerView.Adapter<MessageListAdapter.
     // Create new views (invoked by the layout manager)
     @Override
     public MessageListAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+                                                            int viewType) {
         // create a new view
         TextView v = (TextView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.message_view, parent, false);

@@ -2,6 +2,7 @@ package tk.talcharnes.intouch.paid;
 
 /**
  * Created by Tal on 1/9/2017.
+ * Creates a contact file to be uploaded to firebase database
  */
 
 public class Contact {
@@ -11,6 +12,7 @@ public class Contact {
     private String number;
     private String messageListJsonString;
     private Long notificationTime;
+
     public Contact() {
     }
 

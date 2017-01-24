@@ -41,13 +41,14 @@ import tk.talcharnes.intouch.data.ContactsContract;
 public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapter.ViewHolder> {
     private Context mContext;
     private final String LOG_TAG = ListCursorAdapter.class.getSimpleName();
-    public ListCursorAdapter(Context context,Cursor cursor){
-        super(context,cursor);
+
+    public ListCursorAdapter(Context context, Cursor cursor) {
+        super(context, cursor);
         mContext = context;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-//        public TextView mTextView;
+        //        public TextView mTextView;
         TextView contactName;
         ImageButton callButton;
         ImageButton textButton;
@@ -99,13 +100,11 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
         final long notificationTime = cursor.getLong(notificationTimeIndex);
 
 
-
         viewHolder.contactName.setText(name);
-
 
         // Sends a random text
         viewHolder.textButton.setOnClickListener(
-                new View.OnClickListener(){
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 
@@ -118,7 +117,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                         }
                         Random rand = new Random();
 
-                        int  n = rand.nextInt(messagesArrayList.size());
+                        int n = rand.nextInt(messagesArrayList.size());
 
                         Log.d(LOG_TAG,
                                 "n = " + n
@@ -136,7 +135,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                                     Toast.LENGTH_SHORT).show();
                         } catch (Exception ex) {
                             //If text message isn't sent show why in log
-                        Log.d(LOG_TAG, ex.getMessage().toString());
+                            Log.d(LOG_TAG, ex.getMessage().toString());
                             ex.printStackTrace();
 
                             //If text message wasn't sent attempt to send text another way (through the user's text messaging app)
@@ -154,7 +153,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
         viewHolder.textButton.setContentDescription(mContext.getString(R.string.send_text_description_string) + name);
 
         viewHolder.callButton.setOnClickListener(
-                new View.OnClickListener(){
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -168,7 +167,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
 
         viewHolder.callButton.setContentDescription(mContext.getString(R.string.call_description) + name);
         viewHolder.contactCardView.setOnClickListener(
-                new View.OnClickListener(){
+                new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Activity activity = (Activity) mContext;
@@ -192,31 +191,28 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
         );
 
 
-
-        if(photoThumbnailUri!= null && !photoThumbnailUri.equals(null) && !photoThumbnailUri.equals("")){
+        if (photoThumbnailUri != null && !photoThumbnailUri.equals(null) && !photoThumbnailUri.equals("")) {
             try {
                 InputStream photo_stream = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(mContext.getContentResolver(), Uri.parse(photoThumbnailUri.substring(0, photoThumbnailUri.length() - 6)));
                 BufferedInputStream buf = new BufferedInputStream(photo_stream);
                 Bitmap my_btmp = BitmapFactory.decodeStream(buf);
                 viewHolder.contactPhotoView.setImageBitmap(getCircleBitmap(my_btmp));
 
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 //if permission to get contact photos wasn't granted then use default photo
                 Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
                         R.mipmap.contact_photo);
                 viewHolder.contactPhotoView.setImageBitmap(icon);
             }
 
-        }
-        else {
+        } else {
             //if permission to get contact photos wasn't granted then use default photo
             Bitmap icon = BitmapFactory.decodeResource(mContext.getResources(),
                     R.mipmap.contact_photo);
             viewHolder.contactPhotoView.setImageBitmap(icon);
         }
 
-    }           
+    }
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
 

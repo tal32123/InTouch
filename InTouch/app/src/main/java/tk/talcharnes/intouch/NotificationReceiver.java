@@ -19,6 +19,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     String message;
 
     final static String LOG_TAG = NotificationReceiver.class.getSimpleName();
+
     public NotificationReceiver() {
 
         ACTION_CALL_NOTIFICATION = "action_call";
@@ -38,22 +39,18 @@ public class NotificationReceiver extends BroadcastReceiver {
         if (ACTION_SEND_TEXT.equals(intent.getAction())) {
             sendText();
         }
-        if (ACTION_CALL_NOTIFICATION.equals(intent.getAction())){
+        if (ACTION_CALL_NOTIFICATION.equals(intent.getAction())) {
             sendCall();
         }
-
 
 
         // an Intent broadcast.
 //        throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    public void sendText(){
-
-
+    public void sendText() {
 
         try {
-
             //send text message
             SmsManager smsManager = SmsManager.getDefault();
             smsManager.sendTextMessage(number, null, message, null, null);
@@ -73,7 +70,7 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
     }
 
-    public void sendCall(){
+    public void sendCall() {
         Intent callIntent = new Intent(Intent.ACTION_DIAL);
         callIntent.setData(Uri.parse("tel:" + number));
         if (callIntent.resolveActivity(mContext.getPackageManager()) != null) {

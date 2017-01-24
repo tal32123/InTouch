@@ -114,15 +114,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                     }
                 }
             };
+        } else {
+            setHasOptionsMenu(false);
+            Toast.makeText(getContext(), R.string.upgrade_google_play_services_string, Toast.LENGTH_SHORT).show();
         }
 
-    else
-    {
-        setHasOptionsMenu(false);
-        Toast.makeText(getContext(), "Please upgrade Google Play Services for all features", Toast.LENGTH_SHORT).show();
     }
-
-}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -208,7 +205,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
 
-
     //code from http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
     private ItemTouchHelper.Callback createHelperCallback() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
@@ -229,11 +225,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 };
         return simpleItemTouchCallback;
     }
-    private void moveItem(int oldPos, int newPos){
+
+    private void moveItem(int oldPos, int newPos) {
 
     }
 
-    private void deleteItem(final int position){
+    private void deleteItem(final int position) {
 
         int contact_idIndex = mCursor.getColumnIndex(ContactsContract.ContactsEntry._ID);
         mCursor.moveToPosition(position);
@@ -251,10 +248,10 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         firebaseContactKey = mCursor.getString(firebaseKeyIndex);
 
         int deletePosition = mCursor.getInt(contact_idIndex);
-        contact_id = ""+(deletePosition);
-                getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
+        contact_id = "" + (deletePosition);
+        getContext().getContentResolver().delete(ContactsContract.ContactsEntry.CONTENT_URI,
                 "_ID = ?",
-                        new String[]{""+deletePosition});
+                new String[]{"" + deletePosition});
         mAdapter.notifyItemRemoved(position);
 
         //Cancel current notifications
@@ -278,19 +275,18 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         backupDB.deleteContactFromFirebase(firebaseContactKey);
 
 
-
         Utility.updateWidgets(getContext());
         Log.d(LOG_TAG, "deleteItem position = " + position);
     }
 
-    private PendingIntent createNotificationPendingIntent(String action){
-        return Utility.createNotificationPendingIntent(name, number, messageArrayListString,contact_id, photo_uri, action, getContext());
+    private PendingIntent createNotificationPendingIntent(String action) {
+        return Utility.createNotificationPendingIntent(name, number, messageArrayListString, contact_id, photo_uri, action, getContext());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if(googlePlayServicesApiValid) {
+        if (googlePlayServicesApiValid) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
@@ -298,12 +294,12 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onResume() {
         super.onResume();
-        if(googlePlayServicesApiValid) {
+        if (googlePlayServicesApiValid) {
             mFirebaseAuth.addAuthStateListener(mAuthStateListener);
         }
     }
 
-    private void restoreDatabase(Context context){
+    private void restoreDatabase(Context context) {
         BackupDB backupDB = new BackupDB(context);
         backupDB.restoreDB();
     }

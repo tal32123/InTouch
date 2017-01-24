@@ -25,7 +25,8 @@ public class Utility {
     public static final String ACTION_NOTIFICATION = "action_notification";
 
 
-    public static String createStringFromArrayList(ArrayList<String> arrayList){
+    //    Creates a json string from an array list file
+    public static String createStringFromArrayList(ArrayList<String> arrayList) {
         JSONObject json = new JSONObject();
         try {
             json.put("uniqueArrays", new JSONArray(arrayList));
@@ -35,7 +36,7 @@ public class Utility {
         return json.toString();
     }
 
-
+    //  Create an array list from a json string
     public static ArrayList<String> getArrayListFromJSONString(String stringreadfromsqlite) throws JSONException {
         JSONObject json = new JSONObject(stringreadfromsqlite);
         JSONArray items = json.optJSONArray("uniqueArrays");
@@ -48,6 +49,7 @@ public class Utility {
         return arrayList;
     }
 
+    //  Update widgets
     public static void updateWidgets(Context mContext) {
 
         // Setting the package ensures that only components in our app will receive the broadcast
@@ -56,14 +58,16 @@ public class Utility {
         mContext.sendBroadcast(dataUpdatedIntent);
     }
 
-    public static long getTimeForNotification(int hour, int minutes, int am_pm){
+    //  Get Time for notifications
+    public static long getTimeForNotification(int hour, int minutes, int am_pm) {
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR, hour);
         calendar.set(Calendar.MINUTE, minutes);
         calendar.set(Calendar.AM_PM, am_pm);
-        return  calendar.getTimeInMillis();
+        return calendar.getTimeInMillis();
     }
 
+    //  Creat pending intent for notifications (and for cancelling notifications)
     public static PendingIntent createNotificationPendingIntent(
             String name,
             String number,
@@ -72,7 +76,7 @@ public class Utility {
             String photo_uri,
             String actionType,
             Context mContext
-            ){
+    ) {
 
         Intent alertIntent = new Intent(mContext, AlertReceiver.class);
         alertIntent.putExtra("name", name);
@@ -88,7 +92,8 @@ public class Utility {
         return pendingIntent;
     }
 
-    public static void createNotifications(PendingIntent notificationPendingIntent, Context mContext, Long alarmTime, int frequencyMultiplier){
+    //  Create notifications
+    public static void createNotifications(PendingIntent notificationPendingIntent, Context mContext, Long alarmTime, int frequencyMultiplier) {
 
         AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmTime, AlarmManager.INTERVAL_DAY * Long.valueOf(frequencyMultiplier), notificationPendingIntent);

@@ -65,7 +65,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     String ACTION_CALL_NOTIFICATION;
     String ACTION_NOTIFICATION;
     Long contactID;
-    int  minutes;
+    int minutes;
     int hour;
     int am_pm;
     long notificationTime;
@@ -159,7 +159,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                         addMessageEditText.setText("");
                         mAdapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
                     }
 
                     InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -176,7 +176,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                         addMessageEditText.setText("");
                         mAdapter.notifyDataSetChanged();
                     } else {
-                        Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
                     }
 
                     InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -238,11 +238,11 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
 
-    private void moveItem(int oldPos, int newPos){
+    private void moveItem(int oldPos, int newPos) {
 
     }
 
-    private void deleteItem(final int position){
+    private void deleteItem(final int position) {
         myDataset.remove(position);
         mAdapter.notifyItemRemoved(position);
     }
@@ -252,40 +252,41 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         if (nameView.getText().toString() != null && !nameView.getText().toString().equals("") && !nameView.getText().toString().isEmpty()) {
             name = nameView.getText().toString();
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
 
 
         if (phoneNumberView.getText().toString() != null && !phoneNumberView.getText().toString().equals("") && !phoneNumberView.getText().toString().isEmpty()) {
             number = phoneNumberView.getText().toString();
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
 
         if (callFrequencyView.getText().toString() != null && !callFrequencyView.getText().toString().equals("") && !callFrequencyView.getText().toString().isEmpty()) {
             if (!callFrequencyView.getText().toString().equals("0")) {
                 call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
-            }
-            else {
+            } else {
                 emptyField = true;
                 callFrequencyView.setError(getString(R.string.call_frequency_0_error));
             }
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
-        if(textFrequencyView.getText().toString() != null && !textFrequencyView.getText().toString().equals("") && !textFrequencyView.getText().toString().isEmpty()){
+        if (textFrequencyView.getText().toString() != null && !textFrequencyView.getText().toString().equals("") && !textFrequencyView.getText().toString().isEmpty()) {
             if (!textFrequencyView.getText().toString().equals("0")) {
                 text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
-            }
-            else{
+            } else {
                 emptyField = true;
                 textFrequencyView.setError(getString(R.string.text_frequency_0_error));
             }
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
-        if(!myDataset.isEmpty()){
+        if (!myDataset.isEmpty()) {
             messageArrayListString = Utility.createStringFromArrayList(myDataset);
             Log.d(LOG_TAG, "arrayList String = " + messageArrayListString);
-        }
-        else {
+        } else {
             emptyField = true;
             Toast.makeText(this, R.string.message_list_empty_error, Toast.LENGTH_SHORT).show();
         }
@@ -295,8 +296,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         am_pm = am_pm_spinner.getSelectedItemPosition();
         notificationTime = Utility.getTimeForNotification(hour, minutes, am_pm);
 
-        if(!emptyField) {
-
+        if (!emptyField) {
 
 
             // Defines an object to contain the new values to insert
@@ -309,16 +309,15 @@ public class ContactDetailActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
 
-            if(photo_uri != null){
-                if(!photo_uri.equals(null) && !photo_uri.equals("")) {
+            if (photo_uri != null) {
+                if (!photo_uri.equals(null) && !photo_uri.equals("")) {
                     mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI, photo_uri);
                 }
             }
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST, messageArrayListString);
 
 
-
-            if(googlePlayServicesApiValid) {
+            if (googlePlayServicesApiValid) {
                 Contact contact = new Contact();
                 contact.setCallFrequency(call_frequency);
                 contact.setName(name);
@@ -333,7 +332,7 @@ public class ContactDetailActivity extends AppCompatActivity {
                 String firebaseContactKey = db_ref.getKey();             //the UniqueID/key
                 db_ref.setValue(contact);
                 Log.d(LOG_TAG, "firebase key = " + firebaseContactKey);
-                if(googlePlayServicesApiValid) {
+                if (googlePlayServicesApiValid) {
                     mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, firebaseContactKey);
                 }
 
@@ -346,28 +345,28 @@ public class ContactDetailActivity extends AppCompatActivity {
             Utility.updateWidgets(getApplicationContext());
 
 
-
             createNotifications(ACTION_SEND_TEXT, text_frequency);
             createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
 
             NavUtils.navigateUpFromSameTask(this);
 
 
-        }
-        else{
+        } else {
             Toast.makeText(this, getString(R.string.fill_out_empty_fields), Toast.LENGTH_SHORT).show();
         }
 
     }
 
-    public void deleteData(View view){
+    public void deleteData(View view) {
         NavUtils.navigateUpFromSameTask(this);
 
     }
+
     public void chooseContact(View view) {
         selectContact();
 
     }
+
     static final int REQUEST_SELECT_PHONE_NUMBER = 1;
 
     public void selectContact() {
@@ -378,17 +377,15 @@ public class ContactDetailActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_SELECT_PHONE_NUMBER);
         }
     }
-    public void addMessage(View view){
+
+    public void addMessage(View view) {
         String message = addMessageEditText.getText().toString();
-        if(message != null && !message.equals("")) {
+        if (message != null && !message.equals("")) {
             myDataset.add(message);
             addMessageEditText.setText("");
             mAdapter.notifyDataSetChanged();
-        }
-
-
-
-        else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getApplicationContext(), getString(R.string.message_empty_string), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -407,11 +404,11 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
                 number = cursor.getString(numberIndex);
-                if(number != null && !number.equals("")){
+                if (number != null && !number.equals("")) {
                     phoneNumberView.setText(number);
                 }
                 contact_name = cursor.getString(nameIndex);
-                if(contact_name != null && !contact_name.equals("")){
+                if (contact_name != null && !contact_name.equals("")) {
                     nameView.setText(contact_name);
                 }
                 photo_uri = cursor.getString(photoIndex);
@@ -422,7 +419,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     }
 
 
-    private void createNotifications(String actionType, int frequencyInDays){
+    private void createNotifications(String actionType, int frequencyInDays) {
 
         //alarm notification
 

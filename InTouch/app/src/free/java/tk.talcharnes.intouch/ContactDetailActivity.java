@@ -39,13 +39,17 @@ import java.util.Arrays;
 
 import static tk.talcharnes.intouch.R.string.phone_number;
 
+/*
+ * Credit to: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
+ * Credit to: http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
+
+ */
 
 public class ContactDetailActivity extends AppCompatActivity {
     private final String LOG_TAG = ContactDetailActivity.class.getSimpleName();
     private String name;
     private int call_frequency;
     private int text_frequency;
-    private String notification_time;
     EditText nameView;
     EditText phoneNumberView;
     EditText callFrequencyView;
@@ -68,11 +72,10 @@ public class ContactDetailActivity extends AppCompatActivity {
     String ACTION_NOTIFICATION;
     InterstitialAd mInterstitialAd;
     Long contactID;
-    int  minutes;
+    int minutes;
     int hour;
     int am_pm;
     long notificationTime;
-
 
 
     @Override
@@ -84,11 +87,11 @@ public class ContactDetailActivity extends AppCompatActivity {
         ACTION_SEND_TEXT = "action_send_text";
         ACTION_NOTIFICATION = "action_notification";
 
-
-        nameView = (EditText)findViewById(R.id.contact_name);
-        phoneNumberView = (EditText)findViewById(R.id.contact_phone_number);
-        callFrequencyView = (EditText)findViewById(R.id.contact_call_frequency);
-        textFrequencyView = (EditText)findViewById(R.id.contact_text_frequency);
+        //Set up views
+        nameView = (EditText) findViewById(R.id.contact_name);
+        phoneNumberView = (EditText) findViewById(R.id.contact_phone_number);
+        callFrequencyView = (EditText) findViewById(R.id.contact_call_frequency);
+        textFrequencyView = (EditText) findViewById(R.id.contact_text_frequency);
         addMessageEditText = (EditText) findViewById(R.id.add_message_edittext);
         ImageButton addMessageButton = (ImageButton) findViewById(R.id.add_message_button);
         addMessageButton.setContentDescription(getString(R.string.add_message_to_list_description));
@@ -97,11 +100,12 @@ public class ContactDetailActivity extends AppCompatActivity {
         hourPicker = (Spinner) findViewById(R.id.hour_picker);
         String[] hourArray = new String[12];
         hourArray[0] = "12";
-        for (int i = 1; i< 12; i++){
-            if(i < 10){
+        for (int i = 1; i < 12; i++) {
+            if (i < 10) {
                 hourArray[i] = "0" + i;
+            } else {
+                hourArray[i] = Integer.toString(i);
             }
-            else {hourArray[i] = Integer.toString(i);}
         }
 
         SpinnerAdapter hourAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, hourArray);
@@ -111,11 +115,10 @@ public class ContactDetailActivity extends AppCompatActivity {
         //Set up minute picker spinner
         minutePicker = (Spinner) findViewById(R.id.minute_picker);
         String[] minuteArray = new String[60];
-        for (int i = 0; i< 60; i++){
-            if(i>9) {
+        for (int i = 0; i < 60; i++) {
+            if (i > 9) {
                 minuteArray[i] = Integer.toString(i);
-            }
-            else {
+            } else {
                 minuteArray[i] = "0" + Integer.toString(i);
             }
         }
@@ -124,9 +127,8 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         //Set up spinner for am/pm hours
         am_pm_spinner = (Spinner) findViewById(R.id.am_pm_spinner);
-
         String[] sortingCriteria = {"A.M.", "P.M."};
-         am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
+        am_pm_spinnerAdapter = new ArrayAdapter<String>(this, R.layout.time_spinner, sortingCriteria);
         am_pm_spinner.setAdapter(am_pm_spinnerAdapter);
 
         //Set up recycler view for messages
@@ -152,25 +154,23 @@ public class ContactDetailActivity extends AppCompatActivity {
                     handled = true;
 
                 }
-                if(actionId == EditorInfo.IME_ACTION_DONE){
-                    if(myDataset.size()<6) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (myDataset.size() < 6) {
                         myDataset.add(addMessageEditText.getText().toString());
 
                         InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                         addMessageEditText.setText("");
-                    }
-                    else {
+                    } else {
 
-                        //snackbar code from: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
                         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
                         Snackbar snackbar = Snackbar
                                 .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                            }
-                        });
+                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                    }
+                                });
 
 // Changing message text color
                         snackbar.setActionTextColor(Color.RED);
@@ -190,14 +190,12 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
 
 
-
-
+// Connect adapter to data and initialize message list recycler view
         mAdapter = new MessageListAdapter(myDataset);
         message_list_recycler_view.setAdapter(mAdapter);
 
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(createHelperCallback());
         itemTouchHelper.attachToRecyclerView(message_list_recycler_view);
-
 
 
         //interstitial ads
@@ -212,11 +210,9 @@ public class ContactDetailActivity extends AppCompatActivity {
         });
 
 
-//// TODO: 1/3/2017 refactor interstitial code, most likely can remove some of the code/move it around especially in regards to requestnewinterstitial
     }
 
-
-    //code from http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
+    //Code for swipe to delete messages
     private ItemTouchHelper.Callback createHelperCallback() {
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback =
                 new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN,
@@ -236,68 +232,72 @@ public class ContactDetailActivity extends AppCompatActivity {
                 };
         return simpleItemTouchCallback;
     }
-    private void moveItem(int oldPos, int newPos){
+
+    private void moveItem(int oldPos, int newPos) {
 
     }
 
-    private void deleteItem(final int position){
+    private void deleteItem(final int position) {
         myDataset.remove(position);
         mAdapter.notifyItemRemoved(position);
     }
 
+    //    code to save contact information
     public void saveData(View view) {
         boolean emptyField = false;
 
         if (nameView.getText().toString() != null && !nameView.getText().toString().equals("") && !nameView.getText().toString().isEmpty()) {
             name = nameView.getText().toString();
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
 
 
         if (phoneNumberView.getText().toString() != null && !phoneNumberView.getText().toString().equals("") && !phoneNumberView.getText().toString().isEmpty()) {
             number = phoneNumberView.getText().toString();
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
 
         if (callFrequencyView.getText().toString() != null && !callFrequencyView.getText().toString().equals("") && !callFrequencyView.getText().toString().isEmpty()) {
             if (!callFrequencyView.getText().toString().equals("0")) {
                 call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
-            }
-            else {
+            } else {
                 emptyField = true;
                 callFrequencyView.setError(getString(R.string.call_frequency_0_error));
             }
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
-        if(textFrequencyView.getText().toString() != null && !textFrequencyView.getText().toString().equals("") && !textFrequencyView.getText().toString().isEmpty()){
+        if (textFrequencyView.getText().toString() != null && !textFrequencyView.getText().toString().equals("") && !textFrequencyView.getText().toString().isEmpty()) {
             if (!textFrequencyView.getText().toString().equals("0")) {
                 text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
-            }
-            else{
+            } else {
                 emptyField = true;
                 textFrequencyView.setError(getString(R.string.text_frequency_0_error));
             }
+        } else {
+            emptyField = true;
         }
-        else {emptyField = true;}
-        if(!myDataset.isEmpty()){
+        if (!myDataset.isEmpty()) {
 
             messageArrayListString = Utility.createStringFromArrayList(myDataset);
             Log.d(LOG_TAG, "arrayList String = " + messageArrayListString);
 
-        }
-        else {
+        } else {
             emptyField = true;
             Toast.makeText(this, R.string.message_list_empty_error, Toast.LENGTH_SHORT).show();
         }
 
+//      Get data from spinners
         minutes = minutePicker.getSelectedItemPosition();
         hour = hourPicker.getSelectedItemPosition();
         am_pm = am_pm_spinner.getSelectedItemPosition();
 
         notificationTime = Utility.getTimeForNotification(hour, minutes, am_pm);
-        if(!emptyField) {
+        if (!emptyField) {
 
-         // Defines an object to contain the new values to insert
+            // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME, name);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, phone_number);
@@ -306,17 +306,16 @@ public class ContactDetailActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
-            if(photo_uri != null){
-                if(!photo_uri.equals(null) && !photo_uri.equals("")) {
+            if (photo_uri != null) {
+                if (!photo_uri.equals(null) && !photo_uri.equals("")) {
                     mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI, photo_uri);
                 }
             }
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST, messageArrayListString);
 
-
-
-            Uri mNewUri = getApplicationContext().getContentResolver().insert(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI, mNewValues);
-
+            Uri mNewUri = getApplicationContext().getContentResolver().insert(
+                    tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
+                    mNewValues);
             contactID = ContentUris.parseId(mNewUri);
 
             Utility.updateWidgets(getApplicationContext());
@@ -324,12 +323,10 @@ public class ContactDetailActivity extends AppCompatActivity {
             requestNewInterstitial();
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
-            }
-            else {
+            } else {
                 Log.d(LOG_TAG, "Interstitial not loaded");
                 // up button navigation
-            NavUtils.navigateUpFromSameTask(this);
-
+                NavUtils.navigateUpFromSameTask(this);
 
                 createNotifications(ACTION_SEND_TEXT, text_frequency);
                 createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
@@ -349,25 +346,30 @@ public class ContactDetailActivity extends AppCompatActivity {
             });
 
 
-
-        }
-        else{
+        } else {
+//          All fields must be filled
             Toast.makeText(this, R.string.fill_out_empty_fields, Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
-    public void deleteData(View view){
+    //  Delete contact information
+// (Since contact has not been saved yet here it just goes up to main activity)
+    public void deleteData(View view) {
         NavUtils.navigateUpFromSameTask(this);
 
     }
+
+    //    Choose contact from phone contacts
     public void chooseContact(View view) {
         selectContact();
 
     }
+
     static final int REQUEST_SELECT_PHONE_NUMBER = 1;
 
+    //    Choose contact from phone contacts
     public void selectContact() {
         // Start an activity for the user to pick a phone number from contacts
         Intent intent = new Intent(Intent.ACTION_PICK);
@@ -377,6 +379,7 @@ public class ContactDetailActivity extends AppCompatActivity {
         }
     }
 
+    //   Gets contact information from phone contacts
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SELECT_PHONE_NUMBER && resultCode == RESULT_OK) {
@@ -393,11 +396,11 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
                 number = cursor.getString(numberIndex);
-                if(number != null && !number.equals("")){
+                if (number != null && !number.equals("")) {
                     phoneNumberView.setText(number);
                 }
                 contact_name = cursor.getString(nameIndex);
-                if(contact_name != null && !contact_name.equals("")){
+                if (contact_name != null && !contact_name.equals("")) {
                     nameView.setText(contact_name);
                 }
                 photo_uri = cursor.getString(photoIndex);
@@ -411,16 +414,19 @@ public class ContactDetailActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+//       Create transition
         overridePendingTransition(R.anim.re_enter_up_out, R.anim.re_enter_up_in);
 
     }
 
-    private void createNotifications(String actionType, int frequencyInDays){
+    //  Create notifications for contact
+    private void createNotifications(String actionType, int frequencyInDays) {
 
         PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contactID.toString(), photo_uri, actionType, getApplicationContext());
         Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTime, frequencyInDays);
 
     }
+
     //request new interstitial ads
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
@@ -429,13 +435,15 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         mInterstitialAd.loadAd(adRequest);
     }
-    public void addMessage(View view){
+
+    //    Add message to list of random messages to send contact
+    public void addMessage(View view) {
         String message = addMessageEditText.getText().toString();
-        if(message != null && !message.equals("")) {
+        if (message != null && !message.equals("")) {
             myDataset.add(message);
             addMessageEditText.setText("");
             mAdapter.notifyDataSetChanged();
-        }
-        else Toast.makeText(getApplicationContext(), "Message can not be empty", Toast.LENGTH_SHORT).show();
+        } else
+            Toast.makeText(getApplicationContext(), R.string.message_can_not_be_empty_error, Toast.LENGTH_SHORT).show();
     }
 }

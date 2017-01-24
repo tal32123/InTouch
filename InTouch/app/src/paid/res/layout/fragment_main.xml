@@ -4,19 +4,19 @@
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layoutDirection="locale"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="tk.talcharnes.intouch.MainActivityFragment"
-    android:layoutDirection="locale"
     tools:showIn="@layout/activity_main">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/contact_list_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layoutDirection="inherit"
-        android:paddingBottom="48dp"
-        android:id="@+id/contact_list_recycler_view"/>
+        android:paddingBottom="48dp" />
 </RelativeLayout>

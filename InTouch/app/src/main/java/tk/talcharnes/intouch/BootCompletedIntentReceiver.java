@@ -6,12 +6,13 @@ import android.content.Intent;
 
 /**
  * Created by Tal on 1/19/2017.
+ * This class receives the boot completed broadcast and sends an intent to begin service
+ * which re-creates all notifications
  * Credit to: http://www.jjoe64.com/2011/06/autostart-service-on-device-boot.html
  */
 
 
 public class BootCompletedIntentReceiver extends BroadcastReceiver {
-
 
 
     @Override

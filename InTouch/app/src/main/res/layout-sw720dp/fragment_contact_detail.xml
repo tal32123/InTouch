@@ -2,165 +2,173 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
     android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layoutDirection="locale">
-   <RelativeLayout
-    android:id="@+id/activity_contact_detail"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
-       android:layout_gravity="center_horizontal"
-    tools:context="tk.talcharnes.intouch.ContactDetailActivity">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:text="@string/choose_existing_contact"
-        android:background="@color/colorPrimary"
-        android:textColor="@android:color/white"
-        android:id="@+id/choose_existing_contact"
-        android:onClick="chooseContact"/>
-    <EditText
-        android:layout_width="560dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/name"
-        android:inputType="text"
-        android:layout_below="@+id/choose_existing_contact"
-        android:layout_alignParentStart="true"
-        android:id="@+id/contact_name"/>
 
-    <EditText
-        android:layout_width="560dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/phone_number"
-        android:textAlignment="textStart"
-        android:inputType="phone"
-        android:layout_below="@+id/contact_name"
-        android:layout_alignParentStart="true"
-        android:id="@+id/contact_phone_number"/>
-    <EditText
-        android:layout_width="560dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="@string/contact_frequency_in_days"
-        android:layout_below="@id/contact_phone_number"
-        android:layout_alignParentStart="true"
-        android:id="@+id/contact_call_frequency"/>
-    <EditText
-        android:layout_width="560dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:hint="@string/text_frequency_in_days"
-        android:layout_below="@id/contact_call_frequency"
-        android:id="@+id/contact_text_frequency"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textSize="18sp"
-        android:layout_alignParentStart="true"
-        android:text="@string/what_time_should_we_notify_you"
-        android:layout_below="@id/contact_text_frequency"
-        android:id="@+id/contact_time"/>
-
-
-       <LinearLayout
-           android:layout_width="560dp"
-           android:layout_height="wrap_content"
-           android:orientation="horizontal"
-           android:id="@+id/time_picker_layout"
-           android:paddingStart="8dp"
-           android:layout_below="@id/contact_time">
-
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/hour_picker"/>
-
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/minute_picker" />
-
-        <android.support.v7.widget.AppCompatSpinner
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/am_pm_spinner"/>
-       </LinearLayout>
-
-       <TextView
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_below="@id/time_picker_layout"
-           android:id="@+id/message_list_title"
-           android:textSize="18sp"
-           android:layout_alignParentStart="true"
-           android:text="@string/messages_to_send_contact"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="560dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/message_list_recycler_view"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/message_list_title"/>
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/activity_contact_detail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/add_message_edittext_container"
-        android:layout_alignParentStart="true"
-        android:layout_below="@id/message_list_recycler_view">
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="tk.talcharnes.intouch.ContactDetailActivity">
+
+        <Button
+            android:id="@+id/choose_existing_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:onClick="chooseContact"
+            android:padding="16dp"
+            android:text="@string/choose_existing_contact"
+            android:textColor="@android:color/white" />
+
         <EditText
-            android:layout_width="0dp"
+            android:id="@+id/contact_name"
+            android:layout_width="560dp"
             android:layout_height="wrap_content"
-            android:hint="@string/add_message_to_list"
-            android:layout_gravity="start"
-            android:inputType="text"
-            android:imeOptions="actionSend|actionDone"
-            android:id="@+id/add_message_edittext"
-            android:layout_weight="1"/>
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:padding="8dp"
-            android:src="@drawable/add_icon"
-            android:background="@color/tw__transparent"
-            android:id="@+id/add_message_button"
-            android:onClick="addMessage"
-            />
-
-    </LinearLayout>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/delete"
-            android:background="@android:color/holo_orange_dark"
-            android:textColor="@android:color/white"
-            android:id="@+id/delete_contact_info"
-            android:onClick="deleteData"
             android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_below="@id/add_message_edittext_container"/>
+            android:layout_below="@+id/choose_existing_contact"
+            android:hint="@string/name"
+            android:inputType="text" />
 
-        <Button
+        <EditText
+            android:id="@+id/contact_phone_number"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/contact_name"
+            android:hint="@string/phone_number"
+            android:inputType="phone"
+            android:textAlignment="textStart" />
+
+        <EditText
+            android:id="@+id/contact_call_frequency"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/contact_phone_number"
+            android:hint="@string/contact_frequency_in_days"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/contact_text_frequency"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contact_call_frequency"
+            android:hint="@string/text_frequency_in_days"
+            android:inputType="number" />
+
+        <TextView
+            android:id="@+id/contact_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/contact_text_frequency"
+            android:layout_marginTop="8dp"
+            android:text="@string/what_time_should_we_notify_you"
+            android:textSize="18sp" />
+
+
+        <LinearLayout
+            android:id="@+id/time_picker_layout"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/contact_time"
+            android:orientation="horizontal"
+            android:paddingStart="8dp">
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/hour_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/minute_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/am_pm_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/message_list_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/time_picker_layout"
+            android:text="@string/messages_to_send_contact"
+            android:textSize="18sp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/message_list_recycler_view"
+            android:layout_width="560dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/message_list_title"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="8dp" />
+
+        <LinearLayout
+            android:id="@+id/add_message_edittext_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/message_list_recycler_view"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/add_message_edittext"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:hint="@string/add_message_to_list"
+                android:imeOptions="actionSend|actionDone"
+                android:inputType="text" />
+
+            <ImageButton
+                android:id="@+id/add_message_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:background="@color/tw__transparent"
+                android:onClick="addMessage"
+                android:padding="8dp"
+                android:src="@drawable/add_icon" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/delete_contact_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
             android:layout_below="@id/add_message_edittext_container"
-            android:text="@string/save"
-            android:background="@android:color/holo_green_light"
-            android:textColor="@android:color/white"
+            android:background="@android:color/holo_orange_dark"
+            android:onClick="deleteData"
+            android:text="@string/delete"
+            android:textColor="@android:color/white" />
+
+        <Button
             android:id="@+id/save_contact_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/add_message_edittext_container"
+            android:background="@android:color/holo_green_light"
             android:onClick="saveData"
-            />
-</RelativeLayout>
+            android:text="@string/save"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
 </ScrollView>
