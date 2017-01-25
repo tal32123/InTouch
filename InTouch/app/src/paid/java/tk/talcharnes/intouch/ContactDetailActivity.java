@@ -165,7 +165,6 @@ public class ContactDetailActivity extends AppCompatActivity {
                     addMessage();
 
                     handled = true;
-                    Log.d(LOG_TAG, "ACTION_SEND");
 
                 }
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -176,7 +175,6 @@ public class ContactDetailActivity extends AppCompatActivity {
                     addMessage();
 
                     handled = true;
-                    Log.d(LOG_TAG, "ACTION_DONE");
                 }
                 return handled;
             }

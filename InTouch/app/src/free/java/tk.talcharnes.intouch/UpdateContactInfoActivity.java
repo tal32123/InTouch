@@ -71,6 +71,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     int minutes;
     int am_pm;
     long notificationTimeInMillis;
+    int callCounter;
+    int textCounter;
 
     @Override
     protected void onPause() {
@@ -92,7 +94,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         text_frequency = intent.getIntExtra("textFequency", 0);
         call_frequency = intent.getIntExtra("callFrequency", 0);
         notificationTimeInMillis = intent.getLongExtra("notificationTime", 0);
-
+        callCounter = intent.getIntExtra("callCounter", 0);
+        textCounter = intent.getIntExtra("textCounter", 0);
 
         String photoUri = intent.getStringExtra("photo_uri");
         if (photoUri != null) {
@@ -358,8 +361,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, call_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, text_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTimeInMillis);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, callCounter);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, textCounter);
             if (photo_uri != null) {
                 if (!photo_uri.equals(null) && !photo_uri.equals("")) {
                     mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI, photo_uri);
@@ -375,8 +378,8 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             Utility.updateWidgets(getApplicationContext());
 
             //Create text notifications
-            createNotifications(ACTION_SEND_TEXT, text_frequency);
-            createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
+            createNotifications(ACTION_SEND_TEXT, text_frequency, textCounter);
+            createNotifications(ACTION_CALL_NOTIFICATION, call_frequency, callCounter);
 
             NavUtils.navigateUpFromSameTask(this);
         } else {
@@ -491,9 +494,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), R.string.message_empty_string, Toast.LENGTH_SHORT).show();
     }
 
-    private void createNotifications(String actionType, int frequencyInDays) {
+    private void createNotifications(String actionType, int frequencyInDays, int lastNotificationDay) {
         PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contact_id, photo_uri, actionType, getApplicationContext());
-        Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTimeInMillis, frequencyInDays);
+        Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTimeInMillis, frequencyInDays, lastNotificationDay, false);
     }
 
     @Override

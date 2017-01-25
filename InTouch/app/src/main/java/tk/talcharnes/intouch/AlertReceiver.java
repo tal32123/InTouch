@@ -3,6 +3,7 @@ package tk.talcharnes.intouch;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,13 +18,19 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import org.json.JSONException;
 
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Random;
+
+import tk.talcharnes.intouch.data.ContactsContract;
+
+import static tk.talcharnes.intouch.NotificationReceiver.LOG_TAG;
 
 /**
  * Created by Tal on 12/29/2016.
@@ -45,6 +52,8 @@ public class AlertReceiver extends BroadcastReceiver {
     int notificationID;
     String photo_uri;
     String message;
+    String column;
+
 
 
     public AlertReceiver() {
@@ -104,6 +113,8 @@ public class AlertReceiver extends BroadcastReceiver {
         mBuilder.setAutoCancel(true);
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(notificationID, mBuilder.build());
+
+        updateCounter(action);
     }
 
     private Bitmap getBMP(String photo_uri) {
@@ -156,6 +167,25 @@ public class AlertReceiver extends BroadcastReceiver {
         int n = rand.nextInt(messagesArrayList.size());
 
         return messagesArrayList.get(n);
+    }
+
+    private void updateCounter(String action){
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
+        if (action.equals(ACTION_CALL_NOTIFICATION)) {
+            column = ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER;
+        }
+        else if(action.equals(ACTION_SEND_TEXT)){
+            column = ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER;
+        }
+            // Defines an object to contain the new counter values to insert
+        ContentValues mNewValues = new ContentValues();
+        mNewValues.put(column, today);
+
+        int updateArray = mContext.getContentResolver().update(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.CONTENT_URI,
+                mNewValues,
+                "_ID = ?",
+                new String[]{contactID});
+        Log.d(LOG_TAG, "Updated row " + updateArray);
     }
 
 

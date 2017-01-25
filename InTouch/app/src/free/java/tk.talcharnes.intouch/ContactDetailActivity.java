@@ -36,6 +36,7 @@ import com.google.android.gms.ads.InterstitialAd;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 
 import static tk.talcharnes.intouch.R.string.phone_number;
 
@@ -76,6 +77,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     int hour;
     int am_pm;
     long notificationTime;
+    int dayOfYear;
 
 
     @Override
@@ -282,6 +284,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     //    code to save contact information
     public void saveData(View view) {
         boolean emptyField = false;
+        dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
         if (nameView.getText().toString() != null && !nameView.getText().toString().equals("") && !nameView.getText().toString().isEmpty()) {
             name = nameView.getText().toString();
@@ -341,8 +344,8 @@ public class ContactDetailActivity extends AppCompatActivity {
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, call_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, text_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, dayOfYear);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, dayOfYear);
             if (photo_uri != null) {
                 if (!photo_uri.equals(null) && !photo_uri.equals("")) {
                     mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI, photo_uri);
@@ -460,7 +463,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     private void createNotifications(String actionType, int frequencyInDays) {
 
         PendingIntent pendingIntent = Utility.createNotificationPendingIntent(name, number, messageArrayListString, contactID.toString(), photo_uri, actionType, getApplicationContext());
-        Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTime, frequencyInDays);
+        Utility.createNotifications(pendingIntent, getApplicationContext(), notificationTime, frequencyInDays, dayOfYear, true);
 
     }
 

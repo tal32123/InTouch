@@ -180,6 +180,8 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                         intent.putExtra("callFrequency", callFrequency);
                         intent.putExtra("photo_uri", photoThumbnailUri);
                         intent.putExtra("notificationTime", notificationTime);
+                        intent.putExtra("callCounter", callCounter);
+                        intent.putExtra("textCounter", textCounter);
 
 
                         activity.startActivity(intent);

@@ -3,6 +3,8 @@ package tk.talcharnes.intouch;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -10,13 +12,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.telephony.SmsManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
-import static android.R.id.message;
+import tk.talcharnes.intouch.data.ContactsContract;
+
+import static tk.talcharnes.intouch.NotificationReceiver.LOG_TAG;
 
 /*
  * Credit to: https://www.tutorialspoint.com/android/android_sending_sms.htm
@@ -129,5 +132,11 @@ public class MainActivity extends AppCompatActivity {
                         MY_PERMISSIONS_REQUEST_SEND_SMS);
             }
         }
+    }
+
+    public void testButton(View view){
+        Cursor cursor = getContentResolver().query(ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null);
+        Log.d("CURSOR = ", DatabaseUtils.dumpCursorToString(cursor));
+
     }
 }

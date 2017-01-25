@@ -191,5 +191,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         return Utility.createNotificationPendingIntent(name, number, messageArrayListString, contact_id, photo_uri, action, getContext());
     }
 
+
 }
 

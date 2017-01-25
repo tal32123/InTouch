@@ -54,12 +54,12 @@ public class BootNotificationService extends IntentService {
                     PendingIntent callIntent = Utility.createNotificationPendingIntent(name, phoneNumber, messageList, Integer.toString(contact_id),
                             photoThumbnailUri, ACTION_CALL_NOTIFICATION, getApplicationContext());
 
-                    Utility.createNotifications(callIntent, getApplicationContext(), notificationTime, callFrequency);
+                    Utility.createNotifications(callIntent, getApplicationContext(), notificationTime, callFrequency, callCounter, false);
 
                     PendingIntent textIntent = Utility.createNotificationPendingIntent(name, phoneNumber, messageList, Integer.toString(contact_id),
                             photoThumbnailUri, ACTION_SEND_TEXT, getApplicationContext());
 
-                    Utility.createNotifications(textIntent, getApplicationContext(), notificationTime, textFrequency);
+                    Utility.createNotifications(textIntent, getApplicationContext(), notificationTime, textFrequency, textCounter, false);
                     cursor.moveToNext();
                 }
             }
