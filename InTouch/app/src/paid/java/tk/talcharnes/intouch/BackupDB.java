@@ -17,6 +17,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.Vector;
 
 import tk.talcharnes.intouch.data.ContactsContract;
@@ -82,6 +83,7 @@ public class BackupDB {
 
 
     public void restoreDB() {
+        final int dayOfYear = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 
         FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference mFirebaseDatabaseReference = mFirebaseDatabase.getReference();
@@ -118,11 +120,11 @@ public class BackupDB {
                                     if (!cursor.moveToFirst()) {
                                         String name = childDataSnapshot.child("name").getValue().toString();   //gives the value for given keyname
                                         String number = childDataSnapshot.child("number").getValue().toString();
-
                                         int callFrequency = Integer.parseInt(childDataSnapshot.child("callFrequency").getValue().toString());
                                         int textFrequency = Integer.parseInt(childDataSnapshot.child("textFrequency").getValue().toString());
                                         String messageListJsonString = childDataSnapshot.child("messageListJsonString").getValue().toString();
                                         Long notificationTime = Long.parseLong(childDataSnapshot.child("notificationTime").getValue().toString());
+
 
                                         contactValues.put(ContactsContract.ContactsEntry.COLUMN_NAME, name);
                                         contactValues.put(ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
@@ -130,8 +132,8 @@ public class BackupDB {
                                         contactValues.put(ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
                                         contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, textFrequency);
                                         contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, callFrequency);
-                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, 0);
-                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, 0);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER, dayOfYear);
+                                        contactValues.put(ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER, dayOfYear);
                                         contactValues.put(ContactsContract.ContactsEntry.COLUMN_FIREBASE_CONTACT_KEY, key);
 
                                         Uri contactUri = mContext.getContentResolver().insert(ContactsContract.ContactsEntry.CONTENT_URI, contactValues);
@@ -141,8 +143,8 @@ public class BackupDB {
                                         PendingIntent callPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_CALL_NOTIFICATION, mContext);
                                         PendingIntent textPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_SEND_TEXT, mContext);
 
-                                        Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency);
-                                        Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency);
+                                        Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency, dayOfYear, true);
+                                        Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency, dayOfYear, true);
                                         Utility.updateWidgets(mContext);
 
                                     }

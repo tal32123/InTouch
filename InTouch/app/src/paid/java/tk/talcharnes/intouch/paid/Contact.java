@@ -12,8 +12,26 @@ public class Contact {
     private String number;
     private String messageListJsonString;
     private Long notificationTime;
+    private int callCounter;
+    private int textCounter;
 
     public Contact() {
+    }
+
+    public int getCallCounter() {
+        return callCounter;
+    }
+
+    public void setCallCounter(int callCounter) {
+        this.callCounter = callCounter;
+    }
+
+    public int getTextCounter() {
+        return textCounter;
+    }
+
+    public void setTextCounter(int textCounter) {
+        this.textCounter = textCounter;
     }
 
     public String getMessageListJsonString() {

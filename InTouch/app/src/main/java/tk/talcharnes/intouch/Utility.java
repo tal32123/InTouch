@@ -104,7 +104,7 @@ public class Utility {
             Boolean isNewNotification
     ) {
 
-        if(!isNewNotification) {
+        if (!isNewNotification) {
 //      See which date notification should be made
             int dayOfYearNow = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
 

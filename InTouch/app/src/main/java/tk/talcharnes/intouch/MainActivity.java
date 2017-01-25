@@ -134,9 +134,4 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void testButton(View view){
-        Cursor cursor = getContentResolver().query(ContactsContract.ContactsEntry.CONTENT_URI, null, null, null, null);
-        Log.d("CURSOR = ", DatabaseUtils.dumpCursorToString(cursor));
-
-    }
 }

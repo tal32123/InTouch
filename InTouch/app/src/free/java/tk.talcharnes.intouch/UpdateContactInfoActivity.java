@@ -167,11 +167,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         message_list_recycler_view = (RecyclerView) findViewById(R.id.message_list_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         message_list_recycler_view.setLayoutManager(mLayoutManager);
-        if(savedInstanceState!= null){
+        if (savedInstanceState != null) {
             myDataset = savedInstanceState.getStringArrayList("myDataset");
 
-        }
-        else {
+        } else {
             try {
                 myDataset = Utility.getArrayListFromJSONString(messageArrayListString);
             } catch (JSONException e) {

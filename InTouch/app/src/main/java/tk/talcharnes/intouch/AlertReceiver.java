@@ -55,7 +55,6 @@ public class AlertReceiver extends BroadcastReceiver {
     String column;
 
 
-
     public AlertReceiver() {
         ACTION_CALL_NOTIFICATION = "action_call";
         ACTION_SEND_TEXT = "action_send_text";
@@ -169,15 +168,14 @@ public class AlertReceiver extends BroadcastReceiver {
         return messagesArrayList.get(n);
     }
 
-    private void updateCounter(String action){
+    private void updateCounter(String action) {
         int today = Calendar.getInstance().get(Calendar.DAY_OF_YEAR);
         if (action.equals(ACTION_CALL_NOTIFICATION)) {
             column = ContactsContract.ContactsEntry.COLUMN_CALL_NOTIFICATION_COUNTER;
-        }
-        else if(action.equals(ACTION_SEND_TEXT)){
+        } else if (action.equals(ACTION_SEND_TEXT)) {
             column = ContactsContract.ContactsEntry.COLUMN_TEXT_NOTIFICATION_COUNTER;
         }
-            // Defines an object to contain the new counter values to insert
+        // Defines an object to contain the new counter values to insert
         ContentValues mNewValues = new ContentValues();
         mNewValues.put(column, today);
 
