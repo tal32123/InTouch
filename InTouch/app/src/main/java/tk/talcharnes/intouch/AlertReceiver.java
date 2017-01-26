@@ -117,14 +117,19 @@ public class AlertReceiver extends BroadcastReceiver {
     }
 
     private Bitmap getBMP(String photo_uri) {
-        if (photo_uri != null && !photo_uri.equals(null) && !photo_uri.equals("")) {
-            InputStream photo_stream = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(mContext.getContentResolver(), Uri.parse(photo_uri.substring(0, photo_uri.length() - 6)));
-            BufferedInputStream buf = new BufferedInputStream(photo_stream);
-            Bitmap my_btmp = BitmapFactory.decodeStream(buf);
+        try {
+            if (photo_uri != null && !photo_uri.equals(null) && !photo_uri.equals("")) {
+                InputStream photo_stream = android.provider.ContactsContract.Contacts.openContactPhotoInputStream(mContext.getContentResolver(), Uri.parse(photo_uri.substring(0, photo_uri.length() - 6)));
+                BufferedInputStream buf = new BufferedInputStream(photo_stream);
+                Bitmap my_btmp = BitmapFactory.decodeStream(buf);
 
-            return getCircleBitmap(my_btmp);
-        } else return BitmapFactory.decodeResource(mContext.getResources(),
-                R.mipmap.contact_photo);
+                return getCircleBitmap(my_btmp);
+            } else return BitmapFactory.decodeResource(mContext.getResources(),
+                    R.mipmap.contact_photo);
+        } catch (Exception ex) {
+            return BitmapFactory.decodeResource(mContext.getResources(),
+                    R.mipmap.contact_photo);
+        }
     }
 
     private Bitmap getCircleBitmap(Bitmap bitmap) {
