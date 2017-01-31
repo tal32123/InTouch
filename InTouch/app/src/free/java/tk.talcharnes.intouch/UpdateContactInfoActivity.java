@@ -192,30 +192,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
                         addMessage();
                     } else {
-
-//                      Hide keyboard
-                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
-                        Snackbar snackbar = Snackbar
-                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
-                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                    }
-                                });
-
-// Changing message text color
-                        snackbar.setActionTextColor(Color.RED);
-
-// Changing action button text color
-                        View sbView = snackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(Color.YELLOW);
-
-
-                        snackbar.show();
+                        createSnackBar(v);
                     }
                     handled = true;
 
@@ -228,31 +205,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
                         addMessage();
                     } else {
-
-//                      Hide keyboard
-                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-
-                        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
-                        Snackbar snackbar = Snackbar
-                                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
-                                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                    }
-                                });
-
-// Changing message text color
-                        snackbar.setActionTextColor(Color.RED);
-
-// Changing action button text color
-                        View sbView = snackbar.getView();
-                        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                        textView.setTextColor(Color.YELLOW);
-
-
-                        snackbar.show();
+                        createSnackBar(v);
                     }
                     handled = true;
                 }
@@ -480,7 +433,12 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
 
     //  Add message to list
     public void addMessageButton(View view) {
-        addMessage();
+        if (myDataset.size() < 6) {
+            addMessage();
+        }
+        else {
+            createSnackBar(null);
+        }
     }
 
     public void addMessage() {
@@ -502,5 +460,38 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putStringArrayList("myDataset", myDataset);
+    }
+
+    private void createSnackBar(View v){
+        if (v != null) {
+//                      Hide keyboard
+            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
+
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
+        Snackbar snackbar = Snackbar
+                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        upgradeApp();
+                    }
+                });
+
+// Changing message text color
+        snackbar.setActionTextColor(Color.RED);
+
+// Changing action button text color
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
+
+        snackbar.show();
+    }
+
+    private void upgradeApp(){
+        final String appPackageName = "tk.talcharnes.intouch.paid";
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
     }
 }
