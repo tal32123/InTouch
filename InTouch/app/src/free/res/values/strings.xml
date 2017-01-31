@@ -10,8 +10,9 @@
         This is an ad unit ID for a banner test ad. Replace with your own banner ad unit id.
         For more information, see https://support.google.com/admob/answer/3052638
     <!- -->
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id">ca-app-pub-9373264602198577/3404157044</string>
     <string name="banner_size">BANNER</string>
     <string name="version" translatable="false">tk.talcharnes.intouch.free</string>
+    <string name="upgrade">Upgrade</string>
 
 </resources>
