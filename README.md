@@ -9,13 +9,13 @@ This allows the user to stay in touch with the important people in their lives!
 * Firebase UI
 * Support Library
 * Design Library
-* Gradle (For different builds and to add dependencies)
+* Gradle (For Free and Paid builds and to add dependencies)
 * Adapters
 * Loaders
 * SQLite Database
 * Content Provider
 * Alarm Manager (For repeating notifications)
-
+* Deployed [Free](https://play.google.com/store/apps/details?id=tk.talcharnes.intouch.free) and [Paid](https://play.google.com/store/apps/details?id=tk.talcharnes.intouch.paid) versions on Google Play Store
 
 ## Screenshots
 ![Phone Screenshot 1](/Screenshots/Phone (1).png "Phone screenshot 1")
