@@ -16,5 +16,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="restore_database">Restore Database</string>
+
 
 </resources>

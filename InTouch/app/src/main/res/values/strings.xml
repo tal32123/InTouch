@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">InTouch</string>
-    <string name="restore_database">Restore Database</string>
     <string name="contact_frequency_in_days">Call frequency in days</string>
     <string name="text_frequency_in_days">Text frequency in days</string>
     <string name="name">Name</string>
