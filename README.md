@@ -2,6 +2,21 @@
 InTouch is an app that sends users notifications with actions to call or send a previously created text message at random. 
 This allows the user to stay in touch with the important people in their lives!
 
+## Technologies Used
+* Firebase Ads (AdMob)
+* Firebase Database
+* Firebase Authentication
+* Firebase UI
+* Support Library
+* Design Library
+* Gradle (For different builds and to add dependencies)
+* Adapters
+* Loaders
+* SQLite Database
+* Content Provider
+* Alarm Manager (For repeating notifications)
+
+
 ## Screenshots
 ![Phone Screenshot 1](/Screenshots/Phone (1).png "Phone screenshot 1")
 ![Phone Screenshot 2](/Screenshots/Phone (2).png "Phone screenshot 2")
