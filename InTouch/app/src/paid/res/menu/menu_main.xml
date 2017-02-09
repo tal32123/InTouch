@@ -4,7 +4,7 @@
     tools:context="tk.talcharnes.intouch.MainActivity">
     <item
         android:id="@+id/restore_database"
-        android:orderInCategory="100"
+        android:orderInCategory="99"
         android:title="@string/restore_database"
         app:showAsAction="never" />
 </menu>

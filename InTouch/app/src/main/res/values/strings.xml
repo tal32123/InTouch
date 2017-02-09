@@ -42,6 +42,8 @@
     <string name="messages_to_send_contact">Messages to send contact</string>
     <string name="firstname_last_temp_text">Firstname Last</string>
     <string name="upgrade_google_play_services_string">Please upgrade Google Play Services for all features</string>
+    <string name="coming_soon_string">Coming Soon</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
 

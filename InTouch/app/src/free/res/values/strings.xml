@@ -3,8 +3,6 @@
     <string name="content_authority" translatable="false">tk.talcharnes.intouch.free.data</string>
     <string name="home_banner_small">ca-app-pub-9373264602198577/3404157044</string>
 
-    <string name="action_settings">Settings</string>
-
     <string name="hello_world">Hello world!</string>
     <!-- -
         This is an ad unit ID for a banner test ad. Replace with your own banner ad unit id.

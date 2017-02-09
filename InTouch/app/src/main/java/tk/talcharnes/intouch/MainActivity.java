@@ -16,9 +16,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import tk.talcharnes.intouch.data.ContactsContract;
 
+import static java.security.AccessController.getContext;
 import static tk.talcharnes.intouch.NotificationReceiver.LOG_TAG;
 
 /*
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.settings, menu);
         return true;
     }
 
@@ -66,7 +69,15 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
+        int id = item.getItemId();
 
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.settings) {
+//      // TODO: 2/9/2017 Implement ability to use whatsapp/other apps through intent
+            Toast.makeText(this, getString(R.string.coming_soon_string), Toast.LENGTH_SHORT).show();
+
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
