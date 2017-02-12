@@ -71,11 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+//      Open settings menu
         if (id == R.id.settings) {
 //      // TODO: 2/9/2017 Implement ability to use whatsapp/other apps through intent
             Toast.makeText(this, getString(R.string.coming_soon_string), Toast.LENGTH_SHORT).show();
-
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
         return super.onOptionsItemSelected(item);
