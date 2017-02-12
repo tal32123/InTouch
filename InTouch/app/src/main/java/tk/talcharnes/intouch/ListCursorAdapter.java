@@ -3,6 +3,7 @@ package tk.talcharnes.intouch;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +15,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.SmsManager;
@@ -126,26 +128,40 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
 
                         String message = messagesArrayList.get(n);
 
-                        try {
+//                      Get preferences to see if User wants to use standard text message app or alternative app
+                        SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                        boolean altTXTApp = getPrefs.getBoolean("checkbox_text_preference", false);
 
-                            //send text message
-                            SmsManager smsManager = SmsManager.getDefault();
-                            smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-                            Toast.makeText(mContext, R.string.message_sent_string,
-                                    Toast.LENGTH_SHORT).show();
-                        } catch (Exception ex) {
-                            //If text message isn't sent show why in log
-                            Log.d(LOG_TAG, ex.getMessage().toString());
-                            ex.printStackTrace();
+//                      If user doesn't want to use the standard text message application
+                        if(!altTXTApp) {
+                            try {
 
-                            //If text message wasn't sent attempt to send text another way (through the user's text messaging app)
-                            // Most likely due to text message permissions not being accepted by user
-                            Intent intent = new Intent(Intent.ACTION_SENDTO);
-                            intent.setData(Uri.parse("smsto:" + phoneNumber));  // This ensures only SMS apps respond
-                            intent.putExtra("sms_body", message);
-                            if (intent.resolveActivity(mContext.getPackageManager()) != null) {
-                                mContext.startActivity(intent);
+                                //send text message
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(phoneNumber, null, message, null, null);
+                                Toast.makeText(mContext, R.string.message_sent_string,
+                                        Toast.LENGTH_SHORT).show();
+                            } catch (Exception ex) {
+                                //If text message isn't sent show why in log
+                                Log.d(LOG_TAG, ex.getMessage().toString());
+                                ex.printStackTrace();
+
+                                //If text message wasn't sent attempt to send text another way (through the user's text messaging app)
+                                // Most likely due to text message permissions not being accepted by user
+                                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                                intent.setData(Uri.parse("smsto:" + phoneNumber));  // This ensures only SMS apps respond
+                                intent.putExtra("sms_body", message);
+                                if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+                                    mContext.startActivity(intent);
+                                }
                             }
+                        }
+                        else {
+                            Intent intent = new Intent(Intent.ACTION_SEND);
+                            intent.setType("text/plain");
+                            intent.putExtra(Intent.EXTRA_TEXT, message);
+                            mContext.startActivity(intent);
+
                         }
                     }
                 }
