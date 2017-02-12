@@ -44,6 +44,8 @@
     <string name="upgrade_google_play_services_string">Please upgrade Google Play Services for all features</string>
     <string name="coming_soon_string">Coming Soon</string>
     <string name="action_settings">Settings</string>
+    <string name="change_text_app_title">Change Text App</string>
+    <string name="change_text_app_summary">Use alternative apps to send text messages such as Whatsapp, Viber, Etc.</string>
 
 </resources>
 
