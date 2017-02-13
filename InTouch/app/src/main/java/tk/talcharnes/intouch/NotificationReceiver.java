@@ -3,7 +3,9 @@ package tk.talcharnes.intouch;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -50,24 +52,39 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     public void sendText() {
 
-        try {
-            //send text message
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(number, null, message, null, null);
-            Toast.makeText(mContext, mContext.getString(R.string.message_sent_string),
-                    Toast.LENGTH_SHORT).show();
-        } catch (Exception ex) {
+        //                      Get preferences to see if User wants to use standard text message app or alternative app
+        SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean altTXTApp = getPrefs.getBoolean("checkbox_text_preference", false);
 
-            //If text message wasn't sent attempt to send text another way (through the user's text messaging app)
-            // Most likely due to text message permissions not being accepted by user
-            Intent intent = new Intent(Intent.ACTION_SENDTO);
-            intent.setData(Uri.parse("smsto:" + number));  // This ensures only SMS apps respond
-            intent.putExtra("sms_body", message);
-            if (intent.resolveActivity(mContext.getPackageManager()) != null) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                mContext.startActivity(intent);
+//                      If user doesn't want to use the standard text message application
+        if (!altTXTApp) {
+            try {
+                //send text message
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(number, null, message, null, null);
+                Toast.makeText(mContext, mContext.getString(R.string.message_sent_string),
+                        Toast.LENGTH_SHORT).show();
+            } catch (Exception ex) {
+
+                //If text message wasn't sent attempt to send text another way (through the user's text messaging app)
+                // Most likely due to text message permissions not being accepted by user
+                Intent intent = new Intent(Intent.ACTION_SENDTO);
+                intent.setData(Uri.parse("smsto:" + number));  // This ensures only SMS apps respond
+                intent.putExtra("sms_body", message);
+                if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
             }
+        } else {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, message);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            mContext.startActivity(intent);
+
         }
+
     }
 
     public void sendCall() {
