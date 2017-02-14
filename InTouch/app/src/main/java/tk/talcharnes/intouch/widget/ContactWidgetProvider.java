@@ -22,8 +22,6 @@ import tk.talcharnes.intouch.MainActivity;
 import tk.talcharnes.intouch.R;
 import tk.talcharnes.intouch.Utility;
 
-import static android.R.id.message;
-
 /**
  * Implementation of App Widget functionality.
  * Credit for Udacity for help!
@@ -56,12 +54,9 @@ public class ContactWidgetProvider extends AppWidgetProvider {
             views.setEmptyView(R.id.widget_list, R.id.widget_empty);
 
             Intent pIntent = new Intent(context, ContactWidgetProvider.class);
-            PendingIntent pendingIntentTemplate =  PendingIntent.getBroadcast(context, 0,
+            PendingIntent pendingIntentTemplate = PendingIntent.getBroadcast(context, 0,
                     pIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             views.setPendingIntentTemplate(R.id.widget_list, pendingIntentTemplate);
-
-
-
 
 
             appWidgetManager.updateAppWidget(appWidgetId, views);
@@ -107,7 +102,6 @@ public class ContactWidgetProvider extends AppWidgetProvider {
             int n = rand.nextInt(messagesArrayList.size());
 
 
-
             String message = messagesArrayList.get(n);
 
 
@@ -126,15 +120,15 @@ public class ContactWidgetProvider extends AppWidgetProvider {
                 if (intent.resolveActivity(context.getPackageManager()) != null) {
                     textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(textIntent);
-            }
-        }
-        } else {
-            Intent textIntent = new Intent(Intent.ACTION_SEND);
-            textIntent.setType("text/plain");
-            textIntent.putExtra(Intent.EXTRA_TEXT, message);
-            textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+                }
+            } else {
+                Intent textIntent = new Intent(Intent.ACTION_SEND);
+                textIntent.setType("text/plain");
+                textIntent.putExtra(Intent.EXTRA_TEXT, message);
+                textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(textIntent);
 
+            }
         }
     }
 
