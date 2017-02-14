@@ -24,3 +24,14 @@ This allows the user to stay in touch with the important people in their lives!
 ![Tablet Screenshot 1](/Screenshots/Tablet (1).jpg "Tablet screenshot 1")
 ![Tablet Screenshot 2](/Screenshots/Tablet (2).jpg "Tablet screenshot 2")
 ![Tablet Screenshot 3](/Screenshots/Tablet (3).jpg "Tablet screenshot 3")
+
+### Installation
+* In order to install debug version the following must be done
+  * Go to Firebase Console
+  * Fill out form with all details for app (including the `sha1` for the variants that will be used)
+  * Download `google-services.json` file and insert into app directory
+* For release version
+  * Generate keystore file and set up app for release
+  * Go to Firebase Console
+  * Fill out form with all details for app (including the `sha1` for the variants that will be used)
+  * Download `google-services.json` file and insert into app directory
