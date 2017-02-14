@@ -7,7 +7,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.widget.RemoteViews;
 
@@ -19,6 +21,8 @@ import java.util.Random;
 import tk.talcharnes.intouch.MainActivity;
 import tk.talcharnes.intouch.R;
 import tk.talcharnes.intouch.Utility;
+
+import static android.R.id.message;
 
 /**
  * Implementation of App Widget functionality.
@@ -106,7 +110,16 @@ public class ContactWidgetProvider extends AppWidgetProvider {
 
             String message = messagesArrayList.get(n);
 
-                //send text message
+
+//      Get preferences to see if User wants to use standard text message app or alternative app
+            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean altTXTApp = getPrefs.getBoolean("checkbox_text_preference", false);
+
+            //send text message
+
+
+//          If user doesn't want to use the standard text message application
+            if (!altTXTApp) {
                 Intent textIntent = new Intent(Intent.ACTION_SENDTO);
                 textIntent.setData(Uri.parse("smsto:" + number));  // This ensures only SMS apps respond
                 textIntent.putExtra("sms_body", message);
@@ -114,6 +127,14 @@ public class ContactWidgetProvider extends AppWidgetProvider {
                     textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(textIntent);
             }
+        }
+        } else {
+            Intent textIntent = new Intent(Intent.ACTION_SEND);
+            textIntent.setType("text/plain");
+            textIntent.putExtra(Intent.EXTRA_TEXT, message);
+            textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+
         }
     }
 

@@ -52,7 +52,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
     public void sendText() {
 
-        //                      Get preferences to see if User wants to use standard text message app or alternative app
+//      Get preferences to see if User wants to use standard text message app or alternative app
         SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
         boolean altTXTApp = getPrefs.getBoolean("checkbox_text_preference", false);
 
