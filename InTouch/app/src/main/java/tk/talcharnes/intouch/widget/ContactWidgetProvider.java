@@ -127,7 +127,6 @@ public class ContactWidgetProvider extends AppWidgetProvider {
                 textIntent.putExtra(Intent.EXTRA_TEXT, message);
                 textIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(textIntent);
-
             }
         }
     }
