@@ -30,7 +30,6 @@ This allows the user to stay in touch with the important people in their lives!
   
 ### Future Updates
 * Add option for direct dial instead of just putting in the phone number in the calling app. This was originally made this way to prevent accidental dialing. However, it is much quicker if user directly dials.
-* Make interstitial ad live
 * Update layout for detail screen
   
 ## Screenshots
