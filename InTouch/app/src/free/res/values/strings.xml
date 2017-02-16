@@ -10,6 +10,8 @@
     <!- -->
     <string name="banner_ad_unit_id">ca-app-pub-9373264602198577/3404157044</string>
     <string name="banner_size">BANNER</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-9373264602198577/8648597447</string>
+    <string name="interstitial_size">INTERSTITIAL</string>
     <string name="version" translatable="false">tk.talcharnes.intouch.free</string>
     <string name="upgrade">Upgrade</string>
 

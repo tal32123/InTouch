@@ -192,7 +192,7 @@ public class ContactDetailActivity extends AppCompatActivity {
 
         //interstitial ads
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getString(R.string.interstitial_ad_unit_id));
         requestNewInterstitial();
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
@@ -423,7 +423,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     //request new interstitial ads
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("SEE_YOUR_LOGCAT_TO_GET_YOUR_DEVICE_ID")
+                .addTestDevice("1ECB075D2EA88E0C7DF7EA1E269DD2E2")
                 .build();
 
         mInterstitialAd.loadAd(adRequest);
