@@ -38,8 +38,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
-import static tk.talcharnes.intouch.R.string.phone_number;
-
 /*
  * Credit to: http://www.androidhive.info/2015/09/android-material-design-snackbar-example/
  * Credit to: http://wiseassblog.com/tutorial/view/android/2016/06/17/how-to-build-a-recyclerview-part-5.html
@@ -293,7 +291,7 @@ public class ContactDetailActivity extends AppCompatActivity {
             // Defines an object to contain the new values to insert
             ContentValues mNewValues = new ContentValues();
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NAME, name);
-            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, phone_number);
+            mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER, number);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY, call_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY, text_frequency);
             mNewValues.put(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_NOTIFICATION_TIME, notificationTime);
@@ -423,7 +421,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     //request new interstitial ads
     private void requestNewInterstitial() {
         AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("1ECB075D2EA88E0C7DF7EA1E269DD2E2")
+//                .addTestDevice("1ECB075D2EA88E0C7DF7EA1E269DD2E2")
                 .build();
 
         mInterstitialAd.loadAd(adRequest);
