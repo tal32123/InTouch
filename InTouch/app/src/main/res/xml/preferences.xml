@@ -4,5 +4,10 @@
         android:key="checkbox_text_preference"
         android:title="@string/change_text_app_title"
         android:summary="@string/change_text_app_summary" />
+    <CheckBoxPreference
+        android:key="checkbox_call_preference"
+        android:title="@string/call_immediately_title"
+        android:summary="@string/call_immediately_summary" />
 
 </PreferenceScreen>
+
