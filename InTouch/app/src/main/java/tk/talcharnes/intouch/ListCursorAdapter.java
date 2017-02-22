@@ -81,7 +81,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
         int contact_idIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry._ID);
         int nameIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_NAME);
         int photoThumbnailUriIndex = cursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHOTO_THUMBNAIL_URI);
-        int phoneNumberIndex = cursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER);
+        final int phoneNumberIndex = cursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_PHONE_NUMBER);
         int messageListIndex = cursor.getColumnIndex(tk.talcharnes.intouch.data.ContactsContract.ContactsEntry.COLUMN_MESSAGE_LIST);
         int textFrequencyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_TEXT_FREQUENCY);
         int callFrequencyIndex = cursor.getColumnIndex(ContactsContract.ContactsEntry.COLUMN_CALL_FREQUENCY);
@@ -133,7 +133,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                         boolean altTXTApp = getPrefs.getBoolean("checkbox_text_preference", false);
 
 //                      If user doesn't want to use the standard text message application
-                        if(!altTXTApp) {
+                        if (!altTXTApp) {
                             try {
 
                                 //send text message
@@ -155,8 +155,7 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                                     mContext.startActivity(intent);
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             Intent intent = new Intent(Intent.ACTION_SEND);
                             intent.setType("text/plain");
                             intent.putExtra(Intent.EXTRA_TEXT, message);
@@ -172,10 +171,21 @@ public class ListCursorAdapter extends CursorRecyclerViewAdapter<ListCursorAdapt
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent intent = new Intent(Intent.ACTION_DIAL);
-                        intent.setData(Uri.parse("tel:" + phoneNumber));
-                        if (intent.resolveActivity(mContext.getPackageManager()) != null) {
-                            mContext.startActivity(intent);
+//                        Get preferences to see if User wants to use standard text message app or alternative app
+                        SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+                        boolean altCallApp = getPrefs.getBoolean("checkbox_call_preference", false);
+                        try {
+                            if (!altCallApp) {
+                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + phoneNumber));
+                                if (intent.resolveActivity(mContext.getPackageManager()) != null) {
+                                    mContext.startActivity(intent);
+                                }
+                            } else {
+                                Utility.callImmediately(mContext, phoneNumber);
+                            }
+                        } catch (Exception e) {
+
                         }
                     }
                 }
