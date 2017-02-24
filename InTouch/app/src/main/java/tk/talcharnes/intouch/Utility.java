@@ -143,7 +143,7 @@ public class Utility {
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber)));
+        context.startActivity(new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
 }

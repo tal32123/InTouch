@@ -77,13 +77,25 @@ public class ContactWidgetProvider extends AppWidgetProvider {
 
         if (CallOnClick.equals(intent.getAction())) {
             String number = intent.getStringExtra("number");
-            Intent callIntent = new Intent(Intent.ACTION_DIAL);
-            callIntent.setData(Uri.parse("tel:" + number));
-            if (callIntent.resolveActivity(context.getPackageManager()) != null) {
-                callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                context.startActivity(callIntent);
-            }
 
+
+//                        Get preferences to see if User wants to use standard text message app or alternative app
+            SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+            boolean altCallApp = getPrefs.getBoolean("checkbox_call_preference", false);
+            try {
+                if (!altCallApp) {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:" + number));
+                    callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    if (intent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(callIntent);
+                    }
+                } else {
+                    Utility.callImmediately(context, number);
+                }
+            } catch (Exception e) {
+
+            }
         }
 
         if (TextOnClick.equals(intent.getAction())) {
