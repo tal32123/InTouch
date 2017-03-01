@@ -88,11 +88,22 @@ public class NotificationReceiver extends BroadcastReceiver {
     }
 
     public void sendCall() {
-        Intent callIntent = new Intent(Intent.ACTION_DIAL);
-        callIntent.setData(Uri.parse("tel:" + number));
-        if (callIntent.resolveActivity(mContext.getPackageManager()) != null) {
-            callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            mContext.startActivity(callIntent);
+//                        Get preferences to see if User wants to use standard text message app or alternative app
+        SharedPreferences getPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        boolean altCallApp = getPrefs.getBoolean("checkbox_call_preference", false);
+        try {
+            if (!altCallApp) {
+                Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                callIntent.setData(Uri.parse("tel:" + number));
+                callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                if (callIntent.resolveActivity(mContext.getPackageManager()) != null) {
+                    mContext.startActivity(callIntent);
+                }
+            } else {
+                Utility.callImmediately(mContext, number);
+            }
+        } catch (Exception e) {
+
         }
     }
 }
