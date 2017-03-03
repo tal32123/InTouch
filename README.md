@@ -29,8 +29,6 @@ This allows the user to stay in touch with the important people in their lives!
   * Download `google-services.json` file and insert into app directory
   
 ### Future Updates
-* Add option for direct dial instead of just putting in the phone number in the calling app. This was originally made this way to prevent accidental dialing. However, it is much quicker if user directly dials.
-  * For notifications
 * Update layout for detail screen
 * Allow users to insert 0 if they don't want a certain type of notification
   
