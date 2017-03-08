@@ -264,8 +264,8 @@ public class ContactDetailActivity extends AppCompatActivity {
             if (!textFrequencyView.getText().toString().equals("0")) {
                 text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
             } else {
-                emptyField = true;
-                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
+//                emptyField = true;
+//                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
             }
         } else {
             emptyField = true;
@@ -318,8 +318,9 @@ public class ContactDetailActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "Interstitial not loaded");
                 // up button navigation
                 NavUtils.navigateUpFromSameTask(this);
-
-                createNotifications(ACTION_SEND_TEXT, text_frequency);
+                if(text_frequency != 0) {
+                    createNotifications(ACTION_SEND_TEXT, text_frequency);
+                }
                 if(call_frequency != 0) {
                     createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
                 }
@@ -331,8 +332,12 @@ public class ContactDetailActivity extends AppCompatActivity {
                     Intent upIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(upIntent);
 
-                    createNotifications(ACTION_SEND_TEXT, text_frequency);
-                    createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
+                    if(text_frequency != 0) {
+                        createNotifications(ACTION_SEND_TEXT, text_frequency);
+                    }
+                    if(call_frequency != 0) {
+                        createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
+                    }
 
 
                 }
