@@ -282,8 +282,6 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             if (!textFrequencyView.getText().toString().equals("0")) {
                 text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
             } else {
-                emptyField = true;
-                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
             }
         } else {
             emptyField = true;
@@ -330,7 +328,9 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             Utility.updateWidgets(getApplicationContext());
 
             //Create text notifications
-            createNotifications(ACTION_SEND_TEXT, text_frequency, textCounter);
+            if(text_frequency != 0) {
+                createNotifications(ACTION_SEND_TEXT, text_frequency, textCounter);
+            }
             createNotifications(ACTION_CALL_NOTIFICATION, call_frequency, callCounter);
 
             NavUtils.navigateUpFromSameTask(this);
