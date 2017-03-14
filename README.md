@@ -31,6 +31,8 @@ This allows the user to stay in touch with the important people in their lives!
 ### Future Updates
 * Update layout for detail screen
 * Allow users to insert 0 if they don't want a certain type of notification
+  * Free version - Complete
+  * Paid version - Incomplete
   
 ## Screenshots
 ![Phone Screenshot 1](/Screenshots/Phone (1).png "Phone screenshot 1")
