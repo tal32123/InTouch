@@ -262,8 +262,6 @@ public class ContactDetailActivity extends AppCompatActivity {
             if (!textFrequencyView.getText().toString().equals("0")) {
                 text_frequency = Integer.parseInt(textFrequencyView.getText().toString());
             } else {
-//                emptyField = true;
-//                textFrequencyView.setError(getString(R.string.text_frequency_0_error));
             }
         } else {
             emptyField = true;
