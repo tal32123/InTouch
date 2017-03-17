@@ -261,8 +261,6 @@ public class ContactDetailActivity extends AppCompatActivity {
             if (!callFrequencyView.getText().toString().equals("0")) {
                 call_frequency = Integer.parseInt(callFrequencyView.getText().toString());
             } else {
-                emptyField = true;
-                callFrequencyView.setError(getString(R.string.call_frequency_0_error));
             }
         } else {
             emptyField = true;
@@ -340,7 +338,9 @@ public class ContactDetailActivity extends AppCompatActivity {
 
 
             createNotifications(ACTION_SEND_TEXT, text_frequency);
-            createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
+            if(call_frequency != 0) {
+                createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
+            }
 
             NavUtils.navigateUpFromSameTask(this);
 
