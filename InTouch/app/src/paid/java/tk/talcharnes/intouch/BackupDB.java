@@ -143,8 +143,10 @@ public class BackupDB {
                                         PendingIntent callPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_CALL_NOTIFICATION, mContext);
                                         PendingIntent textPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_SEND_TEXT, mContext);
 
-                                        //// TODO: 3/17/2017  ensure that user hasn't set the frequencies to 0 before notification is created 
-                                        Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency, dayOfYear, true);
+                                        if(callFrequency != 0) {
+                                            Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency, dayOfYear, true);
+                                        }
+                                        //// TODO: 3/17/2017  ensure that user hasn't set the text frequency to 0 before notification is created
                                         Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency, dayOfYear, true);
                                         Utility.updateWidgets(mContext);
 
