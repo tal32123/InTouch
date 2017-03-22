@@ -146,8 +146,10 @@ public class BackupDB {
                                         if(callFrequency != 0) {
                                             Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency, dayOfYear, true);
                                         }
-                                        //// TODO: 3/17/2017  ensure that user hasn't set the text frequency to 0 before notification is created
-                                        Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency, dayOfYear, true);
+
+                                        if(textFrequency != 0) {
+                                            Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency, dayOfYear, true);
+                                        }
                                         Utility.updateWidgets(mContext);
 
                                     }
