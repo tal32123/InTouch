@@ -35,8 +35,6 @@ public class BackupDB {
 
     public BackupDB(Context context) {
         mContext = context;
-
-
     }
 
     public void deleteContactFromFirebase(String deleteKey) {
