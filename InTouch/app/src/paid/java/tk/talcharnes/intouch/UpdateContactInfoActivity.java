@@ -352,7 +352,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
                 //Create text notifications
                 createNotifications(ACTION_SEND_TEXT, text_frequency, textCounter);
             }
-            
+
             if(call_frequency != 0) {
 //              Create call notifications
                 createNotifications(ACTION_CALL_NOTIFICATION, call_frequency, callCounter);
