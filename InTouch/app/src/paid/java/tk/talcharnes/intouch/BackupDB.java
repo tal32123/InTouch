@@ -141,11 +141,11 @@ public class BackupDB {
                                         PendingIntent callPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_CALL_NOTIFICATION, mContext);
                                         PendingIntent textPendingIntent = Utility.createNotificationPendingIntent(name, number, messageListJsonString, ("" + contactID), null, Utility.ACTION_SEND_TEXT, mContext);
 
-                                        if(callFrequency != 0) {
+                                        if (callFrequency != 0) {
                                             Utility.createNotifications(callPendingIntent, mContext, notificationTime, callFrequency, dayOfYear, true);
                                         }
 
-                                        if(textFrequency != 0) {
+                                        if (textFrequency != 0) {
                                             Utility.createNotifications(textPendingIntent, mContext, notificationTime, textFrequency, dayOfYear, true);
                                         }
                                         Utility.updateWidgets(mContext);

@@ -337,10 +337,10 @@ public class ContactDetailActivity extends AppCompatActivity {
             Utility.updateWidgets(getApplicationContext());
 
 
-            if(text_frequency != 0) {
+            if (text_frequency != 0) {
                 createNotifications(ACTION_SEND_TEXT, text_frequency);
             }
-            if(call_frequency != 0) {
+            if (call_frequency != 0) {
                 createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
             }
 

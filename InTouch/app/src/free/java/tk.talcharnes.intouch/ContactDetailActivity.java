@@ -314,10 +314,10 @@ public class ContactDetailActivity extends AppCompatActivity {
                 Log.d(LOG_TAG, "Interstitial not loaded");
                 // up button navigation
                 NavUtils.navigateUpFromSameTask(this);
-                if(text_frequency != 0) {
+                if (text_frequency != 0) {
                     createNotifications(ACTION_SEND_TEXT, text_frequency);
                 }
-                if(call_frequency != 0) {
+                if (call_frequency != 0) {
                     createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
                 }
             }
@@ -328,10 +328,10 @@ public class ContactDetailActivity extends AppCompatActivity {
                     Intent upIntent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(upIntent);
 
-                    if(text_frequency != 0) {
+                    if (text_frequency != 0) {
                         createNotifications(ACTION_SEND_TEXT, text_frequency);
                     }
-                    if(call_frequency != 0) {
+                    if (call_frequency != 0) {
                         createNotifications(ACTION_CALL_NOTIFICATION, call_frequency);
                     }
 
@@ -434,8 +434,7 @@ public class ContactDetailActivity extends AppCompatActivity {
     public void addMessageButton(View view) {
         if (myDataset.size() < 6) {
             addMessage();
-        }
-        else {
+        } else {
             createSnackBar(null);
 
         }
@@ -459,35 +458,35 @@ public class ContactDetailActivity extends AppCompatActivity {
         outState.putStringArrayList("myDataset", myDataset);
     }
 
-    private void createSnackBar(View v){
-            if (v != null) {
+    private void createSnackBar(View v) {
+        if (v != null) {
 //                      Hide keyboard
-                InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-            }
+            InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        }
 
-            RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
-            Snackbar snackbar = Snackbar
-                    .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
-                    .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            upgradeApp();
-                        }
-                    });
+        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.activity_contact_detail);
+        Snackbar snackbar = Snackbar
+                .make(relativeLayout, R.string.upgrade_for_more_messages_string, Snackbar.LENGTH_LONG)
+                .setAction(R.string.ACTION_UPGRADE, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        upgradeApp();
+                    }
+                });
 
 // Changing message text color
-            snackbar.setActionTextColor(Color.RED);
+        snackbar.setActionTextColor(Color.RED);
 
 // Changing action button text color
-            View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-            textView.setTextColor(Color.YELLOW);
+        View sbView = snackbar.getView();
+        TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+        textView.setTextColor(Color.YELLOW);
 
-            snackbar.show();
+        snackbar.show();
     }
 
-    private void upgradeApp(){
+    private void upgradeApp() {
         final String appPackageName = "tk.talcharnes.intouch.paid";
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
     }

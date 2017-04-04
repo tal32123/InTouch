@@ -328,10 +328,10 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
             Utility.updateWidgets(getApplicationContext());
 
             //Create text notifications
-            if(text_frequency != 0) {
+            if (text_frequency != 0) {
                 createNotifications(ACTION_SEND_TEXT, text_frequency, textCounter);
             }
-            if(call_frequency != 0) {
+            if (call_frequency != 0) {
                 createNotifications(ACTION_CALL_NOTIFICATION, call_frequency, callCounter);
             }
 
@@ -437,8 +437,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
     public void addMessageButton(View view) {
         if (myDataset.size() < 6) {
             addMessage();
-        }
-        else {
+        } else {
             createSnackBar(null);
         }
     }
@@ -464,7 +463,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         outState.putStringArrayList("myDataset", myDataset);
     }
 
-    private void createSnackBar(View v){
+    private void createSnackBar(View v) {
         if (v != null) {
 //                      Hide keyboard
             InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -492,7 +491,7 @@ public class UpdateContactInfoActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    private void upgradeApp(){
+    private void upgradeApp() {
         final String appPackageName = "tk.talcharnes.intouch.paid";
         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
     }
