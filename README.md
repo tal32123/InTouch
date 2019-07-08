@@ -38,6 +38,4 @@ This allows the user to stay in touch with the important people in their lives!
 ![Phone Screenshot 1](https://github.com/tal32123/InTouch/blob/master/Screenshots/Phone%20(1).png?raw=true)
 ![Phone Screenshot 2](https://github.com/tal32123/InTouch/blob/master/Screenshots/Phone%20(2).png?raw=true "Phone screenshot 2")
 ![Phone Screenshot 3](https://github.com/tal32123/InTouch/blob/master/Screenshots/Phone%20(3).jpg?raw=true "Phone creenshot 3")
-![Tablet Screenshot 1](https://github.com/tal32123/InTouch/blob/master/Screenshots/Tablet%20(1).jpg?raw=true)
 ![Tablet Screenshot 2](https://github.com/tal32123/InTouch/blob/master/Screenshots/Tablet%20(2).jpg?raw=true)
-![Tablet Screenshot 3](https://github.com/tal32123/InTouch/blob/master/Screenshots/Tablet%20(3).jpg?raw=true)
